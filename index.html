@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC Master Exam Hub & Admin Portal</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: #60a5fa;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10rem;
+            gap: 1rem;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background-color: #334155;
+        }
+
+        .btn-danger {
+            background-color: var(--accent-red);
+        }
+
+        .btn-green {
+            background-color: var(--accent-green);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* Views */
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        /* Subject Grid */
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .subject-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s, border-color 0.2s;
+            cursor: pointer;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            border-color: #60a5fa;
+        }
+
+        .subject-card h3 {
+            margin-bottom: 0.5rem;
+            color: #f1f5f9;
+        }
+
+        .subject-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Quiz Layout */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            background-color: var(--card-bg);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .question-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .board-tag {
+            display: inline-block;
+            background-color: #3b82f6;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            margin-bottom: 0.8rem;
+        }
+
+        .options-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .option-item {
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
+            padding: 0.8rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .option-item:hover {
+            border-color: #60a5fa;
+        }
+
+        .option-item.selected {
+            border-color: var(--primary);
+            background-color: #1e3a8a;
+        }
+
+        .option-item.correct-ans {
+            background-color: #14532d;
+            border-color: var(--accent-green);
+        }
+
+        .option-item.wrong-ans {
+            background-color: #7f1d1d;
+            border-color: var(--accent-red);
+        }
+
+        /* Admin Forms */
+        .admin-section {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: var(--text-muted);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.6rem;
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
+            color: var(--text-light);
+            border-radius: 4px;
+        }
+
+        .option-input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Table view for questions */
+        .q-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .q-table th, .q-table td {
+            border: 1px solid var(--border-color);
+            padding: 0.8rem;
+            text-align: left;
+        }
+
+        .q-table th {
+            background-color: #0f172a;
+        }
+
+        /* Result View */
+        .score-box {
+            text-align: center;
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #60a5fa;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SSC Exam Engine</h1>
+        <div class="nav-buttons">
+            <button class="btn" onclick="showView('dashboard')">Dashboard</button>
+            <button class="btn btn-secondary" id="admin-toggle-btn" onclick="toggleAdminView()">Admin Panel</button>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- DASHBOARD VIEW -->
+        <div id="dashboard" class="view-section active">
+            <h2>Select Subject to Start Practice</h2>
+            <p style="color: var(--text-muted); margin-top: 0.2rem;">Choose from 12 official SSC General & Science subjects</p>
+            
+            <div class="subject-grid" id="subject-cards"></div>
+        </div>
+
+        <!-- EXAM VIEW -->
+        <div id="exam" class="view-section">
+            <div class="quiz-header">
+                <div>
+                    <h2 id="quiz-title">Physics Board Exam Practice</h2>
+                    <span id="quiz-count-label" style="color: var(--text-muted); font-size: 0.9rem;">50 Questions Available</span>
+                </div>
+                <button class="btn btn-green" onclick="submitExam()">Submit Paper</button>
+            </div>
+            
+            <div id="questions-container"></div>
+            
+            <button class="btn btn-green" style="width: 100%; margin-top: 1rem; padding: 1rem;" onclick="submitExam()">Submit Paper</button>
+        </div>
+
+        <!-- RESULTS VIEW -->
+        <div id="results" class="view-section">
+            <div class="score-box">
+                <h2>Exam Complete</h2>
+                <div class="score-number" id="final-score">0 / 0</div>
+                <p id="score-percentage" style="color: var(--text-muted);">0%</p>
+                <button class="btn" style="margin-top: 1rem;" onclick="showView('dashboard')">Back to Dashboard</button>
+            </div>
+            
+            <h3>Detailed Review</h3>
+            <div id="review-container" style="margin-top: 1rem;"></div>
+        </div>
+
+        <!-- ADMIN PANEL VIEW -->
+        <div id="admin" class="view-section">
+            <h2>Admin Portal</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Add, modify, or delete questions across any SSC subject. Data persists in local storage.</p>
+
+            <div class="admin-section">
+                <h3>Create / Add Question</h3>
+                <form id="add-q-form" onsubmit="handleSaveQuestion(event)">
+                    <input type="hidden" id="edit-q-id">
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>Select Subject</label>
+                        <select id="admin-subject-select" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Board Heading Tag (e.g., R.B.24, D.B.23, C.B.22)</label>
+                        <input type="text" id="admin-board" placeholder="e.g. R.B.24" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Question Text</label>
+                        <textarea id="admin-q-text" rows="2" placeholder="Enter question description..." required></textarea>
+                    </div>
+                    
+                    <div class="option-input-grid">
+                        <div class="form-group">
+                            <label>Option A</label>
+                            <input type="text" id="admin-opt-a" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Option B</label>
+                            <input type="text" id="admin-opt-b" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Option C</label>
+                            <input type="text" id="admin-opt-c" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Option D</label>
+                            <input type="text" id="admin-opt-d" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Correct Option Index</label>
+                        <select id="admin-correct-opt">
+                            <option value="0">Option A</option>
+                            <option value="1">Option B</option>
+                            <option value="2">Option C</option>
+                            <option value="3">Option D</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-green" id="save-q-btn">Save Question</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetAdminForm()">Clear Form</button>
+                </form>
+            </div>
+
+            <div class="admin-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3>Manage Existing Questions</h3>
+                    <select id="admin-filter-subject" onchange="renderAdminQuestionList()" style="width: 250px;"></select>
+                </div>
+                
+                <table class="q-table">
+                    <thead>
+                        <tr>
+                            <th>Board Tag</th>
+                            <th>Question</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-q-list"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 12 SSC Subjects List
+        const sscSubjects = [
+            { id: "physics", name: "Physics" },
+            { id: "chemistry", name: "Chemistry" },
+            { id: "higher_math", name: "Higher Mathematics" },
+            { id: "general_math", name: "General Mathematics" },
+            { id: "biology", name: "Biology" },
+            { id: "ict", name: "ICT" },
+            { id: "bangla_1st", name: "Bangla 1st Paper" },
+            { id: "bangla_2nd", name: "Bangla 2nd Paper" },
+            { id: "english_1st", name: "English 1st Paper" },
+            { id: "english_2nd", name: "English 2nd Paper" },
+            { id: "bgs", name: "Bangladesh & Global Studies" },
+            { id: "islam", name: "Islam & Moral Education" }
+        ];
+
+        // Generator to generate board tag patterns
+        const boards = ["R.B.24", "D.B.24", "C.B.24", "Ctg.B.24", "S.B.23", "J.B.23", "B.B.23", "M.B.22", "R.B.22", "D.B.22"];
+
+        // Seeded Question Database (Populates 50 Qs per subject automatically if empty)
+        function generateDefaultDatabase() {
+            let db = {};
+            sscSubjects.forEach(subj => {
+                db[subj.id] = [];
+                for (let i = 1; i <= 50; i++) {
+                    let boardTag = boards[(i - 1) % boards.length];
+                    if (subj.id === 'physics') {
+                        db[subj.id].push(getPhysicsQuestionSample(i, boardTag));
+                    } else {
+                        db[subj.id].push({
+                            id: subj.id + "_" + Date.now() + "_" + i,
+                            board: boardTag,
+                            question: `Sample ${subj.name} Board Exam Question #${i}?`,
+                            options: [
+                                `Concept option Alpha ${i}`,
+                                `Concept option Beta ${i}`,
+                                `Concept option Gamma ${i}`,
+                                `Concept option Delta ${i}`
+                            ],
+                            correct: (i % 4)
+                        });
+                    }
+                }
+            });
+            return db;
+        }
+
+        // Realistic Physics Question Builder
+        function getPhysicsQuestionSample(i, boardTag) {
+            const physicsPool = [
+                { q: "What is the dimensional formula of acceleration?", opts: ["ms⁻¹", "ms⁻²", "LT⁻¹", "LT⁻²"], ans: 3 },
+                { q: "Which of the following is a scalar quantity?", opts: ["Velocity", "Displacement", "Electric Potential", "Force"], ans: 2 },
+                { q: "A body starts from rest with acceleration 2 ms⁻². What is its velocity after 5 seconds?", opts: ["5 ms⁻¹", "10 ms⁻¹", "15 ms⁻¹", "25 ms⁻¹"], ans: 1 },
+                { q: "What is the unit of work in SI system?", opts: ["Watt", "Newton", "Joule", "Pascal"], ans: 2 },
+                { q: "If the mass of an object is doubled, what happens to its kinetic energy at constant velocity?", opts: ["Halved", "Doubled", "Quadrupled", "Remains Same"], ans: 1 },
+                { q: "What is the refractive index of pure water?", opts: ["1.00", "1.33", "1.52", "2.42"], ans: 1 },
+                { q: "Which type of mirror is used as a rear-view mirror in vehicles?", opts: ["Plane Mirror", "Concave Mirror", "Convex Mirror", "Parabolic Mirror"], ans: 2 },
+                { q: "What is the equivalent resistance of two 6Ω resistors connected in parallel?", opts: ["12Ω", "6Ω", "3Ω", "2Ω"], ans: 2 },
+                { q: "According to Ohm's Law, current is directly proportional to what at constant temperature?", opts: ["Resistance", "Voltage", "Power", "Charge"], ans: 1 },
+                { q: "What device converts mechanical energy directly into electrical energy?", opts: ["Electric Motor", "Transformer", "Generator", "Capacitor"], ans: 2 }
+            ];
+
+            let sample = physicsPool[(i - 1) % physicsPool.length];
+            return {
+                id: "physics_" + Date.now() + "_" + i,
+                board: boardTag,
+                question: `${sample.q} [Item #${i}]`,
+                options: [...sample.opts],
+                correct: sample.ans
+            };
+        }
+
+        // App State
+        let database = {};
+        let currentSubjectId = null;
+        let userAnswers = {};
+
+        // Local Storage Initialization
+        function initData() {
+            const stored = localStorage.getItem('ssc_exam_db');
+            if (stored) {
+                database = JSON.parse(stored);
+                // Ensure all 12 subjects exist
+                sscSubjects.forEach(s => {
+                    if (!database[s.id]) database[s.id] = [];
+                });
+            } else {
+                database = generateDefaultDatabase();
+                saveDatabase();
+            }
+        }
+
+        function saveDatabase() {
+            localStorage.setItem('ssc_exam_db', JSON.stringify(database));
+        }
+
+        // View Management
+        function showView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        // Render Dashboard Cards
+        function renderDashboard() {
+            const container = document.getElementById('subject-cards');
+            container.innerHTML = '';
+            
+            sscSubjects.forEach(subj => {
+                const count = database[subj.id] ? database[subj.id].length : 0;
+                const card = document.createElement('div');
+                card.className = 'subject-card';
+                card.onclick = () => startExam(subj.id);
+                card.innerHTML = `
+                    <h3>${subj.name}</h3>
+                    <p>${count} Past Questions Available</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Start Quiz Session
+        function startExam(subjectId) {
+            currentSubjectId = subjectId;
+            userAnswers = {};
+            const subjectObj = sscSubjects.find(s => s.id === subjectId);
+            const questions = database[subjectId] || [];
+
+            if (questions.length === 0) {
+                alert('No questions available in this subject yet! Add some using the Admin Panel.');
+                return;
+            }
+
+            document.getElementById('quiz-title').innerText = `${subjectObj.name} Exam`;
+            document.getElementById('quiz-count-label').innerText = `${questions.length} Board Questions Loaded`;
+
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            questions.forEach((q, qIndex) => {
+                const qCard = document.createElement('div');
+                qCard.className = 'question-card';
+                qCard.innerHTML = `
+                    <span class="board-tag">${q.board}</span>
+                    <h3>Q${qIndex + 1}. ${q.question}</h3>
+                    <div class="options-list">
+                        ${q.options.map((opt, oIndex) => `
+                            <div class="option-item" id="opt_${qIndex}_${oIndex}" onclick="selectOption(${qIndex}, ${oIndex})">
+                                <strong>${String.fromCharCode(65 + oIndex)}.</strong> ${opt}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(qCard);
+            });
+
+            showView('exam');
+        }
+
+        // Select Option during Exam
+        function selectOption(qIndex, optIndex) {
+            userAnswers[qIndex] = optIndex;
+            const options = document.querySelectorAll(`[id^="opt_${qIndex}_"]`);
+            options.forEach(el => el.classList.remove('selected'));
+            document.getElementById(`opt_${qIndex}_${optIndex}`).classList.add('selected');
+        }
+
+        // Submit Paper & Grade Results
+        function submitExam() {
+            const questions = database[currentSubjectId] || [];
+            let score = 0;
+
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+
+            questions.forEach((q, qIndex) => {
+                const userChoice = userAnswers[qIndex];
+                const isCorrect = userChoice === q.correct;
+                if (isCorrect) score++;
+
+                const reviewCard = document.createElement('div');
+                reviewCard.className = 'question-card';
+                reviewCard.innerHTML = `
+                    <span class="board-tag">${q.board}</span>
+                    <h4>Q${qIndex + 1}. ${q.question}</h4>
+                    <div class="options-list">
+                        ${q.options.map((opt, oIndex) => {
+                            let className = 'option-item';
+                            if (oIndex === q.correct) className += ' correct-ans';
+                            else if (userChoice === oIndex && !isCorrect) className += ' wrong-ans';
+                            
+                            return `
+                                <div class="${className}">
+                                    <strong>${String.fromCharCode(65 + oIndex)}.</strong> ${opt}
+                                    ${oIndex === q.correct ? ' ✓ (Correct)' : ''}
+                                    ${userChoice === oIndex && !isCorrect ? ' ✗ (Your Choice)' : ''}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+                reviewContainer.appendChild(reviewCard);
+            });
+
+            document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
+            const pct = ((score / questions.length) * 100).toFixed(1);
+            document.getElementById('score-percentage').innerText = `Final Score: ${pct}%`;
+
+            showView('results');
+        }
+
+        // Admin Panel Controls
+        function toggleAdminView() {
+            populateAdminDropdowns();
+            renderAdminQuestionList();
+            showView('admin');
+        }
+
+        function populateAdminDropdowns() {
+            const addSel = document.getElementById('admin-subject-select');
+            const filterSel = document.getElementById('admin-filter-subject');
+            
+            addSel.innerHTML = '';
+            filterSel.innerHTML = '';
+
+            sscSubjects.forEach(s => {
+                addSel.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+                filterSel.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+            });
+        }
+
+        function renderAdminQuestionList() {
+            const subjectId = document.getElementById('admin-filter-subject').value || sscSubjects[0].id;
+            const tbody = document.getElementById('admin-q-list');
+            tbody.innerHTML = '';
+
+            const questions = database[subjectId] || [];
+            questions.forEach((q, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><span class="board-tag">${q.board}</span></td>
+                    <td>${q.question}</td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="editQuestion('${subjectId}', '${q.id}')">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteQuestion('${subjectId}', '${q.id}')">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function handleSaveQuestion(e) {
+            e.preventDefault();
+            const editId = document.getElementById('edit-q-id').value;
+            const subjectId = document.getElementById('admin-subject-select').value;
+            
+            const newQ = {
+                id: editId ? editId : subjectId + "_" + Date.now(),
+                board: document.getElementById('admin-board').value,
+                question: document.getElementById('admin-q-text').value,
+                options: [
+                    document.getElementById('admin-opt-a').value,
+                    document.getElementById('admin-opt-b').value,
+                    document.getElementById('admin-opt-c').value,
+                    document.getElementById('admin-opt-d').value
+                ],
+                correct: parseInt(document.getElementById('admin-correct-opt').value)
+            };
+
+            if (editId) {
+                // Update existing
+                const index = database[subjectId].findIndex(q => q.id === editId);
+                if (index !== -1) database[subjectId][index] = newQ;
+            } else {
+                // Insert new
+                if (!database[subjectId]) database[subjectId] = [];
+                database[subjectId].push(newQ);
+            }
+
+            saveDatabase();
+            resetAdminForm();
+            renderDashboard();
+            renderAdminQuestionList();
+            alert('Question saved successfully!');
+        }
+
+        function editQuestion(subjectId, qId) {
+            const q = database[subjectId].find(item => item.id === qId);
+            if (!q) return;
+
+            document.getElementById('edit-q-id').value = q.id;
+            document.getElementById('admin-subject-select').value = subjectId;
+            document.getElementById('admin-board').value = q.board;
+            document.getElementById('admin-q-text').value = q.question;
+            document.getElementById('admin-opt-a').value = q.options[0];
+            document.getElementById('admin-opt-b').value = q.options[1];
+            document.getElementById('admin-opt-c').value = q.options[2];
+            document.getElementById('admin-opt-d').value = q.options[3];
+            document.getElementById('admin-correct-opt').value = q.correct;
+
+            document.getElementById('save-q-btn').innerText = "Update Question";
+            window.scrollTo(0, 0);
+        }
+
+        function deleteQuestion(subjectId, qId) {
+            if (confirm("Are you sure you want to delete this question?")) {
+                database[subjectId] = database[subjectId].filter(q => q.id !== qId);
+                saveDatabase();
+                renderDashboard();
+                renderAdminQuestionList();
+            }
+        }
+
+        function resetAdminForm() {
+            document.getElementById('add-q-form').reset();
+            document.getElementById('edit-q-id').value = '';
+            document.getElementById('save-q-btn').innerText = "Save Question";
+        }
+
+        // Initialize App on load
+        window.onload = function() {
+            initData();
+            renderDashboard();
+        };
+    </script>
+</body>
+  </html>
