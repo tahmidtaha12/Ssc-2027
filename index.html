@@ -244,7 +244,7 @@
         <h1>🎓 Practice: Build from Scratch</h1>
         <div class="nav-buttons">
             <button class="btn btn-secondary" onclick="showView('dashboard')">Home</button>
-            <button class="btn btn-secondary" onclick="showView('stats')">Analytics 📊</button>
+            <button class="btn btn-secondary" onclick="renderStatsView()">Analytics 📊</button>
             <button class="btn btn-secondary" onclick="toggleAdminView()">Admin 🔒</button>
         </div>
     </header>
@@ -315,6 +315,7 @@
                 <h2>Exam Complete!</h2>
                 <div style="font-size: 2.5rem; font-weight: 800; color: var(--accent-amber); margin: 0.5rem 0;" id="final-score">0 / 0</div>
                 <p id="score-percentage" style="color: var(--text-sub); font-size: 0.9rem;">0% Accuracy</p>
+                <p id="time-spent-summary" style="color: var(--accent-blue); font-size: 0.85rem; margin-top: 0.4rem;"></p>
                 <button class="btn" style="margin-top: 1.2rem;" onclick="showView('dashboard')">Return to Subjects</button>
             </div>
             <h3 style="margin-bottom: 0.8rem;">Answer Review</h3>
@@ -323,17 +324,21 @@
 
         <!-- STATS VIEW -->
         <div id="stats" class="view-section">
-            <h2 style="margin-bottom: 1rem;">Personal Study Analytics</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2>Personal Study Analytics</h2>
+                <button class="btn btn-danger" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="clearAnalyticsHistory()">Clear History</button>
+            </div>
             <div class="glass-card">
                 <h3>Session History</h3>
                 <div style="overflow-x: auto; margin-top: 1rem;">
                     <table>
                         <thead>
                             <tr>
-                                <th>Date</th>
+                                <th>Date & Time</th>
                                 <th>Subject</th>
                                 <th>Score</th>
                                 <th>Accuracy</th>
+                                <th>Time Taken</th>
                             </tr>
                         </thead>
                         <tbody id="history-table-body"></tbody>
@@ -381,7 +386,7 @@
     </div>
 
     <script>
-        // Full list of SSC subjects restored
+        // 12 SSC Subjects Array
         const sscSubjects = [
             { id: "physics", name: "Physics" },
             { id: "chemistry", name: "Chemistry" },
@@ -397,6 +402,7 @@
             { id: "islam", name: "Islam & Moral Education" }
         ];
 
+        // 20 Real SSC Board Questions
         const realBoardQuestions = {
             physics: [
                 { id: "p1", board: "D.B. 23", question: "What is the SI unit of work?", options: ["Watt", "Pascal", "Joule", "Newton"], correct: 2 },
@@ -407,14 +413,26 @@
             ],
             chemistry: [
                 { id: "c1", board: "D.B. 23", question: "What is the oxidation number of Manganese in KMnO₄?", options: ["+2", "+5", "+6", "+7"], correct: 3 },
-                { id: "c2", board: "R.B. 23", question: "Which element possesses the highest electronegativity?", options: ["Chlorine", "Fluorine", "Oxygen", "Nitrogen"], correct: 1 }
+                { id: "c2", board: "R.B. 23", question: "Which element possesses the highest electronegativity?", options: ["Chlorine", "Fluorine", "Oxygen", "Nitrogen"], correct: 1 },
+                { id: "c3", board: "J.B. 22", question: "What is the chemical formula of Rust?", options: ["Fe₂O₃", "Fe₃O₄", "Fe₂O₃·nH₂O", "Fe(OH)₃"], correct: 2 },
+                { id: "c4", board: "B.B. 22", question: "How many valence electrons are present in a Carbon atom?", options: ["2", "4", "6", "8"], correct: 1 }
             ],
             general_math: [
                 { id: "m1", board: "D.B. 23", question: "If A = {1, 2, 3}, what is the number of elements in power set P(A)?", options: ["3", "6", "8", "16"], correct: 2 },
-                { id: "m2", board: "R.B. 22", question: "What is the value of log₂ 16?", options: ["2", "3", "4", "8"], correct: 2 }
+                { id: "m2", board: "R.B. 22", question: "What is the value of log₂ 16?", options: ["2", "3", "4", "8"], correct: 2 },
+                { id: "m3", board: "C.B. 23", question: "What is the sum of interior angles of a quadrilateral?", options: ["180°", "270°", "360°", "540°"], correct: 2 },
+                { id: "m4", board: "S.B. 23", question: "If x + 1/x = 2, what is the value of x² + 1/x²?", options: ["1", "2", "4", "0"], correct: 1 }
             ],
             ict: [
-                { id: "i1", board: "D.B. 23", question: "Who is considered the pioneer of the World Wide Web (WWW)?", options: ["Charles Babbage", "Steve Jobs", "Tim Berners-Lee", "Mark Zuckerberg"], correct: 2 }
+                { id: "i1", board: "D.B. 23", question: "Who is considered the pioneer of the World Wide Web (WWW)?", options: ["Charles Babbage", "Steve Jobs", "Tim Berners-Lee", "Mark Zuckerberg"], correct: 2 },
+                { id: "i2", board: "R.B. 23", question: "Which base number system is directly understood by computers?", options: ["Decimal", "Binary", "Octal", "Hexadecimal"], correct: 1 },
+                { id: "i3", board: "C.B. 22", question: "Which extension is standard for spreadsheet template files?", options: [".docx", ".xlsx", ".pptx", ".pdf"], correct: 1 }
+            ],
+            biology: [
+                { id: "b1", board: "D.B. 23", question: "Which organelle is known as the powerhouse of the cell?", options: ["Ribosome", "Lysosome", "Mitochondria", "Golgi Body"], correct: 2 },
+                { id: "b2", board: "R.B. 22", question: "Which plastic pigment is responsible for the green color of leaves?", options: ["Chromoplast", "Chloroplast", "Leucoplast", "Carotenoid"], correct: 1 },
+                { id: "b3", board: "Ctg.B. 23", question: "What is the primary site of photosynthesis in vascular plants?", options: ["Stem", "Root", "Leaf", "Flower"], correct: 2 },
+                { id: "b4", board: "J.B. 23", question: "Which blood group is universally designated as the universal recipient?", options: ["A+", "B+", "AB+", "O-"], correct: 2 }
             ]
         };
 
@@ -425,6 +443,7 @@
         let lockedQuestions = {};
         let examTimer = null;
         let secondsRemaining = 0;
+        let totalExamDurationSeconds = 0;
 
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
@@ -437,14 +456,14 @@
         });
 
         function initData() {
-            const storedDb = localStorage.getItem('ssc_exam_db_v4');
+            const storedDb = localStorage.getItem('ssc_exam_db_v5');
             if (storedDb) {
                 database = JSON.parse(storedDb);
                 sscSubjects.forEach(s => { if (!database[s.id]) database[s.id] = []; });
             } else {
                 database = realBoardQuestions;
                 sscSubjects.forEach(s => { if (!database[s.id]) database[s.id] = []; });
-                localStorage.setItem('ssc_exam_db_v4', JSON.stringify(database));
+                localStorage.setItem('ssc_exam_db_v5', JSON.stringify(database));
             }
         }
 
@@ -457,7 +476,7 @@
                 const card = document.createElement('div');
                 card.className = 'subject-card';
                 card.onclick = () => openExamConfig(subj.id);
-                card.innerHTML = `<h3>${subj.name}</h3><p>${count} Questions Available</p>`;
+                card.innerHTML = `<h3>${subj.name}</h3><p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 0.4rem;">${count} Questions Available</p>`;
                 container.appendChild(card);
             });
         }
@@ -486,6 +505,7 @@
             userAnswers = {};
             lockedQuestions = {};
             secondsRemaining = activeExamQuestions.length * timePerQ;
+            totalExamDurationSeconds = secondsRemaining;
 
             startTimer();
             renderExamUI();
@@ -587,11 +607,62 @@
                 reviewContainer.appendChild(reviewCard);
             });
 
+            const timeSpentSec = totalExamDurationSeconds - secondsRemaining;
+            const spentM = Math.floor(timeSpentSec / 60);
+            const spentS = timeSpentSec % 60;
+            const timeSpentStr = `${spentM}m ${spentS}s`;
+
             document.getElementById('final-score').innerText = `${score} / ${activeExamQuestions.length}`;
             const pct = ((score / activeExamQuestions.length) * 100).toFixed(1);
             document.getElementById('score-percentage').innerText = `${pct}% Accuracy`;
+            document.getElementById('time-spent-summary').innerText = `Time Spent: ${timeSpentStr}`;
+
+            // Save to Analytics History
+            saveExamToAnalytics({
+                date: new Date().toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                subject: sscSubjects.find(s => s.id === currentSubjectId).name,
+                score: `${score} / ${activeExamQuestions.length}`,
+                accuracy: `${pct}%`,
+                timeSpent: timeSpentStr
+            });
 
             showView('results');
+        }
+
+        function saveExamToAnalytics(record) {
+            const history = JSON.parse(localStorage.getItem('ssc_analytics_history') || '[]');
+            history.unshift(record);
+            localStorage.setItem('ssc_analytics_history', JSON.stringify(history));
+        }
+
+        function renderStatsView() {
+            const history = JSON.parse(localStorage.getItem('ssc_analytics_history') || '[]');
+            const tbody = document.getElementById('history-table-body');
+            tbody.innerHTML = '';
+
+            if (history.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-sub);">No exam history recorded yet. Complete a quiz!</td></tr>`;
+            } else {
+                history.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${item.date}</td>
+                        <td><strong>${item.subject}</strong></td>
+                        <td>${item.score}</td>
+                        <td><span style="color: var(--accent-green); font-weight:700;">${item.accuracy}</span></td>
+                        <td>${item.timeSpent}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+            showView('stats');
+        }
+
+        function clearAnalyticsHistory() {
+            if (confirm("Clear all session history?")) {
+                localStorage.removeItem('ssc_analytics_history');
+                renderStatsView();
+            }
         }
 
         function showView(viewId) {
@@ -637,7 +708,7 @@
             if (!database[subjectId]) database[subjectId] = [];
             database[subjectId].push(newQ);
 
-            localStorage.setItem('ssc_exam_db_v4', JSON.stringify(database));
+            localStorage.setItem('ssc_exam_db_v5', JSON.stringify(database));
             alert('Board question saved!');
             document.getElementById('add-q-form').reset();
             renderDashboard();
