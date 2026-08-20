@@ -48,7 +48,6 @@
 
         .nav-buttons {
             display: flex;
-            gap: 10rem;
             gap: 1rem;
         }
 
@@ -272,7 +271,7 @@
         <h1>SSC Exam Engine</h1>
         <div class="nav-buttons">
             <button class="btn" onclick="showView('dashboard')">Dashboard</button>
-            <button class="btn btn-secondary" id="admin-toggle-btn" onclick="toggleAdminView()">Admin Panel</button>
+            <button class="btn btn-secondary" id="admin-toggle-btn" onclick="toggleAdminView()">Admin Panel 🔒</button>
         </div>
     </header>
 
@@ -316,8 +315,14 @@
 
         <!-- ADMIN PANEL VIEW -->
         <div id="admin" class="view-section">
-            <h2>Admin Portal</h2>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Add, modify, or delete questions across any SSC subject. Data persists in local storage.</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2>Admin Portal (Authorized Access Only)</h2>
+                <div>
+                    <button class="btn btn-secondary" onclick="changeAdminPin()">Change PIN</button>
+                    <button class="btn btn-danger" onclick="lockAdmin()">Lock Admin</button>
+                </div>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Add, modify, or delete questions across any SSC subject.</p>
 
             <div class="admin-section">
                 <h3>Create / Add Question</h3>
@@ -392,7 +397,6 @@
     </div>
 
     <script>
-        // 12 SSC Subjects List
         const sscSubjects = [
             { id: "physics", name: "Physics" },
             { id: "chemistry", name: "Chemistry" },
@@ -408,10 +412,17 @@
             { id: "islam", name: "Islam & Moral Education" }
         ];
 
-        // Generator to generate board tag patterns
         const boards = ["R.B.24", "D.B.24", "C.B.24", "Ctg.B.24", "S.B.23", "J.B.23", "B.B.23", "M.B.22", "R.B.22", "D.B.22"];
 
-        // Seeded Question Database (Populates 50 Qs per subject automatically if empty)
+        let database = {};
+        let currentSubjectId = null;
+        let userAnswers = {};
+        let isAdminUnlocked = false;
+
+        function getAdminPIN() {
+            return localStorage.getItem('ssc_admin_pin') || '2027';
+        }
+
         function generateDefaultDatabase() {
             let db = {};
             sscSubjects.forEach(subj => {
@@ -439,7 +450,6 @@
             return db;
         }
 
-        // Realistic Physics Question Builder
         function getPhysicsQuestionSample(i, boardTag) {
             const physicsPool = [
                 { q: "What is the dimensional formula of acceleration?", opts: ["ms⁻¹", "ms⁻²", "LT⁻¹", "LT⁻²"], ans: 3 },
@@ -464,17 +474,10 @@
             };
         }
 
-        // App State
-        let database = {};
-        let currentSubjectId = null;
-        let userAnswers = {};
-
-        // Local Storage Initialization
         function initData() {
             const stored = localStorage.getItem('ssc_exam_db');
             if (stored) {
                 database = JSON.parse(stored);
-                // Ensure all 12 subjects exist
                 sscSubjects.forEach(s => {
                     if (!database[s.id]) database[s.id] = [];
                 });
@@ -488,14 +491,12 @@
             localStorage.setItem('ssc_exam_db', JSON.stringify(database));
         }
 
-        // View Management
         function showView(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
             window.scrollTo(0,0);
         }
 
-        // Render Dashboard Cards
         function renderDashboard() {
             const container = document.getElementById('subject-cards');
             container.innerHTML = '';
@@ -513,7 +514,6 @@
             });
         }
 
-        // Start Quiz Session
         function startExam(subjectId) {
             currentSubjectId = subjectId;
             userAnswers = {};
@@ -521,7 +521,7 @@
             const questions = database[subjectId] || [];
 
             if (questions.length === 0) {
-                alert('No questions available in this subject yet! Add some using the Admin Panel.');
+                alert('No questions available in this subject yet!');
                 return;
             }
 
@@ -551,7 +551,6 @@
             showView('exam');
         }
 
-        // Select Option during Exam
         function selectOption(qIndex, optIndex) {
             userAnswers[qIndex] = optIndex;
             const options = document.querySelectorAll(`[id^="opt_${qIndex}_"]`);
@@ -559,7 +558,6 @@
             document.getElementById(`opt_${qIndex}_${optIndex}`).classList.add('selected');
         }
 
-        // Submit Paper & Grade Results
         function submitExam() {
             const questions = database[currentSubjectId] || [];
             let score = 0;
@@ -603,11 +601,40 @@
             showView('results');
         }
 
-        // Admin Panel Controls
+        /* ADMIN PASSWORD SECURITY */
         function toggleAdminView() {
+            if (!isAdminUnlocked) {
+                const enteredPin = prompt("🔑 Admin Restricted: Enter your Secret Admin PIN:");
+                if (enteredPin === getAdminPIN()) {
+                    isAdminUnlocked = true;
+                    alert("Access Granted! Welcome Admin.");
+                } else {
+                    alert("Incorrect PIN! Access Denied.");
+                    return;
+                }
+            }
             populateAdminDropdowns();
             renderAdminQuestionList();
             showView('admin');
+        }
+
+        function lockAdmin() {
+            isAdminUnlocked = false;
+            alert("Admin Panel Locked.");
+            showView('dashboard');
+        }
+
+        function changeAdminPin() {
+            const oldPin = prompt("Enter Current PIN:");
+            if (oldPin === getAdminPIN()) {
+                const newPin = prompt("Enter New PIN:");
+                if (newPin && newPin.trim().length > 0) {
+                    localStorage.setItem('ssc_admin_pin', newPin.trim());
+                    alert("Admin PIN updated successfully!");
+                }
+            } else {
+                alert("Incorrect current PIN.");
+            }
         }
 
         function populateAdminDropdowns() {
@@ -662,11 +689,9 @@
             };
 
             if (editId) {
-                // Update existing
                 const index = database[subjectId].findIndex(q => q.id === editId);
                 if (index !== -1) database[subjectId][index] = newQ;
             } else {
-                // Insert new
                 if (!database[subjectId]) database[subjectId] = [];
                 database[subjectId].push(newQ);
             }
@@ -711,11 +736,10 @@
             document.getElementById('save-q-btn').innerText = "Save Question";
         }
 
-        // Initialize App on load
         window.onload = function() {
             initData();
             renderDashboard();
         };
     </script>
 </body>
-  </html>
+</html>
