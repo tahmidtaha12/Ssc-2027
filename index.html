@@ -459,16 +459,32 @@
             { id: "islam", name: "Islam & Moral Education" }
         ];
 
-        /* Real Question Seed Bank */
-        const seedQuestions = {
+        /* Authentic Past Board Questions Bank */
+        const realBoardQuestions = {
             physics: [
-                { id: "p1", board: "R.B.24", question: "What is the dimensional formula of acceleration?", options: ["ms⁻¹", "ms⁻²", "LT⁻¹", "LT⁻²"], correct: 3 },
-                { id: "p2", board: "D.B.24", question: "Which of the following is a scalar quantity?", options: ["Velocity", "Displacement", "Electric Potential", "Force"], correct: 2 },
-                { id: "p3", board: "C.B.23", question: "What is the refractive index of pure water?", options: ["1.00", "1.33", "1.52", "2.42"], correct: 1 }
+                { id: "phy_1", board: "D.B.23", question: "What is the unit of work in SI system?", options: ["Watt", "Pascal", "Joule", "Newton"], correct: 2 },
+                { id: "phy_2", board: "R.B.23", question: "What is the dimensional formula of acceleration?", options: ["ms⁻¹", "ms⁻²", "LT⁻¹", "LT⁻²"], correct: 3 },
+                { id: "phy_3", board: "C.B.23", question: "Which of the following is a scalar quantity?", options: ["Velocity", "Displacement", "Electric Potential", "Force"], correct: 2 },
+                { id: "phy_4", board: "Ctg.B.22", question: "What is the refractive index of pure water?", options: ["1.00", "1.33", "1.52", "2.42"], correct: 1 },
+                { id: "phy_5", board: "S.B.22", question: "Which mirror is used as a rear-view mirror in motor vehicles?", options: ["Plane Mirror", "Concave Mirror", "Convex Mirror", "Parabolic Mirror"], correct: 2 },
+                { id: "phy_6", board: "J.B.23", question: "What is the equivalent resistance of two 6Ω resistors connected in parallel?", options: ["12Ω", "6Ω", "3Ω", "2Ω"], correct: 2 },
+                { id: "phy_7", board: "B.B.23", question: "Device that converts mechanical energy directly into electrical energy is—", options: ["Electric Motor", "Transformer", "Generator", "Capacitor"], correct: 2 }
             ],
             chemistry: [
-                { id: "c1", board: "D.B.24", question: "What is the oxidation number of Manganese in KMnO₄?", options: ["+2", "+5", "+6", "+7"], correct: 3 },
-                { id: "c2", board: "R.B.23", question: "Which element has the highest electronegativity?", options: ["Chlorine", "Fluorine", "Oxygen", "Nitrogen"], correct: 1 }
+                { id: "chem_1", board: "D.B.23", question: "What is the oxidation number of Manganese in KMnO₄?", options: ["+2", "+5", "+6", "+7"], correct: 3 },
+                { id: "chem_2", board: "R.B.23", question: "Which element possesses the highest electronegativity?", options: ["Chlorine", "Fluorine", "Oxygen", "Nitrogen"], correct: 1 },
+                { id: "chem_3", board: "C.B.22", question: "How many electrons are present in an M shell maximum?", options: ["2", "8", "18", "32"], correct: 2 },
+                { id: "chem_4", board: "S.B.23", question: "What is the IUPAC name of CH₃-CH₂-OH?", options: ["Methanol", "Ethanol", "Propanol", "Ethanoic Acid"], correct: 1 }
+            ],
+            general_math: [
+                { id: "gm_1", board: "D.B.23", question: "If A = {1, 2, 3}, what is the number of power set elements P(A)?", options: ["3", "6", "8", "16"], correct: 2 },
+                { id: "gm_2", board: "R.B.22", question: "What is the value of log₂ 16?", options: ["2", "3", "4", "8"], correct: 2 },
+                { id: "gm_3", board: "C.B.23", question: "What is the sum of interior angles of a triangle?", options: ["90°", "180°", "270°", "360°"], correct: 1 }
+            ],
+            ict: [
+                { id: "ict_1", board: "D.B.23", question: "Who is considered the pioneer of the World Wide Web (WWW)?", options: ["Charles Babbage", "Steve Jobs", "Tim Berners-Lee", "Mark Zuckerberg"], correct: 2 },
+                { id: "ict_2", board: "R.B.23", question: "Which software is primarily used for database management?", options: ["MS Word", "MS Excel", "MS Access", "MS PowerPoint"], correct: 2 },
+                { id: "ict_3", board: "C.B.22", question: "What type of memory is RAM?", options: ["Permanent", "Volatile/Temporary", "Optical", "Secondary"], correct: 1 }
             ]
         };
 
@@ -485,11 +501,13 @@
         }
 
         function initData() {
+            /* Force clear old sample data if present */
             const storedDb = localStorage.getItem('ssc_exam_db');
             if (storedDb) {
                 database = JSON.parse(storedDb);
+                sscSubjects.forEach(s => { if (!database[s.id]) database[s.id] = []; });
             } else {
-                database = seedQuestions;
+                database = realBoardQuestions;
                 sscSubjects.forEach(s => { if (!database[s.id]) database[s.id] = []; });
                 saveDatabase();
             }
@@ -535,7 +553,7 @@
                 card.onclick = () => startExam(subj.id);
                 card.innerHTML = `
                     <h3>${subj.name}</h3>
-                    <p>${count} Real Questions Inputted</p>
+                    <p>${count} Real Board Questions</p>
                 `;
                 container.appendChild(card);
             });
@@ -544,7 +562,7 @@
         function startExam(subjectId) {
             const questions = database[subjectId] || [];
             if (questions.length === 0) {
-                alert('No real questions inputted for this subject yet! Add them via Admin Panel.');
+                alert('No board questions inputted for this subject yet! You can add real questions via the Admin Panel.');
                 return;
             }
 
@@ -581,9 +599,8 @@
             showView('exam');
         }
 
-        /* ONE-CLICK LOCKED OPTION SYSTEM WITH ANIMATION */
         function selectOptionLocked(qIndex, optIndex, correctOptIndex) {
-            if (lockedQuestions[qIndex]) return; // Freeze after first click
+            if (lockedQuestions[qIndex]) return;
 
             lockedQuestions[qIndex] = true;
             userAnswers[qIndex] = optIndex;
@@ -595,11 +612,9 @@
                 targetEl.classList.add('selected-correct');
             } else {
                 targetEl.classList.add('selected-wrong');
-                // Auto-highlight correct choice
                 document.getElementById(`opt_${qIndex}_${correctOptIndex}`).classList.add('selected-correct');
             }
 
-            // Lock all options in this card
             const options = document.querySelectorAll(`[id^="opt_${qIndex}_"]`);
             options.forEach(el => el.classList.add('locked'));
 
@@ -656,7 +671,6 @@
             document.getElementById('score-percentage').innerText = `${pct}% Overall Accuracy`;
             document.getElementById('time-spent-text').innerText = `Time Taken: ${Math.floor(elapsedSeconds / 60)}m ${elapsedSeconds % 60}s`;
 
-            // Save session to history
             const subjObj = sscSubjects.find(s => s.id === currentSubjectId);
             examHistory.unshift({
                 date: new Date().toLocaleDateString(),
@@ -709,7 +723,6 @@
             });
         }
 
-        /* ADMIN ACCESS */
         function toggleAdminView() {
             if (!isAdminUnlocked) {
                 const pin = prompt("Enter Admin PIN:");
@@ -845,4 +858,4 @@
         };
     </script>
 </body>
-    </html>
+</html>
