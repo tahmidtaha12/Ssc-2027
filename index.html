@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Practice: Built from Scratch</title>
+    <title>Practice: Build from Scratch</title>
     <style>
         :root {
             --bg-base: #0f172a;
@@ -37,7 +37,7 @@
             overflow-x: hidden;
         }
 
-        /* JET SPLASH SCREEN */
+        /* GRADUATION CAP SPLASH SCREEN */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -50,57 +50,43 @@
             transition: opacity 0.8s ease, visibility 0.8s;
         }
 
-        .jet-container {
+        .cap-container {
             position: relative;
-            width: 300px;
-            height: 200px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .fighter-jet {
-            font-size: 4rem;
-            position: absolute;
-            animation: jetFlyIn 2.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-            filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.6));
-        }
-
-        .jet-trail {
-            position: absolute;
-            width: 4px;
-            height: 0px;
-            background: linear-gradient(to top, transparent, var(--accent-blue), var(--accent-amber));
-            animation: trailGrow 2.2s ease forwards;
-            bottom: 20%;
+        .grad-cap {
+            font-size: 5rem;
+            animation: pulseGlow 1.2s infinite alternate ease-in-out;
         }
 
         .splash-title {
-            margin-top: 2rem;
-            font-size: 1.5rem;
+            margin-top: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             letter-spacing: 2px;
             background: linear-gradient(135deg, #fbbf24, #38bdf8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            opacity: 0;
-            animation: fadeInText 1s ease 1.2s forwards;
+            animation: textBlink 1.2s infinite alternate ease-in-out;
         }
 
-        @keyframes jetFlyIn {
-            0% { transform: translateY(300px) scale(0.3) rotate(0deg); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translateY(-350px) scale(1.2) rotate(0deg); opacity: 0; }
+        @keyframes pulseGlow {
+            0% {
+                transform: scale(0.95);
+                filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.2));
+            }
+            100% {
+                transform: scale(1.15);
+                filter: drop-shadow(0 0 30px rgba(56, 189, 248, 0.9));
+            }
         }
 
-        @keyframes trailGrow {
-            0% { height: 0px; opacity: 0; }
-            50% { height: 180px; opacity: 0.8; }
-            100% { height: 0px; opacity: 0; }
-        }
-
-        @keyframes fadeInText {
-            to { opacity: 1; }
+        @keyframes textBlink {
+            0% { opacity: 0.4; }
+            100% { opacity: 1; }
         }
 
         header {
@@ -184,7 +170,6 @@
             padding: 1.2rem;
             cursor: pointer;
             transition: all 0.25s ease;
-            position: relative;
         }
 
         .subject-card:hover {
@@ -247,17 +232,16 @@
 </head>
 <body>
 
-    <!-- JET FLYING SPLASH SCREEN -->
+    <!-- GRADUATION CAP SPLASH SCREEN -->
     <div id="splash-screen">
-        <div class="jet-container">
-            <div class="jet-trail"></div>
-            <div class="fighter-jet">✈️</div>
+        <div class="cap-container">
+            <div class="grad-cap">🎓</div>
         </div>
         <div class="splash-title">PRACTICE: BUILD FROM SCRATCH</div>
     </div>
 
     <header>
-        <h1>🚀 Practice: Build from Scratch</h1>
+        <h1>🎓 Practice: Build from Scratch</h1>
         <div class="nav-buttons">
             <button class="btn btn-secondary" onclick="showView('dashboard')">Home</button>
             <button class="btn btn-secondary" onclick="showView('stats')">Analytics 📊</button>
@@ -280,7 +264,7 @@
             <div class="subject-grid" id="subject-cards"></div>
         </div>
 
-        <!-- EXAM CONFIG MODAL / VIEW -->
+        <!-- EXAM CONFIG -->
         <div id="exam-config" class="view-section">
             <div class="glass-card">
                 <h2 id="config-subject-title">Exam Setup</h2>
@@ -307,7 +291,7 @@
                     </select>
                 </div>
 
-                <button class="btn btn-green" style="width: 100%; padding: 0.8rem; margin-top: 1rem;" onclick="launchConfiguredExam()">Start Exam 🚀</button>
+                <button class="btn btn-green" style="width: 100%; padding: 0.8rem; margin-top: 1rem;" onclick="launchConfiguredExam()">Start Exam 🎓</button>
             </div>
         </div>
 
@@ -331,7 +315,6 @@
                 <h2>Exam Complete!</h2>
                 <div style="font-size: 2.5rem; font-weight: 800; color: var(--accent-amber); margin: 0.5rem 0;" id="final-score">0 / 0</div>
                 <p id="score-percentage" style="color: var(--text-sub); font-size: 0.9rem;">0% Accuracy</p>
-                <p id="time-spent-text" style="color: var(--accent-blue); font-size: 0.85rem; margin-top: 0.3rem;"></p>
                 <button class="btn" style="margin-top: 1.2rem;" onclick="showView('dashboard')">Return to Subjects</button>
             </div>
             <h3 style="margin-bottom: 0.8rem;">Answer Review</h3>
@@ -351,7 +334,6 @@
                                 <th>Subject</th>
                                 <th>Score</th>
                                 <th>Accuracy</th>
-                                <th>Time Spent</th>
                             </tr>
                         </thead>
                         <tbody id="history-table-body"></tbody>
@@ -399,15 +381,22 @@
     </div>
 
     <script>
+        // Full list of SSC subjects restored
         const sscSubjects = [
             { id: "physics", name: "Physics" },
             { id: "chemistry", name: "Chemistry" },
             { id: "higher_math", name: "Higher Mathematics" },
             { id: "general_math", name: "General Mathematics" },
-            { id: "ict", name: "ICT" }
+            { id: "biology", name: "Biology" },
+            { id: "ict", name: "ICT" },
+            { id: "bangla_1st", name: "Bangla 1st Paper" },
+            { id: "bangla_2nd", name: "Bangla 2nd Paper" },
+            { id: "english_1st", name: "English 1st Paper" },
+            { id: "english_2nd", name: "English 2nd Paper" },
+            { id: "bgs", name: "Bangladesh & Global Studies" },
+            { id: "islam", name: "Islam & Moral Education" }
         ];
 
-        /* Real Question Bank Structure - Add up to 50+ per subject here */
         const realBoardQuestions = {
             physics: [
                 { id: "p1", board: "D.B. 23", question: "What is the SI unit of work?", options: ["Watt", "Pascal", "Joule", "Newton"], correct: 2 },
@@ -437,7 +426,6 @@
         let examTimer = null;
         let secondsRemaining = 0;
 
-        // Auto Splash Screen Timer
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
@@ -449,13 +437,14 @@
         });
 
         function initData() {
-            // Updated key to bypass old browser cache completely
-            const storedDb = localStorage.getItem('ssc_exam_db_v3');
+            const storedDb = localStorage.getItem('ssc_exam_db_v4');
             if (storedDb) {
                 database = JSON.parse(storedDb);
+                sscSubjects.forEach(s => { if (!database[s.id]) database[s.id] = []; });
             } else {
                 database = realBoardQuestions;
-                localStorage.setItem('ssc_exam_db_v3', JSON.stringify(database));
+                sscSubjects.forEach(s => { if (!database[s.id]) database[s.id] = []; });
+                localStorage.setItem('ssc_exam_db_v4', JSON.stringify(database));
             }
         }
 
@@ -493,9 +482,7 @@
             let selectedCount = qCountChoice === 'all' ? allQuestions.length : parseInt(qCountChoice);
             selectedCount = Math.min(selectedCount, allQuestions.length);
 
-            // Shuffle and pick questions
             activeExamQuestions = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, selectedCount);
-            
             userAnswers = {};
             lockedQuestions = {};
             secondsRemaining = activeExamQuestions.length * timePerQ;
@@ -650,7 +637,7 @@
             if (!database[subjectId]) database[subjectId] = [];
             database[subjectId].push(newQ);
 
-            localStorage.setItem('ssc_exam_db_v3', JSON.stringify(database));
+            localStorage.setItem('ssc_exam_db_v4', JSON.stringify(database));
             alert('Board question saved!');
             document.getElementById('add-q-form').reset();
             renderDashboard();
