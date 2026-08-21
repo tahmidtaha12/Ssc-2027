@@ -1,406 +1,1000 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice: Build from Scratch</title>
+    <style>
+        :root {
+            --bg-base: #0a0f18;
+            --card-bg: rgba(20, 27, 38, 0.85);
+            --card-border: rgba(148, 163, 184, 0.18);
+            --accent-amber: #f59e0b;
+            --accent-blue: #38bdf8;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            /* Jet Fighter & Tactical Runway Aesthetic */
+            background: 
+                linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%),
+                radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(180, 83, 9, 0.08) 0%, transparent 50%),
+                linear-gradient(180deg, #131b26 0%, #0a0d14 100%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Subtle Centerline Track (Runway visual cue) */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100vh;
+            background: linear-gradient(180deg, 
+                transparent 0%, 
+                rgba(245, 158, 11, 0.25) 20%, 
+                rgba(255, 255, 255, 0.1) 50%, 
+                rgba(245, 158, 11, 0.25) 80%, 
+                transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* GRADUATION CAP SPLASH SCREEN */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #06090e;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        .cap-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .grad-cap {
+            font-size: 5rem;
+            animation: pulseGlow 1.2s infinite alternate ease-in-out;
+        }
+
+        .splash-title {
+            margin-top: 1.5rem;
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #fbbf24, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textBlink 1.2s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                transform: scale(0.95);
+                filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.2));
+            }
+            100% {
+                transform: scale(1.15);
+                filter: drop-shadow(0 0 30px rgba(56, 189, 248, 0.9));
+            }
+        }
+
+        @keyframes textBlink {
+            0% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        header {
+            background: rgba(10, 15, 24, 0.88);
+            backdrop-filter: blur(16px);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fbbf24 0%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-buttons { display: flex; gap: 0.5rem; }
+
+        .btn {
+            background: var(--accent-amber);
+            color: #0f172a;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
+        }
+
+        .btn:hover { transform: translateY(-1px); filter: brightness(1.1); }
+        .btn-secondary { background: rgba(30, 41, 59, 0.8); color: var(--text-main); box-shadow: none; border: 1px solid var(--card-border); }
+        .btn-danger { background: var(--accent-red); color: white; }
+        .btn-green { background: var(--accent-green); color: white; }
+
+        .container {
+            max-width: 950px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+            width: 100%;
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .view-section { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .view-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        /* GLOWING WELCOME TEXT ANIMATION */
+        .glowing-welcome {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #f8fafc;
+            text-transform: capitalize;
+            animation: neonGlow 2s infinite alternate ease-in-out;
+        }
+
+        @keyframes neonGlow {
+            0% {
+                text-shadow: 
+                    0 0 5px rgba(56, 189, 248, 0.6),
+                    0 0 15px rgba(56, 189, 248, 0.4),
+                    0 0 25px rgba(56, 189, 248, 0.2);
+            }
+            100% {
+                text-shadow: 
+                    0 0 10px rgba(245, 158, 11, 0.9),
+                    0 0 25px rgba(245, 158, 11, 0.7),
+                    0 0 40px rgba(245, 158, 11, 0.4);
+            }
+        }
+
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* TEXTBOOK COLOR INTEGRATION FOR SUBJECT CARDS */
+        .subject-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-left: 5px solid var(--subject-color, var(--accent-amber));
+            border-radius: 12px;
+            padding: 1.2rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at top left, var(--subject-color, transparent) 0%, transparent 70%);
+            opacity: 0.12;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--subject-color, var(--accent-amber));
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 15px var(--subject-color);
+        }
+
+        .subject-card:hover::before {
+            opacity: 0.25;
+        }
+
+        .subject-tag {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--subject-color, #fde68a);
+            border: 1px solid var(--subject-color, rgba(245, 158, 11, 0.3));
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 0.6rem;
+        }
+
+        .board-tag {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.15);
+            color: #fde68a;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            margin-bottom: 0.6rem;
+        }
+
+        .options-list { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1rem; }
+
+        .option-item {
+            background: rgba(10, 15, 24, 0.6);
+            border: 1px solid var(--card-border);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .option-item.locked { cursor: not-allowed; opacity: 0.85; }
+        .option-item.selected-correct { background: rgba(16, 185, 129, 0.2) !important; border-color: var(--accent-green) !important; }
+        .option-item.selected-wrong { background: rgba(239, 68, 68, 0.2) !important; border-color: var(--accent-red) !important; }
+
+        .timer-badge {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .form-group { margin-bottom: 0.8rem; }
+        label { font-size: 0.8rem; color: var(--text-sub); display: block; margin-bottom: 0.3rem; }
+        input, select, textarea {
+            width: 100%; padding: 0.6rem; background: rgba(10, 15, 24, 0.8);
+            border: 1px solid var(--card-border); color: white; border-radius: 6px;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { padding: 0.75rem; border-bottom: 1px solid var(--card-border); text-align: left; }
+    </style>
+</head>
+<body>
+
+    <!-- GRADUATION CAP SPLASH SCREEN -->
+    <div id="splash-screen">
+        <div class="cap-container">
+            <div class="grad-cap">🎓</div>
+        </div>
+        <div class="splash-title">PRACTICE: BUILD FROM SCRATCH</div>
+    </div>
+
+    <header>
+        <h1>🎓 Practice: Build from Scratch</h1>
+        <div class="nav-buttons">
+            <button class="btn btn-secondary" onclick="showView('dashboard')">Home</button>
+            <button class="btn btn-secondary" onclick="renderStatsView()">Analytics 📊</button>
+            <button class="btn btn-secondary" onclick="toggleAdminView()">Admin 🔒</button>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="view-section active">
+            <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <div>
+                    <h2 class="glowing-welcome" id="welcome-user-text">Welcome, Sup Candidate</h2>
+                    <p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 0.3rem;">Select a subject to launch your practice session.</p>
+                </div>
+                <button class="btn btn-secondary" onclick="promptUserName()">Change User</button>
+            </div>
+
+            <div class="subject-grid" id="subject-cards"></div>
+        </div>
+
+        <!-- EXAM CONFIG -->
+        <div id="exam-config" class="view-section">
+            <div class="glass-card">
+                <h2 id="config-subject-title">Exam Setup</h2>
+                <p style="color: var(--text-sub); font-size: 0.85rem; margin-bottom: 1.2rem;">Customize your test parameters before launching.</p>
+                
+                <div class="form-group">
+                    <label>How many questions do you want to attempt?</label>
+                    <select id="config-q-count">
+                        <option value="5">5 Questions (Quick Quiz)</option>
+                        <option value="10">10 Questions</option>
+                        <option value="20">20 Questions</option>
+                        <option value="50">50 Questions (Full Board Mode)</option>
+                        <option value="all">All Available Questions</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Time Limit per MCQ</label>
+                    <select id="config-time-per-q">
+                        <option value="60" selected>1 Minute per Question (Standard Board Pace)</option>
+                        <option value="30">30 Seconds per Question (Speed Practice)</option>
+                        <option value="90">1.5 Minutes per Question</option>
+                        <option value="120">2 Minutes per Question</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-green" style="width: 100%; padding: 0.8rem; margin-top: 1rem;" onclick="launchConfiguredExam()">Start Exam 🎓</button>
+            </div>
+        </div>
+
+        <!-- EXAM VIEW -->
+        <div id="exam" class="view-section">
+            <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div>
+                    <h2 id="quiz-title">Subject Exam</h2>
+                    <span id="quiz-count-label" style="color: var(--text-sub); font-size: 0.8rem;">0 Questions Loaded</span>
+                </div>
+                <div class="timer-badge" id="exam-timer">⏱️ 00:00</div>
+            </div>
+            
+            <div id="questions-container"></div>
+            <button class="btn btn-green" style="width: 100%; padding: 0.8rem;" onclick="submitExam()">Submit Exam</button>
+        </div>
+
+        <!-- RESULTS VIEW -->
+        <div id="results" class="view-section">
+            <div class="glass-card" style="text-align: center; padding: 2rem;">
+                <h2>Exam Complete!</h2>
+                <div style="font-size: 2.5rem; font-weight: 800; color: var(--accent-amber); margin: 0.5rem 0;" id="final-score">0 / 0</div>
+                <p id="score-percentage" style="color: var(--text-sub); font-size: 0.9rem;">0% Accuracy</p>
+                <p id="time-spent-summary" style="color: var(--accent-blue); font-size: 0.85rem; margin-top: 0.4rem;"></p>
+                <button class="btn" style="margin-top: 1.2rem;" onclick="showView('dashboard')">Return to Subjects</button>
+            </div>
+            <h3 style="margin-bottom: 0.8rem;">Answer Review</h3>
+            <div id="review-container"></div>
+        </div>
+
+        <!-- STATS VIEW -->
+        <div id="stats" class="view-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2>Personal Study Analytics</h2>
+                <button class="btn btn-danger" style="font-size: 0.75rem; padding: 0.3rem 0.6rem;" onclick="clearAnalyticsHistory()">Clear History</button>
+            </div>
+            <div class="glass-card">
+                <h3>Session History</h3>
+                <div style="overflow-x: auto; margin-top: 1rem;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Subject</th>
+                                <th>Score</th>
+                                <th>Accuracy</th>
+                                <th>Time Taken</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN VIEW -->
+        <div id="admin" class="view-section">
+            <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Admin Question Manager</h2>
+                <button class="btn btn-danger" onclick="lockAdmin()">Lock</button>
+            </div>
+
+            <div class="glass-card">
+                <h3>Input Board Question</h3>
+                <form id="add-q-form" onsubmit="handleSaveQuestion(event)" style="margin-top: 1rem;">
+                    <input type="hidden" id="edit-q-id">
+                    <div class="grid-2">
+                        <div class="form-group"><label>Target Subject</label><select id="admin-subject-select" required></select></div>
+                        <div class="form-group"><label>Board Origin</label><input type="text" id="admin-board" placeholder="D.B.23" required></div>
+                    </div>
+                    <div class="form-group"><label>Question Prompt</label><textarea id="admin-q-text" rows="2" required></textarea></div>
+                    <div class="grid-2">
+                        <div class="form-group"><label>Option A</label><input type="text" id="admin-opt-a" required></div>
+                        <div class="form-group"><label>Option B</label><input type="text" id="admin-opt-b" required></div>
+                        <div class="form-group"><label>Option C</label><input type="text" id="admin-opt-c" required></div>
+                        <div class="form-group"><label>Option D</label><input type="text" id="admin-opt-d" required></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Correct Choice</label>
+                        <select id="admin-correct-opt">
+                            <option value="0">Option A</option>
+                            <option value="1">Option B</option>
+                            <option value="2">Option C</option>
+                            <option value="3">Option D</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-green">Save Question</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // SSC Subjects Array with Textbook Cover Colors
+        const sscSubjects = [
+            { id: "physics", name: "Physics", color: "#06b6d4" },       // Cyan
+            { id: "chemistry", name: "Chemistry", color: "#10b981" },   // Emerald Green
+            { id: "higher_math", name: "Higher Mathematics", color: "#8b5cf6" }, // Violet
+            { id: "general_math", name: "General Mathematics", color: "#3b82f6" }, // Blue
+            { id: "biology", name: "Biology", color: "#84cc16" },       // Lime
+            { id: "ict", name: "ICT", color: "#f59e0b" },               // Amber
+            { id: "bangla_1st", name: "Bangla 1st Paper", color: "#ef4444" }, // Red
+            { id: "bangla_2nd", name: "Bangla 2nd Paper", color: "#dc2626" }, // Dark Red
+            { id: "english_1st", name: "English 1st Paper", color: "#38bdf8" }, // Sky Blue
+            { id: "english_2nd", name: "English 2nd Paper", color: "#0284c7" }, // Ocean Blue
+            { id: "bgs", name: "Bangladesh & Global Studies", color: "#f97316" }, // Orange
+            { id: "islam", name: "Islam & Moral Education", color: "#14b8a6" }  // Teal
+        ];
+
+        // Board Questions
+        const realBoardQuestions = {
+            physics: [
+                { id: "p1", board: "D.B. 23", question: "What is the SI unit of work?", options: ["Watt", "Pascal", "Joule", "Newton"], correct: 2 },
+                { id: "p2", board: "R.B. 23", question: "What is the dimensional formula of acceleration?", options: ["ms⁻¹", "ms⁻²", "LT⁻¹", "LT⁻²"], correct: 3 },
+                { id: "p3", board: "C.B. 23", question: "Which of the following is a scalar quantity?", options: ["Velocity", "Displacement", "Electric Potential", "Force"], correct: 2 },
+                { id: "p4", board: "Ctg.B. 22", question: "What is the refractive index of pure water?", options: ["1.00", "1.33", "1.52", "2.42"], correct: 1 },
+                { id: "p5", board: "S.B. 22", question: "Which mirror is used as a rear-view mirror in motor vehicles?", options: ["Plane Mirror", "Concave Mirror", "Convex Mirror", "Parabolic Mirror"], correct: 2 }
+            ],
+            chemistry: [
+                { id: "c1", board: "D.B. 23", question: "What is the oxidation number of Manganese in KMnO₄?", options: ["+2", "+5", "+6", "+7"], correct: 3 },
+                { id: "c2", board: "R.B. 23", question: "Which element possesses the highest electronegativity?", options: ["Chlorine", "Fluorine", "Oxygen", "Nitrogen"], correct: 1 },
+                { id: "c3", board: "J.B. 22", question: "What is the chemical formula of Rust?", options: ["Fe₂O₃", "Fe₃O₄", "Fe₂O₃·nH₂O", "Fe(OH)₃"], correct: 2 },
+                { id: "c4", board: "B.B. 22", question: "How many valence electrons are present in a Carbon atom?", options: ["2", "4", "6", "8"], correct: 1 }
+            ],
+            general_math: [
+                { id: "m1", board: "D.B. 23", question: "If A = {1, 2, 3}, what is the number of elements in power set P(A)?", options: ["3", "6", "8", "16"], correct: 2 },
+                { id: "m2", board: "R.B. 22", question: "What is the value of log₂ 16?", options: ["2", "3", "4", "8"], correct: 2 },
+                { id: "m3", board: "C.B. 23", question: "What is the sum of interior angles of a quadrilateral?", options: ["180°", "270°", "360°", "540°"], correct: 2 },
+                { id: "m4", board: "S.B. 23", question: "If x + 1/x = 2, what is the value of x² + 1/x²?", options: ["1", "2", "4", "0"], correct: 1 }
+            ],
+            ict: [
+                { id: "i1", board: "D.B. 23", question: "Who is considered the pioneer of the World Wide Web (WWW)?", options: ["Charles Babbage", "Steve Jobs", "Tim Berners-Lee", "Mark Zuckerberg"], correct: 2 },
+                { id: "i2", board: "R.B. 23", question: "Which base number system is directly understood by computers?", options: ["Decimal", "Binary", "Octal", "Hexadecimal"], correct: 1 },
+                { id: "i3", board: "C.B. 22", question: "Which extension is standard for spreadsheet template files?", options: [".docx", ".xlsx", ".pptx", ".pdf"], correct: 1 }
+            ],
+            biology: [
+                { id: "b1", board: "D.B. 23", question: "Which organelle is known as the powerhouse of the cell?", options: ["Ribosome", "Lysosome", "Mitochondria", "Golgi Body"], correct: 2 },
+                { id: "b2", board: "R.B. 22", question: "Which plastic pigment is responsible for the green color of leaves?", options: ["Chromoplast", "Chloroplast", "Leucoplast", "Carotenoid"], correct: 1 },
+                { id: "b3", board: "Ctg.B. 23", question: "What is the primary site of photosynthesis in vascular plants?", options: ["Stem", "Root", "Leaf", "Flower"], correct: 2 },
+                { id: "b4", board: "J.B. 23", question: "Which blood group is universally designated as the universal recipient?", options: ["A+", "B+", "AB+", "O-"], correct: 2 }
+            ]
+        };
+
+        let database = {};
+        let activeExamQuestions = [];
+        let currentSubjectId = null;
+        let userAnswers = {};
+        let lockedQuestions = {};
+        let examTimer = null;
+        let secondsRemaining = 0;
+        let totalExamDurationSeconds = 0;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.visibility = 'hidden', 800);
+            }, 2500);
+            initData();
+            renderDashboard();
+        });
+
+        function initData() {
+            const storedDb = localStorage.getItem('ssc_exam_db_v6');
+            if (storedDb) {
+                database = JSON.parse(storedDb);
+                sscSubjects.forEach(s => { if (!database[s.id]) database[s.id] = []; });
+            } else {
+                database = realBoardQuestions;
+                sscSubjects.forEach(s => { if (!database[s.id]) database[s.id] = []; });
+                localStorage.setItem('ssc_exam_db_v6', JSON.stringify(database));
+            }
+        }
+
+        function renderDashboard() {
+            const container = document.getElementById('subject-cards');
+            container.innerHTML = '';
+            
+            sscSubjects.forEach(subj => {
+                const count = database[subj.id] ? database[subj.id].length : 0;
+                const card = document.createElement('div');
+                card.className = 'subject-card';
+                card.style.setProperty('--subject-color', subj.color);
+                card.onclick = () => openExamConfig(subj.id);
+                card.innerHTML = `
+                    <span class="subject-tag">${subj.name.toUpperCase()}</span>
+                    <h3 style="font-size: 1.1rem; margin-top: 0.2rem;">${subj.name}</h3>
+                    <p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 0.4rem;">${count} Questions Available</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openExamConfig(subjectId) {
+            currentSubjectId = subjectId;
+            const subjObj = sscSubjects.find(s => s.id === subjectId);
+            document.getElementById('config-subject-title').innerText = `${subjObj.name} Exam Setup`;
+            showView('exam-config');
+        }
+
+        function launchConfiguredExam() {
+            const allQuestions = database[currentSubjectId] || [];
+            if (allQuestions.length === 0) {
+                alert('No questions loaded for this subject yet. Add them in Admin mode or directly in code!');
+                return;
+            }
+
+            const qCountChoice = document.getElementById('config-q-count').value;
+            const timePerQ = parseInt(document.getElementById('config-time-per-q').value);
+
+            let selectedCount = qCountChoice === 'all' ? allQuestions.length : parseInt(qCountChoice);
+            selectedCount = Math.min(selectedCount, allQuestions.length);
+
+            activeExamQuestions = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, selectedCount);
+            userAnswers = {};
+            lockedQuestions = {};
+            secondsRemaining = activeExamQuestions.length * timePerQ;
+            totalExamDurationSeconds = secondsRemaining;
+
+            startTimer();
+            renderExamUI();
+            showView('exam');
+        }
+
+        function startTimer() {
+            clearInterval(examTimer);
+            updateTimerDisplay();
+            examTimer = setInterval(() => {
+                secondsRemaining--;
+                updateTimerDisplay();
+                if (secondsRemaining <= 0) {
+                    clearInterval(examTimer);
+                    alert("Time's up! Submitting exam automatically.");
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(secondsRemaining / 60);
+            const s = secondsRemaining % 60;
+            document.getElementById('exam-timer').innerText = `⏱️ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function renderExamUI() {
+            const subjObj = sscSubjects.find(s => s.id === currentSubjectId);
+            document.getElementById('quiz-title').innerText = `${subjObj.name} Exam`;
+            document.getElementById('quiz-count-label').innerText = `${activeExamQuestions.length} Questions Selected`;
+
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            activeExamQuestions.forEach((q, qIndex) => {
+                const qCard = document.createElement('div');
+                qCard.className = 'glass-card';
+                qCard.innerHTML = `
+                    <span class="board-tag">${q.board}</span>
+                    <h3 style="font-size: 1rem;">Q${qIndex + 1}. ${q.question}</h3>
+                    <div class="options-list">
+                        ${q.options.map((opt, oIndex) => `
+                            <div class="option-item" id="opt_${qIndex}_${oIndex}" onclick="selectOption(${qIndex}, ${oIndex}, ${q.correct})">
+                                <strong>${String.fromCharCode(65 + oIndex)}.</strong> ${opt}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(qCard);
+            });
+        }
+
+        function selectOption(qIndex, optIndex, correctOptIndex) {
+            if (lockedQuestions[qIndex]) return;
+
+            lockedQuestions[qIndex] = true;
+            userAnswers[qIndex] = optIndex;
+
+            const isCorrect = (optIndex === correctOptIndex);
+            const targetEl = document.getElementById(`opt_${qIndex}_${optIndex}`);
+
+            if (isCorrect) {
+                targetEl.classList.add('selected-correct');
+            } else {
+                targetEl.classList.add('selected-wrong');
+                document.getElementById(`opt_${qIndex}_${correctOptIndex}`).classList.add('selected-correct');
+            }
+
+            const options = document.querySelectorAll(`[id^="opt_${qIndex}_"]`);
+            options.forEach(el => el.classList.add('locked'));
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            let score = 0;
+
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+
+            activeExamQuestions.forEach((q, qIndex) => {
+                const userChoice = userAnswers[qIndex];
+                const isCorrect = (userChoice === q.correct);
+                if (isCorrect) score++;
+
+                const reviewCard = document.createElement('div');
+                reviewCard.className = 'glass-card';
+                reviewCard.innerHTML = `
+                    <span class="board-tag">${q.board}</span>
+                    <h4>Q${qIndex + 1}. ${q.question}</h4>
+                    <div class="options-list">
+                        ${q.options.map((opt, oIndex) => {
+                            let className = 'option-item locked';
+                            if (oIndex === q.correct) className += ' selected-correct';
+                            else if (userChoice === oIndex && !isCorrect) className += ' selected-wrong';
+                            return `<div class="${className}"><strong>${String.fromCharCode(65 + oIndex)}.</strong> ${opt}</div>`;
+                        }).join('')}
+                    </div>
+                `;
+                reviewContainer.appendChild(reviewCard);
+            });
+
+            const timeSpentSec = totalExamDurationSeconds - secondsRemaining;
+            const spentM = Math.floor(timeSpentSec / 60);
+            const spentS = timeSpentSec % 60;
+            const timeSpentStr = `${spentM}m ${spentS}s`;
+
+            document.getElementById('final-score').innerText = `${score} / ${activeExamQuestions.length}`;
+            const pct = ((score / activeExamQuestions.length) * 100).toFixed(1);
+            document.getElementById('score-percentage').innerText = `${pct}% Accuracy`;
+            document.getElementById('time-spent-summary').innerText = `Time Spent: ${timeSpentStr}`;
+
+            saveExamToAnalytics({
+                date: new Date().toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                subject: sscSubjects.find(s => s.id === currentSubjectId).name,
+                score: `${score} / ${activeExamQuestions.length}`,
+                accuracy: `${pct}%`,
+                timeSpent: timeSpentStr
+            });
+
+            showView('results');
+        }
+
+        function saveExamToAnalytics(record) {
+            const history = JSON.parse(localStorage.getItem('ssc_analytics_history') || '[]');
+            history.unshift(record);
+            localStorage.setItem('ssc_analytics_history', JSON.stringify(history));
+        }
+
+        function renderStatsView() {
+            const history = JSON.parse(localStorage.getItem('ssc_analytics_history') || '[]');
+            const tbody = document.getElementById('history-table-body');
+            tbody.innerHTML = '';
+
+            if (history.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-sub);">No exam history recorded yet. Complete a quiz!</td></tr>`;
+            } else {
+                history.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${item.date}</td>
+                        <td><strong>${item.subject}</strong></td>
+                        <td>${item.score}</td>
+                        <td><span style="color: var(--accent-green); font-weight:700;">${item.accuracy}</span></td>
+                        <td>${item.timeSpent}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+            showView('stats');
+        }
+
+        function clearAnalyticsHistory() {
+            if (confirm("Clear all session history?")) {
+                localStorage.removeItem('ssc_analytics_history');
+                renderStatsView();
+            }
+        }
+
+        function showView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function toggleAdminView() {
+            const pin = prompt("Enter Admin PIN:");
+            if (pin === "2027") {
+                populateAdminDropdowns();
+                showView('admin');
+            } else {
+                alert("Incorrect PIN!");
+            }
+        }
+
+        function lockAdmin() { showView('dashboard'); }
+
+        function populateAdminDropdowns() {
+            const addSel = document.getElementById('admin-subject-select');
+            addSel.innerHTML = '';
+            sscSubjects.forEach(s => addSel.innerHTML += `<option value="${s.id}">${s.name}</option>`);
+        }
+
+        function handleSaveQuestion(e) {
+            e.preventDefault();
+            const subjectId = document.getElementById('admin-subject-select').value;
+            const newQ = {
+                id: "q_" + Date.now(),
+                board: document.getElementById('admin-board').value,
+                question: document.getElementById('admin-q-text').value,
+                options: [
+                    document.getElementById('admin-opt-a').value,
+                    document.getElementById('admin-opt-b').value,
+                    document.getElementById('admin-opt-c').value,
+                    document.getElementById('admin-opt-d').value
+                ],
+                correct: parseInt(document.getElementById('admin-correct-opt').value)
+            };
+
+            if (!database[subjectId]) database[subjectId] = [];
+            database[subjectId].push(newQ);
+
+            localStorage.setItem('ssc_exam_db_v6', JSON.stringify(database));
+            alert('Board question saved!');
+            document.getElementById('add-q-form').reset();
+            renderDashboard();
+        }
+
+        function promptUserName() {
+            const name = prompt("Enter your custom name/callsign:");
+            if (name) document.getElementById('welcome-user-text').innerText = `Welcome, ${name}`;
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SSC Practice Platform</title>
-  <!-- Supabase CDN -->
+  <title>Practice Platform</title>
+  <!-- Supabase CDN Script -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    :root {
-      --bg: #0b0f19;
-      --card-bg: #151d30;
-      --border: #232f48;
-      --primary: #38bdf8;
-      --accent: #facc15;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-    }
-
-    * { box-sizing: border-box; }
-
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
       margin: 0;
       padding: 16px;
-      min-height: 100vh;
     }
-
-    /* Top Navigation Header */
     .header {
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      gap: 8px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    }
-
-    .title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      color: var(--accent);
-      display: flex;
       align-items: center;
-      gap: 8px;
     }
-
-    .nav-btn-group {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
+    .title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #facc15;
+      width: 100%;
+      margin-bottom: 8px;
     }
-
     .btn {
       background-color: #1e293b;
-      color: var(--text);
-      border: 1px solid var(--border);
+      color: #f8fafc;
+      border: 1px solid #334155;
       padding: 8px 16px;
       border-radius: 8px;
       cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s ease;
+      font-size: 0.9rem;
     }
-
-    .btn:hover {
-      background-color: #2a3a58;
-      border-color: var(--primary);
+    .btn-active {
+      background-color: #2563eb;
+      border-color: #3b82f6;
     }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #2563eb, #3b82f6);
-      border: none;
-      box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
-    }
-
-    .btn-primary:hover {
-      box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
-      transform: translateY(-1px);
-    }
-
-    /* Dynamic User Banner */
-    .user-banner {
-      background: linear-gradient(135deg, #1e293b, #111827);
-      border: 1px solid var(--border);
+    .card {
+      background-color: #1e293b;
       border-radius: 12px;
       padding: 20px;
-      margin-bottom: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
+      margin-bottom: 16px;
+      border: 1px solid #334155;
     }
-
-    /* Grid System for 12 Subjects */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
-    }
-
-    .subject-card {
-      background-color: var(--card-bg);
-      border-radius: 12px;
-      padding: 18px;
-      border: 1px solid var(--border);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .subject-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 4px; height: 100%;
-      background: var(--primary);
-      transition: width 0.2s ease;
-    }
-
-    .subject-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(56, 189, 248, 0.15);
-      border-color: #38bdf888;
-    }
-
     .subject-tag {
-      color: var(--primary);
-      font-size: 0.75rem;
-      font-weight: 700;
+      color: #38bdf8;
+      font-size: 0.8rem;
+      font-weight: bold;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
-
     .subject-title {
-      font-size: 1.2rem;
-      margin: 8px 0 12px 0;
-      color: #fff;
+      font-size: 1.5rem;
+      margin: 8px 0;
     }
-
-    /* Interactive Quiz Container */
-    .quiz-card {
-      background-color: var(--card-bg);
-      border-radius: 12px;
-      padding: 24px;
-      border: 1px solid var(--border);
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .option-btn {
-      display: block;
-      width: 100%;
-      text-align: left;
-      margin: 10px 0;
-      padding: 14px;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      color: var(--text);
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.95rem;
-      transition: all 0.2s ease;
-    }
-
-    .option-btn:hover {
-      background: #1e293b;
-      border-color: var(--primary);
-    }
-
-    .option-btn.selected {
-      border-color: var(--primary);
-      background: rgba(56, 189, 248, 0.15);
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
-    }
-
-    /* Leaderboard Styling */
-    .leaderboard-card {
-      background-color: var(--card-bg);
-      border-radius: 12px;
-      padding: 24px;
-      border: 1px solid var(--border);
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
     .leaderboard-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 16px;
+      margin-top: 12px;
     }
-
     .leaderboard-table th, .leaderboard-table td {
       text-align: left;
-      padding: 12px;
-      border-bottom: 1px solid var(--border);
+      padding: 10px;
+      border-bottom: 1px solid #334155;
     }
-
     .leaderboard-table th {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      text-transform: uppercase;
+      color: #94a3b8;
     }
-
-    .hidden { display: none !important; }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Top Header Navigation -->
   <div class="header">
-    <div class="title">🎓 Practice Platform</div>
-    <div class="nav-btn-group">
-      <button class="btn btn-primary" onclick="showView('home')">Home</button>
-      <button class="btn" onclick="showView('leaderboard')">Leaderboard 🏆</button>
-    </div>
+    <div class="title">🎓 Practice: Build from Scratch</div>
+    <button class="btn btn-active" onclick="showView('home')">Home</button>
+    <button class="btn" onclick="showView('analytics')">Analytics 📊</button>
+    <button class="btn" onclick="showView('leaderboard')">Leaderboard 🏆</button>
+    <button class="btn" onclick="showView('admin')">Admin 🔒</button>
   </div>
 
-  <!-- Home View -->
+  <!-- Main Practice View -->
   <div id="view-home">
-    <div class="user-banner">
-      <div>
-        <h2 id="welcome-text" style="margin: 0 0 4px 0;">Welcome, Anonymous Candidate</h2>
-        <span style="color: var(--text-muted); font-size: 0.9rem;">Select a subject below to launch your exam.</span>
-      </div>
+    <div class="card">
+      <h2 id="welcome-user-text">Welcome, Anonymous Candidate</h2>
+      <p style="color: #94a3b8;">Select a subject to launch your practice session.</p>
       <button class="btn" onclick="changeUsername()">Change User</button>
     </div>
 
-    <div class="grid" id="subjects-grid"></div>
-  </div>
+    <div class="card" style="border-left: 4px solid #38bdf8;">
+      <div class="subject-tag">Physics</div>
+      <div class="subject-title">Physics</div>
+      <p style="color: #94a3b8;">5 Questions Available</p>
+      <button class="btn btn-active" onclick="submitMockScore('Physics')">Complete Sample Exam</button>
+    </div>
 
-  <!-- Quiz View -->
-  <div id="view-quiz" class="hidden">
-    <div class="quiz-card">
-      <h2 id="quiz-title" style="margin-top: 0; color: var(--accent);">Exam</h2>
-      <div id="questions-container"></div>
-      <button class="btn btn-primary" style="margin-top: 20px; width: 100%; padding: 14px; font-size: 1rem;" onclick="submitExam()">Submit Exam</button>
+    <div class="card" style="border-left: 4px solid #34d399;">
+      <div class="subject-tag">Chemistry</div>
+      <div class="subject-title">Chemistry</div>
+      <p style="color: #94a3b8;">5 Questions Available</p>
+      <button class="btn btn-active" onclick="submitMockScore('Chemistry')">Complete Sample Exam</button>
     </div>
   </div>
 
-  <!-- Live Supabase Leaderboard View -->
+  <!-- Leaderboard View -->
   <div id="view-leaderboard" class="hidden">
-    <div class="leaderboard-card">
-      <h2 style="margin-top: 0; color: var(--accent);">Global Leaderboard 🏆</h2>
-      <p style="color: var(--text-muted);">Real-time candidate score tracking powered by Supabase.</p>
+    <div class="card">
+      <h2>Global Leaderboard 🏆</h2>
+      <p style="color: #94a3b8;">Live exam scores synchronized via Supabase.</p>
       <table class="leaderboard-table">
         <thead>
           <tr>
-            <th>Candidate</th>
+            <th>User</th>
             <th>Subject</th>
             <th>Score</th>
             <th>Accuracy</th>
           </tr>
         </thead>
         <tbody id="leaderboard-rows">
-          <tr><td colspan="4" style="color: var(--text-muted);">Loading real-time scores...</td></tr>
+          <tr>
+            <td colspan="4" style="color: #94a3b8;">Loading scores...</td>
+          </tr>
         </tbody>
       </table>
     </div>
   </div>
 
   <script>
-    // Live Supabase Backend Client Credentials
+    // Supabase Initialization
     const SUPABASE_URL = "https://rmenwjldgoklzitcijix.supabase.co";
     const SUPABASE_KEY = "Sb_publishable_KFc1TG6MJe2VT--oAzSU3g_pRfBiXWJ";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let currentUsername = "Anonymous Candidate";
-    let currentSubject = "";
-    let userAnswers = {};
-
-    // Complete List of 12 SSC Subjects
-    const subjects = [
-      "Physics", "Chemistry", "Higher Mathematics", "Biology",
-      "General Mathematics", "Bangla 1st Paper", "Bangla 2nd Paper", "English 1st Paper",
-      "English 2nd Paper", "ICT", "Bangladesh & Global Studies", "Islam & Moral Education"
-    ];
-
-    // Subject Specific Questions & General Bank Fallbacks
-    const questionBank = {
-      "Physics": [
-        { id: 1, q: "What is the SI unit of Force?", options: ["Joule", "Newton", "Pascal", "Watt"], ans: 1 },
-        { id: 2, q: "Which equation represents Newton's Second Law of Motion?", options: ["F = mv", "F = ma", "E = mc²", "V = IR"], ans: 1 },
-        { id: 3, q: "What is the standard value of gravitational acceleration (g)?", options: ["9.8 m/s²", "8.9 m/s²", "10 m/s²", "9.8 km/s²"], ans: 0 }
-      ],
-      "Chemistry": [
-        { id: 1, q: "What is the atomic number of Carbon?", options: ["12", "6", "8", "14"], ans: 1 },
-        { id: 2, q: "Which gas is released when metal reacts with acid?", options: ["Oxygen", "Carbon Dioxide", "Hydrogen", "Nitrogen"], ans: 2 },
-        { id: 3, q: "What is the pH value of pure water?", options: ["0", "7", "14", "5"], ans: 1 }
-      ]
-    };
-
-    const defaultQuestions = [
-      { id: 1, q: "Concept Check 1: Select the correct core formula.", options: ["Option A", "Option B", "Option C", "Option D"], ans: 0 },
-      { id: 2, q: "Concept Check 2: Identify the primary principle.", options: ["Statement 1", "Statement 2", "Statement 3", "Statement 4"], ans: 1 },
-      { id: 3, q: "Concept Check 3: Which option yields true?", options: ["True", "False"], ans: 0 }
-    ];
-
-    function renderSubjects() {
-      const grid = document.getElementById('subjects-grid');
-      grid.innerHTML = subjects.map(sub => `
-        <div class="subject-card">
-          <span class="subject-tag">SSC Syllabus</span>
-          <h3 class="subject-title">${sub}</h3>
-          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 16px;">Full Practice Assessment Available</p>
-          <button class="btn btn-primary" style="width: 100%;" onclick="startExam('${sub}')">Start Exam</button>
-        </div>
-      `).join('');
-    }
 
     function changeUsername() {
-      const name = prompt("Enter candidate name:", currentUsername);
-      if (name && name.trim() !== "") {
-        currentUsername = name.trim();
-        document.getElementById('welcome-text').innerText = `Welcome, ${currentUsername}`;
+      const name = prompt("Enter your candidate name:", currentUsername);
+      if (name) {
+        currentUsername = name;
+        document.getElementById('welcome-user-text').innerText = `Welcome, ${currentUsername}`;
       }
     }
 
-    function showView(view) {
+    function showView(viewName) {
       document.getElementById('view-home').classList.add('hidden');
-      document.getElementById('view-quiz').classList.add('hidden');
       document.getElementById('view-leaderboard').classList.add('hidden');
 
-      if (view === 'home') document.getElementById('view-home').classList.remove('hidden');
-      if (view === 'quiz') document.getElementById('view-quiz').classList.remove('hidden');
-      if (view === 'leaderboard') {
+      if (viewName === 'home') {
+        document.getElementById('view-home').classList.remove('hidden');
+      } else if (viewName === 'leaderboard') {
         document.getElementById('view-leaderboard').classList.remove('hidden');
         fetchLeaderboard();
       }
     }
 
-    function getQuestionsForSubject(subject) {
-      return questionBank[subject] || defaultQuestions;
-    }
+    // Push Score to Supabase Table
+    async function submitMockScore(subjectName) {
+      const mockScore = "5 / 5";
+      const mockAccuracy = "100%";
+      const mockTime = "02:15";
 
-    function startExam(subject) {
-      currentSubject = subject;
-      userAnswers = {};
-      document.getElementById('quiz-title').innerText = `${subject} Practice Exam`;
-      
-      const activeQuestions = getQuestionsForSubject(subject);
-      const container = document.getElementById('questions-container');
-      container.innerHTML = activeQuestions.map((q, idx) => `
-        <div style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border);">
-          <p style="font-size: 1.05rem;"><strong>Q${idx + 1}: ${q.q}</strong></p>
-          ${q.options.map((opt, oIdx) => `
-            <button class="option-btn" id="q${q.id}-opt${oIdx}" onclick="selectOption(${q.id}, ${oIdx})">${opt}</button>
-          `).join('')}
-        </div>
-      `).join('');
-
-      showView('quiz');
-    }
-
-    function selectOption(qId, optIdx) {
-      userAnswers[qId] = optIdx;
-      const activeQuestions = getQuestionsForSubject(currentSubject);
-      const questionObj = activeQuestions.find(q => q.id === qId);
-      questionObj.options.forEach((_, idx) => {
-        const btn = document.getElementById(`q${qId}-opt${idx}`);
-        if (idx === optIdx) btn.classList.add('selected');
-        else btn.classList.remove('selected');
-      });
-    }
-
-    async function submitExam() {
-      const activeQuestions = getQuestionsForSubject(currentSubject);
-      let correct = 0;
-      activeQuestions.forEach(q => {
-        if (userAnswers[q.id] === q.ans) correct++;
-      });
-
-      const total = activeQuestions.length;
-      const scoreStr = `${correct} / ${total}`;
-      const accuracyStr = `${Math.round((correct / total) * 100)}%`;
-
-      const { error } = await supabaseClient.from('leaderboard').insert([
-        {
-          user_name: currentUsername,
-          subject: currentSubject,
-          score: scoreStr,
-          accuracy: accuracyStr,
-          time_spent: "01:30"
-        }
-      ]);
+      const { data, error } = await supabaseClient
+        .from('leaderboard')
+        .insert([
+          {
+            user_name: currentUsername,
+            subject: subjectName,
+            score: mockScore,
+            accuracy: mockAccuracy,
+            time_spent: mockTime
+          }
+        ]);
 
       if (error) {
-        alert("Error syncing with Supabase leaderboard: " + error.message);
+        alert("Error saving score: " + error.message);
       } else {
-        alert(`Exam submitted successfully for ${currentSubject}! Score: ${scoreStr} (${accuracyStr})`);
+        alert("Exam complete! Your score has been submitted to the live leaderboard.");
         showView('leaderboard');
       }
     }
 
+    // Fetch Scores Live from Supabase
     async function fetchLeaderboard() {
       const tbody = document.getElementById('leaderboard-rows');
-      tbody.innerHTML = '<tr><td colspan="4" style="color: var(--text-muted);">Loading real-time scores...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="4" style="color: #94a3b8;">Loading scores...</td></tr>';
 
       const { data, error } = await supabaseClient
         .from('leaderboard')
@@ -413,7 +1007,7 @@
       }
 
       if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" style="color: var(--text-muted);">No entries recorded yet. Complete an exam above!</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4" style="color: #94a3b8;">No scores logged yet. Complete an exam above!</td></tr>';
         return;
       }
 
@@ -426,8 +1020,6 @@
         </tr>
       `).join('');
     }
-
-    renderSubjects();
   </script>
 </body>
 </html>
