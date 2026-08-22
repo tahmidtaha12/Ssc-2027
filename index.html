@@ -319,7 +319,7 @@
             <button class="btn btn-secondary" onclick="showView('dashboard')">Home</button>
             <button class="btn btn-secondary" onclick="renderStatsView()">Analytics 📊</button>
             <button class="btn btn-secondary" onclick="renderLeaderboardView()">Leaderboard 🏆</button>
-            <button class="btn btn-secondary" onclick="toggleAdminView()">Admin 🔒</button>
+            <button class="btn btn-secondary" id="google-auth-btn" onclick="handleAuthButtonClick()">Sign in with Google</button>
         </div>
     </header>
 
@@ -500,7 +500,18 @@
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
 
+        // Secret admin trigger: visiting the site with ?key=ILMW in the URL
+        // silently offers the admin PIN prompt. No visible button anywhere.
+        const ADMIN_URL_SECRET = "ILMW";
+
         let leaderboardPollId = null;
+        let currentSession = null; // Supabase auth session, set once signed in with Google
+
+        function escapeHtml(str) {
+            return String(str ?? '').replace(/[&<>"']/g, (m) => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[m]));
+        }
 
         const sscSubjects = [
             { id: "physics", name: "Physics", color: "#06b6d4" },
@@ -575,7 +586,53 @@
                 localStorage.setItem('ssc_username', currentUserName);
             }
             document.getElementById('welcome-user-text').innerText = `Welcome, ${currentUserName}`;
+
+            initAuth();
+
+            // Hidden admin entry: only visiting ?key=ILMW ever offers the PIN prompt.
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('key') === ADMIN_URL_SECRET) {
+                setTimeout(toggleAdminView, 2900);
+            }
         });
+
+        async function initAuth() {
+            if (!supabaseClient) return;
+            const { data } = await supabaseClient.auth.getSession();
+            currentSession = data.session || null;
+            updateAuthButton();
+
+            supabaseClient.auth.onAuthStateChange((_event, session) => {
+                currentSession = session;
+                updateAuthButton();
+            });
+        }
+
+        function updateAuthButton() {
+            const btn = document.getElementById('google-auth-btn');
+            if (!btn) return;
+            if (currentSession && currentSession.user) {
+                const label = currentSession.user.user_metadata?.full_name || currentSession.user.email || 'Signed in';
+                btn.innerText = `✅ ${label}`;
+            } else {
+                btn.innerText = 'Sign in with Google';
+            }
+        }
+
+        function handleAuthButtonClick() {
+            if (!supabaseClient) {
+                alert('Leaderboard is not connected yet.');
+                return;
+            }
+            if (currentSession) {
+                supabaseClient.auth.signOut();
+            } else {
+                supabaseClient.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: { redirectTo: window.location.href.split('?')[0] }
+                });
+            }
+        }
 
         function initData() {
             const storedDb = localStorage.getItem('ssc_exam_db_v6');
@@ -805,6 +862,10 @@
                 if (statusEl) statusEl.innerText = "Leaderboard not connected yet — ask the admin to finish setup.";
                 return;
             }
+            if (!currentSession) {
+                if (statusEl) statusEl.innerText = "Sign in with Google (top right) to post your score to the public leaderboard.";
+                return;
+            }
             try {
                 const { error } = await supabaseClient.from('leaderboard').insert([{
                     name: currentUserName || 'Anonymous Candidate',
@@ -869,10 +930,10 @@
                     const when = new Date(row.created_at).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
                     return `<tr class="${rowClass}">
                         <td><span class="lb-rank ${rankClass}">${i + 1}</span></td>
-                        <td>${row.name}</td>
-                        <td>${row.subject}</td>
-                        <td>${row.score} / ${row.total}</td>
-                        <td>${row.accuracy}%</td>
+                        <td>${escapeHtml(row.name)}</td>
+                        <td>${escapeHtml(row.subject)}</td>
+                        <td>${escapeHtml(row.score)} / ${escapeHtml(row.total)}</td>
+                        <td>${escapeHtml(row.accuracy)}%</td>
                         <td>${when}</td>
                     </tr>`;
                 }).join('');
