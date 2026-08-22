@@ -817,7 +817,8 @@
                 if (statusEl) statusEl.innerText = "Score posted to the leaderboard ✅";
             } catch (e) {
                 console.error('Leaderboard submit failed:', e);
-                if (statusEl) statusEl.innerText = "Couldn't post to the leaderboard (check connection).";
+                const detail = (e && e.message) ? e.message : JSON.stringify(e);
+                if (statusEl) statusEl.innerText = "Leaderboard error: " + detail;
             }
         }
 
