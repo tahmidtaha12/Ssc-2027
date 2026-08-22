@@ -25,7 +25,6 @@
         }
 
         body {
-            /* Jet Fighter & Tactical Runway Aesthetic */
             background: 
                 linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%),
                 radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.06) 0%, transparent 50%),
@@ -40,7 +39,6 @@
             position: relative;
         }
 
-        /* Subtle Centerline Track (Runway visual cue) */
         body::before {
             content: '';
             position: fixed;
@@ -59,7 +57,6 @@
             z-index: 0;
         }
 
-        /* GRADUATION CAP SPLASH SCREEN */
         #splash-screen {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -96,14 +93,8 @@
         }
 
         @keyframes pulseGlow {
-            0% {
-                transform: scale(0.95);
-                filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.2));
-            }
-            100% {
-                transform: scale(1.15);
-                filter: drop-shadow(0 0 30px rgba(56, 189, 248, 0.9));
-            }
+            0% { transform: scale(0.95); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.2)); }
+            100% { transform: scale(1.15); filter: drop-shadow(0 0 30px rgba(56, 189, 248, 0.9)); }
         }
 
         @keyframes textBlink {
@@ -122,6 +113,8 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         h1 {
@@ -132,7 +125,7 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .nav-buttons { display: flex; gap: 0.5rem; }
+        .nav-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
         .btn {
             background: var(--accent-amber);
@@ -180,7 +173,6 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
-        /* GLOWING WELCOME TEXT ANIMATION */
         .glowing-welcome {
             font-size: 1.5rem;
             font-weight: 800;
@@ -190,18 +182,8 @@
         }
 
         @keyframes neonGlow {
-            0% {
-                text-shadow: 
-                    0 0 5px rgba(56, 189, 248, 0.6),
-                    0 0 15px rgba(56, 189, 248, 0.4),
-                    0 0 25px rgba(56, 189, 248, 0.2);
-            }
-            100% {
-                text-shadow: 
-                    0 0 10px rgba(245, 158, 11, 0.9),
-                    0 0 25px rgba(245, 158, 11, 0.7),
-                    0 0 40px rgba(245, 158, 11, 0.4);
-            }
+            0% { text-shadow: 0 0 5px rgba(56, 189, 248, 0.6), 0 0 15px rgba(56, 189, 248, 0.4), 0 0 25px rgba(56, 189, 248, 0.2); }
+            100% { text-shadow: 0 0 10px rgba(245, 158, 11, 0.9), 0 0 25px rgba(245, 158, 11, 0.7), 0 0 40px rgba(245, 158, 11, 0.4); }
         }
 
         .subject-grid {
@@ -211,7 +193,6 @@
             margin-top: 1rem;
         }
 
-        /* TEXTBOOK COLOR INTEGRATION FOR SUBJECT CARDS */
         .subject-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -240,9 +221,7 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 15px var(--subject-color);
         }
 
-        .subject-card:hover::before {
-            opacity: 0.25;
-        }
+        .subject-card:hover::before { opacity: 0.25; }
 
         .subject-tag {
             display: inline-block;
@@ -306,11 +285,27 @@
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         th, td { padding: 0.75rem; border-bottom: 1px solid var(--card-border); text-align: left; }
+
+        .lb-row-top { font-weight: 800; }
+        .lb-rank { width: 2.2rem; display: inline-block; text-align: center; }
+        .lb-rank-1 { color: #fbbf24; }
+        .lb-rank-2 { color: #cbd5e1; }
+        .lb-rank-3 { color: #d97706; }
+        .lb-toolbar { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
+        .lb-toolbar select { width: auto; min-width: 180px; }
+        .lb-status { font-size: 0.75rem; color: var(--text-sub); margin-top: 0.6rem; }
+        .lb-live-dot {
+            display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+            background: var(--accent-green); margin-right: 6px;
+            animation: lbPulse 1.4s infinite;
+        }
+        @keyframes lbPulse { 0%,100%{ opacity: 1; } 50%{ opacity: 0.3; } }
     </style>
+    <!-- Supabase client (needed for the shared/global leaderboard) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
-    <!-- GRADUATION CAP SPLASH SCREEN -->
     <div id="splash-screen">
         <div class="cap-container">
             <div class="grad-cap">🎓</div>
@@ -323,13 +318,13 @@
         <div class="nav-buttons">
             <button class="btn btn-secondary" onclick="showView('dashboard')">Home</button>
             <button class="btn btn-secondary" onclick="renderStatsView()">Analytics 📊</button>
+            <button class="btn btn-secondary" onclick="renderLeaderboardView()">Leaderboard 🏆</button>
             <button class="btn btn-secondary" onclick="toggleAdminView()">Admin 🔒</button>
         </div>
     </header>
 
     <div class="container">
 
-        <!-- DASHBOARD -->
         <div id="dashboard" class="view-section active">
             <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                 <div>
@@ -342,7 +337,6 @@
             <div class="subject-grid" id="subject-cards"></div>
         </div>
 
-        <!-- EXAM CONFIG -->
         <div id="exam-config" class="view-section">
             <div class="glass-card">
                 <h2 id="config-subject-title">Exam Setup</h2>
@@ -373,7 +367,6 @@
             </div>
         </div>
 
-        <!-- EXAM VIEW -->
         <div id="exam" class="view-section">
             <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <div>
@@ -387,20 +380,19 @@
             <button class="btn btn-green" style="width: 100%; padding: 0.8rem;" onclick="submitExam()">Submit Exam</button>
         </div>
 
-        <!-- RESULTS VIEW -->
         <div id="results" class="view-section">
             <div class="glass-card" style="text-align: center; padding: 2rem;">
                 <h2>Exam Complete!</h2>
                 <div style="font-size: 2.5rem; font-weight: 800; color: var(--accent-amber); margin: 0.5rem 0;" id="final-score">0 / 0</div>
                 <p id="score-percentage" style="color: var(--text-sub); font-size: 0.9rem;">0% Accuracy</p>
                 <p id="time-spent-summary" style="color: var(--accent-blue); font-size: 0.85rem; margin-top: 0.4rem;"></p>
+                <p id="lb-submit-status" style="color: var(--text-sub); font-size: 0.8rem; margin-top: 0.5rem;"></p>
                 <button class="btn" style="margin-top: 1.2rem;" onclick="showView('dashboard')">Return to Subjects</button>
             </div>
             <h3 style="margin-bottom: 0.8rem;">Answer Review</h3>
             <div id="review-container"></div>
         </div>
 
-        <!-- STATS VIEW -->
         <div id="stats" class="view-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <h2>Personal Study Analytics</h2>
@@ -425,7 +417,38 @@
             </div>
         </div>
 
-        <!-- ADMIN VIEW -->
+        <div id="leaderboard" class="view-section">
+            <div class="glass-card">
+                <div style="display:flex; justify-content: space-between; align-items:center; flex-wrap: wrap; gap: 0.6rem;">
+                    <h2>🏆 Global Leaderboard</h2>
+                    <button class="btn btn-secondary" style="font-size:0.75rem; padding:0.3rem 0.6rem;" onclick="loadLeaderboardData()">Refresh</button>
+                </div>
+                <div class="lb-toolbar" style="margin-top: 1rem;">
+                    <select id="lb-subject-filter" onchange="loadLeaderboardData()">
+                        <option value="all">All Subjects</option>
+                    </select>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Subject</th>
+                                <th>Score</th>
+                                <th>Accuracy</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-table-body">
+                            <tr><td colspan="6" style="text-align:center; color: var(--text-sub);">Loading…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="lb-status" id="lb-status-text"></p>
+            </div>
+        </div>
+
         <div id="admin" class="view-section">
             <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center;">
                 <h2>Admin Question Manager</h2>
@@ -464,23 +487,36 @@
     </div>
 
     <script>
-        // SSC Subjects Array with Textbook Cover Colors
+        /* =========================================================================
+           LEADERBOARD CONFIG — fill these in after you create your free Supabase
+           project. Until both are filled in, the leaderboard tab shows a
+           "not configured yet" message and the rest of the app works as before.
+        ========================================================================= */
+        const SUPABASE_URL = "https://rmenwjldgoklzitcijix.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_KFc1TG6MJe2VT--oAzSU3g_pRfBiXWJ";
+
+        let supabaseClient = null;
+        if (SUPABASE_URL !== "YOUR_SUPABASE_URL" && SUPABASE_ANON_KEY !== "YOUR_SUPABASE_ANON_KEY") {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+
+        let leaderboardPollId = null;
+
         const sscSubjects = [
-            { id: "physics", name: "Physics", color: "#06b6d4" },       // Cyan
-            { id: "chemistry", name: "Chemistry", color: "#10b981" },   // Emerald Green
-            { id: "higher_math", name: "Higher Mathematics", color: "#8b5cf6" }, // Violet
-            { id: "general_math", name: "General Mathematics", color: "#3b82f6" }, // Blue
-            { id: "biology", name: "Biology", color: "#84cc16" },       // Lime
-            { id: "ict", name: "ICT", color: "#f59e0b" },               // Amber
-            { id: "bangla_1st", name: "Bangla 1st Paper", color: "#ef4444" }, // Red
-            { id: "bangla_2nd", name: "Bangla 2nd Paper", color: "#dc2626" }, // Dark Red
-            { id: "english_1st", name: "English 1st Paper", color: "#38bdf8" }, // Sky Blue
-            { id: "english_2nd", name: "English 2nd Paper", color: "#0284c7" }, // Ocean Blue
-            { id: "bgs", name: "Bangladesh & Global Studies", color: "#f97316" }, // Orange
-            { id: "islam", name: "Islam & Moral Education", color: "#14b8a6" }  // Teal
+            { id: "physics", name: "Physics", color: "#06b6d4" },
+            { id: "chemistry", name: "Chemistry", color: "#10b981" },
+            { id: "higher_math", name: "Higher Mathematics", color: "#8b5cf6" },
+            { id: "general_math", name: "General Mathematics", color: "#3b82f6" },
+            { id: "biology", name: "Biology", color: "#84cc16" },
+            { id: "ict", name: "ICT", color: "#f59e0b" },
+            { id: "bangla_1st", name: "Bangla 1st Paper", color: "#ef4444" },
+            { id: "bangla_2nd", name: "Bangla 2nd Paper", color: "#dc2626" },
+            { id: "english_1st", name: "English 1st Paper", color: "#38bdf8" },
+            { id: "english_2nd", name: "English 2nd Paper", color: "#0284c7" },
+            { id: "bgs", name: "Bangladesh & Global Studies", color: "#f97316" },
+            { id: "islam", name: "Islam & Moral Education", color: "#14b8a6" }
         ];
 
-        // Board Questions
         const realBoardQuestions = {
             physics: [
                 { id: "p1", board: "D.B. 23", question: "What is the SI unit of work?", options: ["Watt", "Pascal", "Joule", "Newton"], correct: 2 },
@@ -522,6 +558,7 @@
         let examTimer = null;
         let secondsRemaining = 0;
         let totalExamDurationSeconds = 0;
+        let currentUserName = localStorage.getItem('ssc_username') || null;
 
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
@@ -531,6 +568,13 @@
             }, 2500);
             initData();
             renderDashboard();
+
+            if (!currentUserName) {
+                const name = prompt("Enter your name/callsign for the leaderboard:");
+                currentUserName = (name && name.trim()) ? name.trim() : "Anonymous Candidate";
+                localStorage.setItem('ssc_username', currentUserName);
+            }
+            document.getElementById('welcome-user-text').innerText = `Welcome, ${currentUserName}`;
         });
 
         function initData() {
@@ -695,18 +739,22 @@
             const spentS = timeSpentSec % 60;
             const timeSpentStr = `${spentM}m ${spentS}s`;
 
-            document.getElementById('final-score').innerText = `${score} / ${activeExamQuestions.length}`;
             const pct = ((score / activeExamQuestions.length) * 100).toFixed(1);
+            const subjectName = sscSubjects.find(s => s.id === currentSubjectId).name;
+
+            document.getElementById('final-score').innerText = `${score} / ${activeExamQuestions.length}`;
             document.getElementById('score-percentage').innerText = `${pct}% Accuracy`;
             document.getElementById('time-spent-summary').innerText = `Time Spent: ${timeSpentStr}`;
 
             saveExamToAnalytics({
                 date: new Date().toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                subject: sscSubjects.find(s => s.id === currentSubjectId).name,
+                subject: subjectName,
                 score: `${score} / ${activeExamQuestions.length}`,
                 accuracy: `${pct}%`,
                 timeSpent: timeSpentStr
             });
+
+            submitScoreToLeaderboard(subjectName, score, activeExamQuestions.length, parseFloat(pct));
 
             showView('results');
         }
@@ -747,9 +795,106 @@
             }
         }
 
+        /* ---------------------------------------------------------------------
+           LEADERBOARD — reads/writes the shared Supabase table so every visitor
+           sees the same live standings, not just their own browser's scores.
+        --------------------------------------------------------------------- */
+        async function submitScoreToLeaderboard(subjectName, score, total, accuracy) {
+            const statusEl = document.getElementById('lb-submit-status');
+            if (!supabaseClient) {
+                if (statusEl) statusEl.innerText = "Leaderboard not connected yet — ask the admin to finish setup.";
+                return;
+            }
+            try {
+                const { error } = await supabaseClient.from('leaderboard').insert([{
+                    name: currentUserName || 'Anonymous Candidate',
+                    subject: subjectName,
+                    score: score,
+                    total: total,
+                    accuracy: accuracy
+                }]);
+                if (error) throw error;
+                if (statusEl) statusEl.innerText = "Score posted to the leaderboard ✅";
+            } catch (e) {
+                console.error('Leaderboard submit failed:', e);
+                if (statusEl) statusEl.innerText = "Couldn't post to the leaderboard (check connection).";
+            }
+        }
+
+        function populateLeaderboardFilter() {
+            const sel = document.getElementById('lb-subject-filter');
+            const current = sel.value || 'all';
+            sel.innerHTML = '<option value="all">All Subjects</option>' +
+                sscSubjects.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+            sel.value = current;
+        }
+
+        async function loadLeaderboardData() {
+            const tbody = document.getElementById('leaderboard-table-body');
+            const statusEl = document.getElementById('lb-status-text');
+
+            if (!supabaseClient) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-sub);">
+                    Leaderboard isn't connected yet. Add your Supabase URL + key in the script to turn this on.
+                </td></tr>`;
+                statusEl.innerText = '';
+                return;
+            }
+
+            const subjectFilter = document.getElementById('lb-subject-filter').value;
+            let query = supabaseClient
+                .from('leaderboard')
+                .select('*')
+                .order('score', { ascending: false })
+                .order('created_at', { ascending: true })
+                .limit(50);
+
+            if (subjectFilter !== 'all') query = query.eq('subject', subjectFilter);
+
+            const { data, error } = await query;
+
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--accent-red);">Couldn't load the leaderboard right now.</td></tr>`;
+                console.error(error);
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-sub);">No scores yet — be the first!</td></tr>`;
+            } else {
+                tbody.innerHTML = data.map((row, i) => {
+                    const rankClass = i === 0 ? 'lb-rank-1' : i === 1 ? 'lb-rank-2' : i === 2 ? 'lb-rank-3' : '';
+                    const rowClass = i < 3 ? 'lb-row-top' : '';
+                    const when = new Date(row.created_at).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    return `<tr class="${rowClass}">
+                        <td><span class="lb-rank ${rankClass}">${i + 1}</span></td>
+                        <td>${row.name}</td>
+                        <td>${row.subject}</td>
+                        <td>${row.score} / ${row.total}</td>
+                        <td>${row.accuracy}%</td>
+                        <td>${when}</td>
+                    </tr>`;
+                }).join('');
+            }
+
+            statusEl.innerHTML = `<span class="lb-live-dot"></span>Live — updates automatically every few seconds`;
+        }
+
+        function renderLeaderboardView() {
+            populateLeaderboardFilter();
+            loadLeaderboardData();
+            clearInterval(leaderboardPollId);
+            leaderboardPollId = setInterval(loadLeaderboardData, 4000);
+            showView('leaderboard');
+        }
+
         function showView(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
+            if (viewId !== 'leaderboard' && leaderboardPollId) {
+                clearInterval(leaderboardPollId);
+                leaderboardPollId = null;
+            }
             window.scrollTo(0, 0);
         }
 
@@ -798,7 +943,11 @@
 
         function promptUserName() {
             const name = prompt("Enter your custom name/callsign:");
-            if (name) document.getElementById('welcome-user-text').innerText = `Welcome, ${name}`;
+            if (name && name.trim()) {
+                currentUserName = name.trim();
+                localStorage.setItem('ssc_username', currentUserName);
+                document.getElementById('welcome-user-text').innerText = `Welcome, ${currentUserName}`;
+            }
         }
     </script>
 </body>
