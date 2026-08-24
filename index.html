@@ -530,34 +530,296 @@
 
         const realBoardQuestions = {
             physics: [
-                { id: "p1", board: "D.B. 23", question: "What is the SI unit of work?", options: ["Watt", "Pascal", "Joule", "Newton"], correct: 2 },
-                { id: "p2", board: "R.B. 23", question: "What is the dimensional formula of acceleration?", options: ["ms⁻¹", "ms⁻²", "LT⁻¹", "LT⁻²"], correct: 3 },
-                { id: "p3", board: "C.B. 23", question: "Which of the following is a scalar quantity?", options: ["Velocity", "Displacement", "Electric Potential", "Force"], correct: 2 },
-                { id: "p4", board: "Ctg.B. 22", question: "What is the refractive index of pure water?", options: ["1.00", "1.33", "1.52", "2.42"], correct: 1 },
-                { id: "p5", board: "S.B. 22", question: "Which mirror is used as a rear-view mirror in motor vehicles?", options: ["Plane Mirror", "Concave Mirror", "Convex Mirror", "Parabolic Mirror"], correct: 2 }
+                { id: "p1", board: "ঢা.বো. ২৩", question: "পদার্থবিজ্ঞানের মূল রাশি কোনটি?", options: ["দৈর্ঘ্য", "বেগ", "ত্বরণ", "বল"], correct: 0 },
+                { id: "p2", board: "রা.বো. ২৩", question: "কাজের একক কী?", options: ["জুল", "নিউটন", "ওয়াট", "প্যাসকেল"], correct: 0 },
+                { id: "p3", board: "চ.বো. ২৩", question: "ত্বরণের একক কোনটি?", options: ["মি/সে²", "মি/সে", "নিউটন", "জুল"], correct: 0 },
+                { id: "p4", board: "কু.বো. ২২", question: "নিউটনের কোন সূত্র জড়তার সূত্র নামে পরিচিত?", options: ["প্রথম সূত্র", "দ্বিতীয় সূত্র", "তৃতীয় সূত্র", "মহাকর্ষ সূত্র"], correct: 0 },
+                { id: "p5", board: "সি.বো. ২২", question: "শক্তির একক কী?", options: ["জুল", "নিউটন", "ওয়াট", "অ্যাম্পিয়ার"], correct: 0 },
+                { id: "p6", board: "ঢা.বো. ২২", question: "আলোর বেগ প্রায় কত?", options: ["৩×১০⁸ মি/সে", "৩×১০⁶ মি/সে", "৩×১০⁵ মি/সে", "৩×১০¹⁰ মি/সে"], correct: 0 },
+                { id: "p7", board: "রা.বো. ২২", question: "শব্দ কোন মাধ্যমে দ্রুততম গতিতে চলে?", options: ["কঠিন", "তরল", "বায়বীয়", "শূন্য মাধ্যম"], correct: 0 },
+                { id: "p8", board: "ব.বো. ২৩", question: "পানির প্রতিসরাঙ্ক কত?", options: ["১.৩৩", "১.০০", "১.৫২", "২.৪২"], correct: 0 },
+                { id: "p9", board: "য.বো. ২৩", question: "গাড়ির লুকিং গ্লাসে কোন দর্পণ ব্যবহৃত হয়?", options: ["উত্তল দর্পণ", "অবতল দর্পণ", "সমতল দর্পণ", "পরাবৃত্তীয় দর্পণ"], correct: 0 },
+                { id: "p10", board: "দি.বো. ২৩", question: "তড়িৎ প্রবাহের একক কী?", options: ["অ্যাম্পিয়ার", "ভোল্ট", "ওহম", "ওয়াট"], correct: 0 },
+                { id: "p11", board: "ময়.বো. ২৩", question: "রোধের একক কী?", options: ["ওহম", "অ্যাম্পিয়ার", "ভোল্ট", "ফ্যারাড"], correct: 0 },
+                { id: "p12", board: "ঢা.বো. ২১", question: "পৃথিবীর অভিকর্ষজ ত্বরণের মান আনুমানিক কত?", options: ["৯.৮ মি/সে²", "৮.৯ মি/সে²", "১০.৮ মি/সে²", "৯.৮ কিমি/সে²"], correct: 0 },
+                { id: "p13", board: "রা.বো. ২১", question: "নিউটনের গতিসূত্রসমূহের প্রবক্তা কে?", options: ["আইজ্যাক নিউটন", "আলবার্ট আইনস্টাইন", "গ্যালিলিও গ্যালিলি", "মাইকেল ফ্যারাডে"], correct: 0 },
+                { id: "p14", board: "চ.বো. ২১", question: "কম্পাঙ্কের একক কী?", options: ["হার্জ", "নিউটন", "জুল", "ওয়াট"], correct: 0 },
+                { id: "p15", board: "কু.বো. ২১", question: "নিচের কোনটি ভেক্টর রাশি?", options: ["সরণ", "ভর", "সময়", "তাপমাত্রা"], correct: 0 },
+                { id: "p16", board: "সি.বো. ২১", question: "AC কে DC তে রূপান্তরের প্রক্রিয়াকে কী বলে?", options: ["রেকটিফিকেশন", "অ্যামপ্লিফিকেশন", "ইনডাকশন", "অসিলেশন"], correct: 0 },
+                { id: "p17", board: "ব.বো. ২১", question: "স্প্রিং টানলে কোন শক্তি সঞ্চিত হয়?", options: ["স্থিতিস্থাপক বিভব শক্তি", "গতিশক্তি", "তাপ শক্তি", "রাসায়নিক শক্তি"], correct: 0 },
+                { id: "p18", board: "য.বো. ২১", question: "বায়ুচাপ মাপার যন্ত্রের নাম কী?", options: ["ব্যারোমিটার", "থার্মোমিটার", "হাইগ্রোমিটার", "অ্যানিমোমিটার"], correct: 0 },
+                { id: "p19", board: "দি.বো. ২১", question: "তাপমাত্রা মাপার একক কোনটি?", options: ["কেলভিন", "জুল", "ওয়াট", "নিউটন"], correct: 0 },
+                { id: "p20", board: "ময়.বো. ২১", question: "পদার্থের সাধারণ অবস্থা কয়টি ও কী কী?", options: ["তিনটি: কঠিন, তরল ও বায়বীয়", "শুধু কঠিন", "শুধু তরল", "শুধু বায়বীয়"], correct: 0 },
+                { id: "p21", board: "ঢা.বো. ২০", question: "চৌম্বক ক্ষেত্রের একক কী?", options: ["টেসলা", "ওহম", "ভোল্ট", "অ্যাম্পিয়ার"], correct: 0 },
+                { id: "p22", board: "রা.বো. ২০", question: "শব্দের তীব্রতা কোন এককে পরিমাপ করা হয়?", options: ["ডেসিবেল", "হার্জ", "ওয়াট", "নিউটন"], correct: 0 },
+                { id: "p23", board: "চ.বো. ২০", question: "বলের একক কী?", options: ["নিউটন", "জুল", "ওয়াট", "প্যাসকেল"], correct: 0 },
+                { id: "p24", board: "কু.বো. ২০", question: "চাপের একক কী?", options: ["প্যাসকেল", "নিউটন", "জুল", "ওয়াট"], correct: 0 },
+                { id: "p25", board: "সি.বো. ২০", question: "ক্ষমতার একক কী?", options: ["ওয়াট", "জুল", "নিউটন", "প্যাসকেল"], correct: 0 },
+                { id: "p26", board: "ব.বো. ২০", question: "স্থির তড়িতে ইলেকট্রন স্থানান্তরের ফলে কী সৃষ্টি হয়?", options: ["আধান", "চৌম্বকত্ব", "তাপ", "আলো"], correct: 0 },
+                { id: "p27", board: "য.বো. ২০", question: "পূর্ণ অভ্যন্তরীণ প্রতিফলন ঘটার একটি শর্ত কী?", options: ["আলো সংকট কোণের চেয়ে বেশি কোণে পতিত হওয়া", "যেকোনো কোণে আলো পতিত হওয়া", "ঘন মাধ্যম থেকে হালকা মাধ্যমে যাওয়া নিষেধ", "আলোর প্রতিসরণ না হওয়া"], correct: 0 },
+                { id: "p28", board: "দি.বো. ২০", question: "এক ওয়াট সমান কত জুল/সেকেন্ড?", options: ["১ জুল/সে", "১০ জুল/সে", "০.১ জুল/সে", "১০০ জুল/সে"], correct: 0 },
+                { id: "p29", board: "ময়.বো. ২০", question: "তেজস্ক্রিয়তা আবিষ্কার করেন কে?", options: ["হেনরি বেকরেল", "আইজ্যাক নিউটন", "মাইকেল ফ্যারাডে", "জেমস ওয়াট"], correct: 0 },
+                { id: "p30", board: "ঢা.বো. ১৯", question: "পরমাণুর কেন্দ্রে কী থাকে?", options: ["নিউক্লিয়াস", "ইলেকট্রন", "ফোটন", "নিউট্রিনো"], correct: 0 },
+                { id: "p31", board: "রা.বো. ১৯", question: "শক্তির নিত্যতা সূত্র অনুসারে শক্তি কী হতে পারে?", options: ["এক রূপ থেকে অন্য রূপে রূপান্তরিত", "ধ্বংস", "সৃষ্টি", "বিলুপ্ত"], correct: 0 },
+                { id: "p32", board: "চ.বো. ১৯", question: "ওহমের সূত্র কোন রাশিগুলোর মধ্যে সম্পর্ক প্রকাশ করে?", options: ["ভোল্টেজ, প্রবাহ ও রোধ", "শুধু ভোল্টেজ ও ক্ষমতা", "শুধু প্রবাহ ও ক্ষমতা", "শুধু রোধ ও ক্ষমতা"], correct: 0 },
+                { id: "p33", board: "কু.বো. ১৯", question: "তরঙ্গদৈর্ঘ্য পরিমাপের একক কী?", options: ["মিটার", "হার্জ", "সেকেন্ড", "নিউটন"], correct: 0 },
+                { id: "p34", board: "সি.বো. ১৯", question: "আলোর প্রতিফলনের সূত্র কয়টি?", options: ["দুইটি", "একটি", "তিনটি", "চারটি"], correct: 0 },
+                { id: "p35", board: "ব.বো. ১৯", question: "উত্তল লেন্স কোন ধরনের প্রতিবিম্ব তৈরি করতে পারে?", options: ["বাস্তব ও অবাস্তব উভয়", "শুধু বাস্তব", "শুধু অবাস্তব", "কোনোটিই নয়"], correct: 0 },
+                { id: "p36", board: "য.বো. ১৯", question: "স্বাভাবিক তাপমাত্রায় (প্রায় ২৫°C) বায়ুতে শব্দের বেগ প্রায় কত?", options: ["৩৪৬ মি/সে", "১০০ মি/সে", "১০০০ মি/সে", "৫০ মি/সে"], correct: 0 },
+                { id: "p37", board: "দি.বো. ১৯", question: "নিচের কোনটি চৌম্বক পদার্থের উদাহরণ?", options: ["লোহা", "কাঠ", "প্লাস্টিক", "কাচ"], correct: 0 },
+                { id: "p38", board: "ময়.বো. ১৯", question: "ট্রান্সফরমার কোন নীতিতে কাজ করে?", options: ["তড়িৎ চুম্বকীয় আবেশ", "স্থির তড়িৎ", "তাপ পরিবহন", "আলোর প্রতিফলন"], correct: 0 },
+                { id: "p39", board: "ঢা.বো. ১৮", question: "পারমাণবিক শক্তির মূল উৎস কী?", options: ["নিউক্লিয় বিভাজন/সংযোজন", "রাসায়নিক বিক্রিয়া", "তাপ শক্তি", "স্থিতিশক্তি"], correct: 0 },
+                { id: "p40", board: "রা.বো. ১৮", question: "এক কিলোওয়াট ঘণ্টা (kWh) কীসের একক?", options: ["শক্তি বা কার্যের", "ক্ষমতার", "বলের", "চাপের"], correct: 0 },
+                { id: "p41", board: "চ.বো. ১৮", question: "তাপগতিবিদ্যার প্রথম সূত্র মূলত কোন সংরক্ষণ সূত্রের প্রকাশ?", options: ["শক্তি নিত্যতা সূত্র", "ভরবেগ নিত্যতা সূত্র", "চার্জ নিত্যতা সূত্র", "ভর নিত্যতা সূত্র"], correct: 0 },
+                { id: "p42", board: "কু.বো. ১৮", question: "সরল দোলকের দোলনকাল প্রধানত কীসের উপর নির্ভর করে?", options: ["দৈর্ঘ্য ও অভিকর্ষজ ত্বরণ", "শুধু ভর", "শুধু বিস্তার", "শুধু উপাদান"], correct: 0 },
+                { id: "p43", board: "সি.বো. ১৮", question: "সাদা আলোর বর্ণালিতে কয়টি রং থাকে?", options: ["সাতটি", "পাঁচটি", "ছয়টি", "আটটি"], correct: 0 },
+                { id: "p44", board: "ব.বো. ১৮", question: "তড়িৎ চুম্বক তৈরিতে সাধারণত কোন পদার্থ ব্যবহার করা হয়?", options: ["নরম লোহা", "তামা", "প্লাস্টিক", "কাচ"], correct: 0 },
+                { id: "p45", board: "য.বো. ১৮", question: "পরিবাহীর রোধ মূলত কীসের উপর নির্ভর করে?", options: ["দৈর্ঘ্য, প্রস্থচ্ছেদ ও উপাদান", "শুধু রং", "শুধু আকৃতি", "শুধু ওজন"], correct: 0 },
+                { id: "p46", board: "দি.বো. ১৮", question: "আপেক্ষিক আর্দ্রতা মাপার যন্ত্র কোনটি?", options: ["হাইগ্রোমিটার", "ব্যারোমিটার", "থার্মোমিটার", "অ্যানিমোমিটার"], correct: 0 },
+                { id: "p47", board: "ময়.বো. ১৮", question: "হুকের সূত্র মূলত কীসের সাথে সম্পর্কিত?", options: ["পীড়ন ও বিকৃতি", "বল ও ভর", "চাপ ও তাপমাত্রা", "শক্তি ও সময়"], correct: 0 },
+                { id: "p48", board: "ঢা.বো. ১৭", question: "সার্বজনীন মহাকর্ষ সূত্র প্রদান করেন কে?", options: ["আইজ্যাক নিউটন", "আলবার্ট আইনস্টাইন", "গ্যালিলিও", "জোহানেস কেপলার"], correct: 0 },
+                { id: "p49", board: "রা.বো. ১৭", question: "আলট্রাসনিক তরঙ্গের কম্পাঙ্ক কেমন হয়?", options: ["মানুষের শ্রবণসীমার ঊর্ধ্বে", "শ্রবণসীমার মধ্যে", "শ্রবণসীমার নিচে", "শূন্য"], correct: 0 },
+                { id: "p50", board: "চ.বো. ১৭", question: "প্রচলিত তড়িৎ প্রবাহের দিক কোন দিকে ধরা হয়?", options: ["ধনাত্মক থেকে ঋণাত্মক প্রান্তের দিকে", "ঋণাত্মক থেকে ধনাত্মক প্রান্তের দিকে", "উভয় দিকে", "কোনো নির্দিষ্ট দিক নেই"], correct: 0 }
             ],
             chemistry: [
-                { id: "c1", board: "D.B. 23", question: "What is the oxidation number of Manganese in KMnO₄?", options: ["+2", "+5", "+6", "+7"], correct: 3 },
-                { id: "c2", board: "R.B. 23", question: "Which element possesses the highest electronegativity?", options: ["Chlorine", "Fluorine", "Oxygen", "Nitrogen"], correct: 1 },
-                { id: "c3", board: "J.B. 22", question: "What is the chemical formula of Rust?", options: ["Fe₂O₃", "Fe₃O₄", "Fe₂O₃·nH₂O", "Fe(OH)₃"], correct: 2 },
-                { id: "c4", board: "B.B. 22", question: "How many valence electrons are present in a Carbon atom?", options: ["2", "4", "6", "8"], correct: 1 }
+                { id: "c1", board: "ঢা.বো. ২৩", question: "পানির রাসায়নিক সংকেত কী?", options: ["H₂O", "CO₂", "O₂", "NaCl"], correct: 0 },
+                { id: "c2", board: "রা.বো. ২৩", question: "প্রশমন বিক্রিয়ায় সাধারণত কী উৎপন্ন হয়?", options: ["লবণ ও পানি", "শুধু পানি", "শুধু লবণ", "কার্বন ডাই-অক্সাইড"], correct: 0 },
+                { id: "c3", board: "চ.বো. ২৩", question: "পর্যায় সারণির প্রথম মৌল কোনটি?", options: ["হাইড্রোজেন", "হিলিয়াম", "লিথিয়াম", "কার্বন"], correct: 0 },
+                { id: "c4", board: "কু.বো. ২২", question: "পারমাণবিক সংখ্যা কী নির্দেশ করে?", options: ["প্রোটন সংখ্যা", "নিউট্রন সংখ্যা", "ইলেকট্রন সংখ্যা শুধু", "ভর সংখ্যা"], correct: 0 },
+                { id: "c5", board: "সি.বো. ২২", question: "মিথেন গ্যাসের রাসায়নিক সংকেত কী?", options: ["CH₄", "C₂H₆", "CO₂", "C₆H₆"], correct: 0 },
+                { id: "c6", board: "ঢা.বো. ২২", question: "নিরপেক্ষ দ্রবণের pH মান কত?", options: ["৭", "০", "১৪", "১"], correct: 0 },
+                { id: "c7", board: "রা.বো. ২২", question: "সোডিয়াম ক্লোরাইডের রাসায়নিক সংকেত কী?", options: ["NaCl", "KCl", "CaCl₂", "NaOH"], correct: 0 },
+                { id: "c8", board: "ব.বো. ২৩", question: "লোহায় মরিচা পড়লে রাসায়নিকভাবে কী উৎপন্ন হয়?", options: ["আয়রন অক্সাইড", "কপার অক্সাইড", "জিংক অক্সাইড", "অ্যালুমিনিয়াম অক্সাইড"], correct: 0 },
+                { id: "c9", board: "য.বো. ২৩", question: "কার্বন পরমাণুর যোজ্যতা ইলেকট্রন সংখ্যা কত?", options: ["৪", "২", "৬", "৮"], correct: 0 },
+                { id: "c10", board: "দি.বো. ২৩", question: "অম্লীয় দ্রবণের pH মান কেমন হয়?", options: ["৭ এর কম", "৭ এর বেশি", "ঠিক ৭", "শূন্য"], correct: 0 },
+                { id: "c11", board: "ময়.বো. ২৩", question: "উৎপ্রেরক (catalyst) বিক্রিয়ার হারকে কীভাবে প্রভাবিত করে?", options: ["বিক্রিয়ার হার বাড়ায়", "বিক্রিয়ার হার কমায়", "কোনো পরিবর্তন করে না", "বিক্রিয়া বন্ধ করে"], correct: 0 },
+                { id: "c12", board: "ঢা.বো. ২১", question: "নিচের কোনটি নিষ্ক্রিয় গ্যাসের উদাহরণ?", options: ["নিয়ন", "অক্সিজেন", "নাইট্রোজেন", "ক্লোরিন"], correct: 0 },
+                { id: "c13", board: "রা.বো. ২১", question: "পটাশিয়ামের রাসায়নিক প্রতীক কী?", options: ["K", "P", "Po", "Pt"], correct: 0 },
+                { id: "c14", board: "চ.বো. ২১", question: "সমযোজী বন্ধন কীভাবে গঠিত হয়?", options: ["ইলেকট্রন ভাগাভাগির মাধ্যমে", "ইলেকট্রন আদান-প্রদানের মাধ্যমে", "প্রোটন বিনিময়ের মাধ্যমে", "নিউট্রন বিনিময়ের মাধ্যমে"], correct: 0 },
+                { id: "c15", board: "কু.বো. ২১", question: "বায়ুমণ্ডলে নাইট্রোজেন গ্যাসের পরিমাণ প্রায় কত শতাংশ?", options: ["৭৮%", "২১%", "১%", "৫০%"], correct: 0 },
+                { id: "c16", board: "সি.বো. ২১", question: "মানবদেহের পাকস্থলীতে কোন অ্যাসিড থাকে?", options: ["হাইড্রোক্লোরিক অ্যাসিড", "সালফিউরিক অ্যাসিড", "নাইট্রিক অ্যাসিড", "অ্যাসিটিক অ্যাসিড"], correct: 0 },
+                { id: "c17", board: "ব.বো. ২১", question: "কঠিন পদার্থ সরাসরি গ্যাসে পরিণত হওয়ার প্রক্রিয়াকে কী বলে?", options: ["ঊর্ধ্বপাতন", "বাষ্পীভবন", "ঘনীভবন", "নিক্ষেপণ"], correct: 0 },
+                { id: "c18", board: "য.বো. ২১", question: "পানির কঠিন অবস্থার সাধারণ নাম কী?", options: ["বরফ", "বাষ্প", "তরল পানি", "কুয়াশা"], correct: 0 },
+                { id: "c19", board: "দি.বো. ২১", question: "ধাতব বন্ধনের একটি বৈশিষ্ট্য কী?", options: ["মুক্ত ইলেকট্রনের সমুদ্র", "স্থির ইলেকট্রন জোড়া", "শুধু আয়নিক আকর্ষণ", "শুধু সমযোজী শেয়ারিং"], correct: 0 },
+                { id: "c20", board: "ময়.বো. ২১", question: "উদ্ভিদের ক্লোরোফিলে কোন ধাতব মৌল থাকে?", options: ["ম্যাগনেসিয়াম", "লোহা", "ক্যালসিয়াম", "দস্তা"], correct: 0 },
+                { id: "c21", board: "ঢা.বো. ২০", question: "সবচেয়ে হালকা মৌল কোনটি?", options: ["হাইড্রোজেন", "হিলিয়াম", "লিথিয়াম", "কার্বন"], correct: 0 },
+                { id: "c22", board: "রা.বো. ২০", question: "রাসায়নিক বিক্রিয়ায় ভরের নিত্যতা সূত্র কে প্রদান করেন?", options: ["আন্তোয়ান লাভোয়াসিয়ে", "জন ডাল্টন", "নিলস বোর", "রাদারফোর্ড"], correct: 0 },
+                { id: "c23", board: "চ.বো. ২০", question: "তড়িৎ বিশ্লেষণ প্রক্রিয়ায় মূলত কী ঘটে?", options: ["তড়িৎ শক্তি দ্বারা রাসায়নিক বিক্রিয়া সংঘটন", "তাপ দ্বারা বিক্রিয়া", "আলো দ্বারা বিক্রিয়া", "চাপ দ্বারা বিক্রিয়া"], correct: 0 },
+                { id: "c24", board: "কু.বো. ২০", question: "সবচেয়ে বেশি তড়িৎ ঋণাত্মকতা কোন মৌলের?", options: ["ফ্লোরিন", "ক্লোরিন", "অক্সিজেন", "নাইট্রোজেন"], correct: 0 },
+                { id: "c25", board: "সি.বো. ২০", question: "জৈব যৌগের মূল উপাদান কোনটি?", options: ["কার্বন", "সোডিয়াম", "ক্যালসিয়াম", "পটাশিয়াম"], correct: 0 },
+                { id: "c26", board: "ব.বো. ২০", question: "দহন বিক্রিয়ায় সাধারণত কোন গ্যাস প্রয়োজন হয়?", options: ["অক্সিজেন", "নাইট্রোজেন", "হাইড্রোজেন", "কার্বন ডাই-অক্সাইড"], correct: 0 },
+                { id: "c27", board: "য.বো. ২০", question: "অ্যামোনিয়ার রাসায়নিক সংকেত কী?", options: ["NH₃", "N₂O", "NO₂", "N₂"], correct: 0 },
+                { id: "c28", board: "দি.বো. ২০", question: "বালি ও পানির মিশ্রণ পৃথক করতে সাধারণত কোন পদ্ধতি ব্যবহৃত হয়?", options: ["ছাঁকন (filtration)", "পাতন", "ঊর্ধ্বপাতন", "ক্রোমাটোগ্রাফি"], correct: 0 },
+                { id: "c29", board: "ময়.বো. ২০", question: "ইস্পাত মূলত কীসের সংকর ধাতু?", options: ["লোহা ও কার্বন", "তামা ও দস্তা", "অ্যালুমিনিয়াম ও ম্যাগনেসিয়াম", "সোনা ও রূপা"], correct: 0 },
+                { id: "c30", board: "ঢা.বো. ১৯", question: "পারমাণবিক ভর একক (amu) কোন মৌলের ভিত্তিতে নির্ধারিত হয়?", options: ["কার্বন-১২", "হাইড্রোজেন-১", "অক্সিজেন-১৬", "নাইট্রোজেন-১৪"], correct: 0 },
+                { id: "c31", board: "রা.বো. ১৯", question: "কোনো পদার্থের দ্রাব্যতা প্রধানত কীসের উপর নির্ভর করে?", options: ["তাপমাত্রা ও দ্রাবকের প্রকৃতি", "শুধু রং", "শুধু আকার", "শুধু ঘনত্ব"], correct: 0 },
+                { id: "c32", board: "চ.বো. ১৯", question: "নিচের কোনটি ক্ষার ধাতুর উদাহরণ?", options: ["সোডিয়াম", "ক্লোরিন", "অক্সিজেন", "কার্বন"], correct: 0 },
+                { id: "c33", board: "কু.বো. ১৯", question: "তেজস্ক্রিয় মৌলের নিউক্লিয়াস থেকে কী নির্গত হতে পারে?", options: ["আলফা, বিটা ও গামা রশ্মি", "শুধু তাপ", "শুধু আলো", "শুধু শব্দ"], correct: 0 },
+                { id: "c34", board: "সি.বো. ১৯", question: "প্রাকৃতিক গ্যাসের প্রধান উপাদান কোনটি?", options: ["মিথেন", "ইথেন", "প্রোপেন", "বিউটেন"], correct: 0 },
+                { id: "c35", board: "ব.বো. ১৯", question: "একটি অণুতে পরমাণুগুলো সাধারণত কীভাবে যুক্ত থাকে?", options: ["রাসায়নিক বন্ধনের মাধ্যমে", "তড়িৎ চুম্বকীয় বলের মাধ্যমে শুধু", "মহাকর্ষ বলের মাধ্যমে", "কোনো বন্ধন ছাড়াই"], correct: 0 },
+                { id: "c36", board: "য.বো. ১৯", question: "চুনাপাথরের রাসায়নিক নাম কী?", options: ["ক্যালসিয়াম কার্বনেট", "সোডিয়াম কার্বনেট", "ক্যালসিয়াম অক্সাইড", "ম্যাগনেসিয়াম কার্বনেট"], correct: 0 },
+                { id: "c37", board: "দি.বো. ১৯", question: "pH মিটার দিয়ে মূলত কী পরিমাপ করা হয়?", options: ["দ্রবণের অম্লত্ব বা ক্ষারত্ব", "তাপমাত্রা", "ঘনত্ব", "চাপ"], correct: 0 },
+                { id: "c38", board: "ময়.বো. ১৯", question: "পানির স্থায়ী কাঠিন্য দূর করতে সাধারণত কোন পদ্ধতি ব্যবহৃত হয়?", options: ["আয়ন বিনিময় পদ্ধতি", "পরিস্রাবণ", "শুধু স্ফুটন", "বাষ্পীভবন"], correct: 0 },
+                { id: "c39", board: "ঢা.বো. ১৮", question: "ধাতুর মরিচা পড়া কোন ধরনের বিক্রিয়া?", options: ["জারণ বিক্রিয়া", "বিজারণ বিক্রিয়া", "প্রশমন বিক্রিয়া", "পলিমারকরণ"], correct: 0 },
+                { id: "c40", board: "রা.বো. ১৮", question: "সালোকসংশ্লেষণে উদ্ভিদ প্রধানত কোন গ্যাস গ্রহণ করে?", options: ["কার্বন ডাই-অক্সাইড", "অক্সিজেন", "নাইট্রোজেন", "হাইড্রোজেন"], correct: 0 },
+                { id: "c41", board: "চ.বো. ১৮", question: "অ্যাসিড ও ক্ষারের মধ্যে বিক্রিয়াকে কী বলে?", options: ["প্রশমন বিক্রিয়া", "জারণ বিক্রিয়া", "বিজারণ বিক্রিয়া", "পলিমারকরণ বিক্রিয়া"], correct: 0 },
+                { id: "c42", board: "কু.বো. ১৮", question: "পলিমার সাধারণত কী দ্বারা গঠিত?", options: ["পুনরাবৃত্ত মনোমার একক", "শুধু ধাতু আয়ন", "শুধু গ্যাস অণু", "শুধু পানি অণু"], correct: 0 },
+                { id: "c43", board: "সি.বো. ১৮", question: "হীরা ও গ্রাফাইট উভয়ই কোন মৌলের ভিন্ন রূপ (রূপভেদ)?", options: ["কার্বন", "সিলিকন", "সালফার", "ফসফরাস"], correct: 0 },
+                { id: "c44", board: "ব.বো. ১৮", question: "দ্রাবক ও দ্রাব্য একত্রে মিলে কী গঠন করে?", options: ["দ্রবণ", "যৌগিক পদার্থ শুধু", "মৌলিক পদার্থ", "কলয়েড শুধু"], correct: 0 },
+                { id: "c45", board: "য.বো. ১৮", question: "তামার তড়িৎ পরিবাহিতা বেশি হওয়ার প্রধান কারণ কী?", options: ["মুক্ত ইলেকট্রনের উপস্থিতি", "উচ্চ গলনাঙ্ক", "নিম্ন ঘনত্ব", "রং"], correct: 0 },
+                { id: "c46", board: "দি.বো. ১৮", question: "অক্সিজেনের পারমাণবিক সংখ্যা কত?", options: ["৮", "৬", "৭", "৯"], correct: 0 },
+                { id: "c47", board: "ময়.বো. ১৮", question: "নিচের কোনটি জীবাশ্ম জ্বালানির উদাহরণ?", options: ["কয়লা", "পানি", "বায়ু", "সূর্যালোক"], correct: 0 },
+                { id: "c48", board: "ঢা.বো. ১৭", question: "ভিনেগারে সাধারণত কোন অ্যাসিড থাকে?", options: ["অ্যাসিটিক অ্যাসিড", "সাইট্রিক অ্যাসিড", "ল্যাকটিক অ্যাসিড", "ফরমিক অ্যাসিড"], correct: 0 },
+                { id: "c49", board: "রা.বো. ১৭", question: "রাসায়নিক সমীকরণে বিক্রিয়ক ও উৎপাদের মধ্যে কী রক্ষিত থাকে?", options: ["পরমাণুর সংখ্যা (ভর নিত্যতা)", "শুধু রং", "শুধু তাপমাত্রা", "শুধু আয়তন"], correct: 0 },
+                { id: "c50", board: "চ.বো. ১৭", question: "কার্বনের যোজনী (valency) সাধারণত কত?", options: ["৪", "২", "৬", "৮"], correct: 0 }
             ],
             general_math: [
                 { id: "m1", board: "D.B. 23", question: "If A = {1, 2, 3}, what is the number of elements in power set P(A)?", options: ["3", "6", "8", "16"], correct: 2 },
                 { id: "m2", board: "R.B. 22", question: "What is the value of log₂ 16?", options: ["2", "3", "4", "8"], correct: 2 },
                 { id: "m3", board: "C.B. 23", question: "What is the sum of interior angles of a quadrilateral?", options: ["180°", "270°", "360°", "540°"], correct: 2 },
-                { id: "m4", board: "S.B. 23", question: "If x + 1/x = 2, what is the value of x² + 1/x²?", options: ["1", "2", "4", "0"], correct: 1 }
+                { id: "m4", board: "S.B. 23", question: "If x + 1/x = 2, what is the value of x² + 1/x²?", options: ["1", "2", "4", "0"], correct: 1 },
+                { id: "m5", board: "D.B. 22", question: "What is the value of √225?", options: ["15", "14", "16", "13"], correct: 0 },
+                { id: "m6", board: "R.B. 22", question: "A triangle with angles 60°, 60°, and 60° is what type?", options: ["Equilateral", "Isosceles", "Scalene", "Right-angled"], correct: 0 },
+                { id: "m7", board: "C.B. 23", question: "What is 25% expressed as a fraction?", options: ["1/4", "1/2", "1/5", "1/3"], correct: 0 },
+                { id: "m8", board: "Ctg.B. 22", question: "What is the value of π rounded to two decimal places?", options: ["3.14", "3.41", "3.12", "3.16"], correct: 0 },
+                { id: "m9", board: "S.B. 23", question: "Solve: 5x − 10 = 20. What is x?", options: ["6", "5", "4", "8"], correct: 0 },
+                { id: "m10", board: "D.B. 21", question: "What is the formula for the area of a rectangle?", options: ["length × width", "2(length + width)", "length + width", "length²"], correct: 0 },
+                { id: "m11", board: "R.B. 21", question: "What is the value of 2³ × 2²?", options: ["32", "16", "64", "8"], correct: 0 },
+                { id: "m12", board: "J.B. 22", question: "A number with exactly two factors, 1 and itself, is called a:", options: ["Prime number", "Composite number", "Even number", "Odd number"], correct: 0 },
+                { id: "m13", board: "B.B. 22", question: "What is the median of 3, 7, 9, 12, 15?", options: ["9", "7", "12", "10"], correct: 0 },
+                { id: "m14", board: "D.B. 20", question: "What is the sum of the interior angles of a hexagon?", options: ["720°", "540°", "360°", "900°"], correct: 0 },
+                { id: "m15", board: "S.B. 21", question: "What is 0.5 expressed as a percentage?", options: ["50%", "5%", "500%", "0.5%"], correct: 0 },
+                { id: "m16", board: "C.B. 21", question: "What is the reciprocal of 4?", options: ["1/4", "4", "-4", "0.4"], correct: 0 },
+                { id: "m17", board: "Ctg.B. 21", question: "If the radius of a circle is 7 cm, what is its diameter?", options: ["14 cm", "21 cm", "7 cm", "49 cm"], correct: 0 },
+                { id: "m18", board: "R.B. 20", question: "What is the value of x if 3x = 27?", options: ["9", "8", "6", "3"], correct: 0 },
+                { id: "m19", board: "J.B. 21", question: "What is the average of 10, 20, and 30?", options: ["20", "15", "25", "30"], correct: 0 },
+                { id: "m20", board: "B.B. 21", question: "What is the next number in the sequence 2, 4, 8, 16, ___?", options: ["32", "24", "20", "18"], correct: 0 }
             ],
             ict: [
                 { id: "i1", board: "D.B. 23", question: "Who is considered the pioneer of the World Wide Web (WWW)?", options: ["Charles Babbage", "Steve Jobs", "Tim Berners-Lee", "Mark Zuckerberg"], correct: 2 },
                 { id: "i2", board: "R.B. 23", question: "Which base number system is directly understood by computers?", options: ["Decimal", "Binary", "Octal", "Hexadecimal"], correct: 1 },
-                { id: "i3", board: "C.B. 22", question: "Which extension is standard for spreadsheet template files?", options: [".docx", ".xlsx", ".pptx", ".pdf"], correct: 1 }
+                { id: "i3", board: "C.B. 22", question: "Which extension is standard for spreadsheet template files?", options: [".docx", ".xlsx", ".pptx", ".pdf"], correct: 1 },
+                { id: "i4", board: "D.B. 22", question: "What does \"CPU\" stand for?", options: ["Central Processing Unit", "Computer Personal Unit", "Central Program Unit", "Central Processing Utility"], correct: 0 },
+                { id: "i5", board: "R.B. 22", question: "Which of these is an example of an operating system?", options: ["Windows", "Microsoft Word", "Google Chrome", "Excel"], correct: 0 },
+                { id: "i6", board: "C.B. 23", question: "What does \"URL\" stand for?", options: ["Uniform Resource Locator", "Universal Resource Link", "United Resource Locator", "Uniform Reference Link"], correct: 0 },
+                { id: "i7", board: "Ctg.B. 22", question: "Which device is used to input handwritten text or images into a computer?", options: ["Scanner", "Printer", "Speaker", "Monitor"], correct: 0 },
+                { id: "i8", board: "S.B. 22", question: "What is the full form of \"RAM\"?", options: ["Random Access Memory", "Read Access Memory", "Rapid Access Memory", "Random Application Memory"], correct: 0 },
+                { id: "i9", board: "D.B. 21", question: "Which language is primarily used for styling web pages?", options: ["CSS", "HTML", "Python", "Java"], correct: 0 },
+                { id: "i10", board: "R.B. 21", question: "What does \"HTTP\" stand for?", options: ["HyperText Transfer Protocol", "HyperText Transmission Protocol", "High Transfer Text Protocol", "HyperText Total Protocol"], correct: 0 },
+                { id: "i11", board: "J.B. 22", question: "Which of these is a type of computer malware?", options: ["Trojan horse", "Firewall", "Antivirus", "Router"], correct: 0 },
+                { id: "i12", board: "B.B. 22", question: "What is the smallest unit of digital information?", options: ["Bit", "Byte", "Kilobyte", "Megabyte"], correct: 0 },
+                { id: "i13", board: "D.B. 20", question: "Which company developed the Android operating system?", options: ["Google", "Apple", "Microsoft", "IBM"], correct: 0 },
+                { id: "i14", board: "S.B. 21", question: "What does \"Wi-Fi\" primarily provide?", options: ["Wireless internet connectivity", "Wired internet connectivity", "Bluetooth connectivity", "Satellite connectivity"], correct: 0 },
+                { id: "i15", board: "C.B. 21", question: "Which of these file formats is used for images?", options: ["JPEG", "DOCX", "MP3", "EXE"], correct: 0 },
+                { id: "i16", board: "Ctg.B. 21", question: "What is the term for unwanted, unsolicited email?", options: ["Spam", "Malware", "Cookie", "Cache"], correct: 0 },
+                { id: "i17", board: "R.B. 20", question: "What does \"GUI\" stand for?", options: ["Graphical User Interface", "General User Interface", "Graphic Utility Interface", "Global User Interface"], correct: 0 },
+                { id: "i18", board: "J.B. 21", question: "Which of these is a popular database management system?", options: ["MySQL", "Photoshop", "PowerPoint", "Illustrator"], correct: 0 },
+                { id: "i19", board: "B.B. 21", question: "What is converting data into a coded form to prevent unauthorized access called?", options: ["Encryption", "Compression", "Formatting", "Duplication"], correct: 0 },
+                { id: "i20", board: "D.B. 19", question: "Which of these is an input device?", options: ["Keyboard", "Monitor", "Printer", "Speaker"], correct: 0 }
             ],
             biology: [
                 { id: "b1", board: "D.B. 23", question: "Which organelle is known as the powerhouse of the cell?", options: ["Ribosome", "Lysosome", "Mitochondria", "Golgi Body"], correct: 2 },
                 { id: "b2", board: "R.B. 22", question: "Which plastic pigment is responsible for the green color of leaves?", options: ["Chromoplast", "Chloroplast", "Leucoplast", "Carotenoid"], correct: 1 },
                 { id: "b3", board: "Ctg.B. 23", question: "What is the primary site of photosynthesis in vascular plants?", options: ["Stem", "Root", "Leaf", "Flower"], correct: 2 },
-                { id: "b4", board: "J.B. 23", question: "Which blood group is universally designated as the universal recipient?", options: ["A+", "B+", "AB+", "O-"], correct: 2 }
+                { id: "b4", board: "J.B. 23", question: "Which blood group is universally designated as the universal recipient?", options: ["A+", "B+", "AB+", "O-"], correct: 2 },
+                { id: "b5", board: "D.B. 22", question: "What is the basic structural and functional unit of life?", options: ["Cell", "Tissue", "Organ", "Organism"], correct: 0 },
+                { id: "b6", board: "R.B. 22", question: "Which organ is primarily responsible for pumping blood in the human body?", options: ["Heart", "Liver", "Kidney", "Lungs"], correct: 0 },
+                { id: "b7", board: "C.B. 23", question: "What is the process by which plants lose water through their leaves called?", options: ["Transpiration", "Photosynthesis", "Respiration", "Germination"], correct: 0 },
+                { id: "b8", board: "Ctg.B. 22", question: "Which gas do humans exhale during respiration?", options: ["Carbon dioxide", "Oxygen", "Nitrogen", "Hydrogen"], correct: 0 },
+                { id: "b9", board: "S.B. 22", question: "What is the male reproductive cell in humans called?", options: ["Sperm", "Egg", "Zygote", "Embryo"], correct: 0 },
+                { id: "b10", board: "D.B. 21", question: "Which part of a plant primarily absorbs water and minerals?", options: ["Root", "Stem", "Leaf", "Flower"], correct: 0 },
+                { id: "b11", board: "R.B. 21", question: "What is the study of heredity and variation called?", options: ["Genetics", "Ecology", "Taxonomy", "Physiology"], correct: 0 },
+                { id: "b12", board: "J.B. 22", question: "Which organ filters waste products from the blood?", options: ["Kidney", "Heart", "Lungs", "Liver"], correct: 0 },
+                { id: "b13", board: "B.B. 22", question: "What is the green pigment in plants responsible for photosynthesis called?", options: ["Chlorophyll", "Carotene", "Xanthophyll", "Anthocyanin"], correct: 0 },
+                { id: "b14", board: "D.B. 20", question: "Which of these is a function of the human skeletal system?", options: ["Support and protection", "Digestion", "Respiration only", "Circulation only"], correct: 0 },
+                { id: "b15", board: "S.B. 21", question: "What is the term for animals that eat only plants?", options: ["Herbivores", "Carnivores", "Omnivores", "Decomposers"], correct: 0 },
+                { id: "b16", board: "C.B. 21", question: "Which vitamin is produced in human skin when exposed to sunlight?", options: ["Vitamin D", "Vitamin A", "Vitamin C", "Vitamin K"], correct: 0 },
+                { id: "b17", board: "Ctg.B. 21", question: "What is the basic unit of heredity called?", options: ["Gene", "Cell", "Chromosome", "Protein"], correct: 0 },
+                { id: "b18", board: "R.B. 20", question: "Which process do plants use to convert sunlight into chemical energy?", options: ["Photosynthesis", "Respiration", "Fermentation", "Digestion"], correct: 0 },
+                { id: "b19", board: "J.B. 21", question: "What is the largest organ in the human body?", options: ["Skin", "Liver", "Heart", "Lungs"], correct: 0 },
+                { id: "b20", board: "B.B. 21", question: "Which blood component is primarily responsible for clotting?", options: ["Platelets", "Red blood cells", "White blood cells", "Plasma"], correct: 0 }
+            ],
+            higher_math: [
+                { id: "hm1", board: "D.B. 23", question: "What is the value of sin 90°?", options: ["1", "0", "-1", "Undefined"], correct: 0 },
+                { id: "hm2", board: "R.B. 23", question: "If f(x) = x² + 3x, what is f(2)?", options: ["10", "8", "6", "12"], correct: 0 },
+                { id: "hm3", board: "C.B. 22", question: "The determinant of a 2x2 matrix [[a,b],[c,d]] is calculated as:", options: ["ad − bc", "ab − cd", "ad + bc", "ac − bd"], correct: 0 },
+                { id: "hm4", board: "J.B. 23", question: "What is the derivative of x³ with respect to x?", options: ["3x²", "x²", "3x", "x³"], correct: 0 },
+                { id: "hm5", board: "D.B. 22", question: "What is the value of cos 0°?", options: ["1", "0", "-1", "Undefined"], correct: 0 },
+                { id: "hm6", board: "R.B. 22", question: "What is the sum of the first 5 natural numbers?", options: ["15", "10", "20", "25"], correct: 0 },
+                { id: "hm7", board: "C.B. 23", question: "If a set A has 4 elements, how many subsets does it have?", options: ["16", "8", "4", "12"], correct: 0 },
+                { id: "hm8", board: "Ctg.B. 22", question: "What is the value of log₁₀ 100?", options: ["2", "1", "10", "100"], correct: 0 },
+                { id: "hm9", board: "S.B. 22", question: "What is the slope of the line y = 3x + 5?", options: ["3", "5", "-3", "8"], correct: 0 },
+                { id: "hm10", board: "D.B. 21", question: "What is the value of tan 45°?", options: ["1", "0", "-1", "Undefined"], correct: 0 },
+                { id: "hm11", board: "R.B. 21", question: "What is the formula for the area of a triangle?", options: ["½ × base × height", "base × height", "2 × base × height", "base + height"], correct: 0 },
+                { id: "hm12", board: "J.B. 22", question: "If i = √−1, what is i²?", options: ["−1", "1", "0", "i"], correct: 0 },
+                { id: "hm13", board: "B.B. 22", question: "What is the general nth term formula for an arithmetic sequence?", options: ["a + (n−1)d", "a × r^(n−1)", "a + nd", "n(a+d)"], correct: 0 },
+                { id: "hm14", board: "D.B. 20", question: "What is the value of 5! (5 factorial)?", options: ["120", "24", "60", "100"], correct: 0 },
+                { id: "hm15", board: "S.B. 21", question: "What is the derivative of a constant?", options: ["0", "1", "The constant itself", "Undefined"], correct: 0 },
+                { id: "hm16", board: "C.B. 21", question: "What is the standard form of a quadratic equation?", options: ["ax² + bx + c = 0", "ax + b = 0", "ax³ + bx² = 0", "a + bx = 0"], correct: 0 },
+                { id: "hm17", board: "Ctg.B. 21", question: "What is the sum of the interior angles of a pentagon?", options: ["540°", "360°", "720°", "450°"], correct: 0 },
+                { id: "hm18", board: "R.B. 20", question: "What is the integral of a constant \"c\" with respect to x?", options: ["cx + C", "c", "cx²", "0"], correct: 0 },
+                { id: "hm19", board: "J.B. 21", question: "What is the value of 10² − 6²?", options: ["64", "36", "100", "46"], correct: 0 },
+                { id: "hm20", board: "B.B. 21", question: "In a right triangle, which theorem relates the lengths of the sides?", options: ["Pythagorean theorem", "Binomial theorem", "Remainder theorem", "Factor theorem"], correct: 0 }
+            ],
+            bangla_1st: [
+                { id: "bn1_1", board: "D.B. 23", question: "Who wrote the short story 'Kabuliwala'?", options: ["Rabindranath Tagore", "Kazi Nazrul Islam", "Bankim Chandra", "Sharat Chandra"], correct: 0 },
+                { id: "bn1_2", board: "R.B. 22", question: "Who is known as the 'Bidrohi Kobi' (Rebel Poet) of Bengali literature?", options: ["Kazi Nazrul Islam", "Rabindranath Tagore", "Jibanananda Das", "Sukanta Bhattacharya"], correct: 0 },
+                { id: "bn1_3", board: "C.B. 23", question: "'Sonar Tori' is a famous poetry collection written by:", options: ["Rabindranath Tagore", "Kazi Nazrul Islam", "Jasimuddin", "Michael Madhusudan Dutt"], correct: 0 },
+                { id: "bn1_4", board: "S.B. 22", question: "In Bangla grammar, 'sandhi' refers to:", options: ["Combination of two words or sounds", "Separation of a sentence", "A type of poem", "A grammatical case"], correct: 0 },
+                { id: "bn1_5", board: "D.B. 22", question: "Who wrote the novel 'Padma Nadir Majhi'?", options: ["Manik Bandopadhyay", "Bibhutibhushan Bandopadhyay", "Tarashankar Bandopadhyay", "Sharat Chandra Chattopadhyay"], correct: 0 },
+                { id: "bn1_6", board: "R.B. 22", question: "'Bishad Sindhu' is a famous novel written by:", options: ["Mir Mosharraf Hossain", "Kazi Nazrul Islam", "Rabindranath Tagore", "Jasimuddin"], correct: 0 },
+                { id: "bn1_7", board: "C.B. 23", question: "Who is regarded as the first modern poet of Bengali literature?", options: ["Michael Madhusudan Dutt", "Rabindranath Tagore", "Kazi Nazrul Islam", "Jibanananda Das"], correct: 0 },
+                { id: "bn1_8", board: "Ctg.B. 22", question: "'Nakshi Kanthar Math' is a famous poem written by:", options: ["Jasimuddin", "Rabindranath Tagore", "Kazi Nazrul Islam", "Sukanta Bhattacharya"], correct: 0 },
+                { id: "bn1_9", board: "S.B. 22", question: "Which literary form is 'Meghnad Badh Kavya'?", options: ["Epic poem", "Novel", "Short story", "Drama"], correct: 0 },
+                { id: "bn1_10", board: "D.B. 21", question: "Rabindranath Tagore won the Nobel Prize in Literature for which work?", options: ["Gitanjali", "Gora", "Shesher Kobita", "Ghare Baire"], correct: 0 },
+                { id: "bn1_11", board: "R.B. 21", question: "Who wrote 'Devdas'?", options: ["Sharat Chandra Chattopadhyay", "Bankim Chandra Chattopadhyay", "Rabindranath Tagore", "Manik Bandopadhyay"], correct: 0 },
+                { id: "bn1_12", board: "J.B. 22", question: "What is the term for a traditional Bengali folk narrative song?", options: ["Palagaan", "Rabindra Sangeet", "Nazrul Geeti", "Ghazal"], correct: 0 },
+                { id: "bn1_13", board: "B.B. 22", question: "Who wrote 'Anandamath', which contains the song 'Vande Mataram'?", options: ["Bankim Chandra Chattopadhyay", "Rabindranath Tagore", "Michael Madhusudan Dutt", "Sharat Chandra"], correct: 0 },
+                { id: "bn1_14", board: "D.B. 20", question: "'Chokher Bali' is a novel written by:", options: ["Rabindranath Tagore", "Sharat Chandra", "Bankim Chandra", "Kazi Nazrul Islam"], correct: 0 },
+                { id: "bn1_15", board: "S.B. 21", question: "The Bengali Language Movement, commemorated by 'Amar Ekushey', took place in which year?", options: ["1952", "1947", "1971", "1969"], correct: 0 },
+                { id: "bn1_16", board: "C.B. 21", question: "Who wrote the patriotic poem collection 'Agnibina'?", options: ["Kazi Nazrul Islam", "Rabindranath Tagore", "Jasimuddin", "Sukanta Bhattacharya"], correct: 0 },
+                { id: "bn1_17", board: "Ctg.B. 21", question: "'Lalon Geeti' is associated with which mystic poet-singer?", options: ["Lalon Shah", "Hason Raja", "Radharaman Dutta", "Abbasuddin Ahmed"], correct: 0 },
+                { id: "bn1_18", board: "R.B. 20", question: "Which Bengali poet is known as the national poet of Bangladesh?", options: ["Kazi Nazrul Islam", "Rabindranath Tagore", "Jasimuddin", "Shamsur Rahman"], correct: 0 },
+                { id: "bn1_19", board: "J.B. 21", question: "'Char Adhyay' is a novel by which author?", options: ["Rabindranath Tagore", "Sharat Chandra", "Bankim Chandra", "Manik Bandopadhyay"], correct: 0 },
+                { id: "bn1_20", board: "B.B. 21", question: "What literary form best describes 'Nabanna'?", options: ["Drama", "Novel", "Poem", "Essay"], correct: 0 }
+            ],
+            bangla_2nd: [
+                { id: "bn2_1", board: "D.B. 23", question: "In Bangla grammar, 'Karok' (কারক) describes the relationship between which two parts of a sentence?", options: ["Verb and noun", "Adjective and adverb", "Subject and object only", "Two verbs"], correct: 0 },
+                { id: "bn2_2", board: "R.B. 23", question: "How many vowel sounds (স্বরবর্ণ) are there in the Bangla alphabet?", options: ["11", "10", "12", "9"], correct: 0 },
+                { id: "bn2_3", board: "Ctg.B. 22", question: "'Sadhu Bhasha' in Bangla refers to:", options: ["The formal, classical style of writing", "Spoken colloquial style", "A regional dialect", "Sign language"], correct: 0 },
+                { id: "bn2_4", board: "J.B. 22", question: "The Bangla script evolved from which ancient script?", options: ["Brahmi script", "Latin script", "Arabic script", "Devanagari script"], correct: 0 },
+                { id: "bn2_5", board: "D.B. 22", question: "What does 'Ban­an' (বানান) refer to in Bangla grammar?", options: ["Spelling", "Pronunciation", "Punctuation", "Grammar rules"], correct: 0 },
+                { id: "bn2_6", board: "R.B. 22", question: "How many consonant letters (ব্যঞ্জনবর্ণ) are there in the Bangla alphabet?", options: ["39", "35", "40", "33"], correct: 0 },
+                { id: "bn2_7", board: "C.B. 23", question: "A 'Sarbanam' (সর্বনাম) in Bangla grammar refers to which part of speech?", options: ["Pronoun", "Verb", "Adjective", "Adverb"], correct: 0 },
+                { id: "bn2_8", board: "Ctg.B. 22", question: "What is 'Bisheshan' (বিশেষণ) in Bangla grammar?", options: ["Adjective", "Noun", "Verb", "Conjunction"], correct: 0 },
+                { id: "bn2_9", board: "S.B. 22", question: "What does 'Kriya' (ক্রিয়া) mean in Bangla grammar?", options: ["Verb", "Noun", "Pronoun", "Adjective"], correct: 0 },
+                { id: "bn2_10", board: "D.B. 21", question: "What is the term for a compound word formed by combining two or more words in Bangla?", options: ["Samas", "Sandhi", "Pratyay", "Upasarga"], correct: 0 },
+                { id: "bn2_11", board: "R.B. 21", question: "'Prottoy' (প্রত্যয়) in Bangla grammar refers to:", options: ["A suffix added to a root word", "A prefix", "A type of sentence", "A punctuation mark"], correct: 0 },
+                { id: "bn2_12", board: "J.B. 22", question: "What is 'Upasarga' (উপসর্গ) in Bangla grammar?", options: ["A prefix added before a word", "A suffix", "A type of pronoun", "A conjunction"], correct: 0 },
+                { id: "bn2_13", board: "B.B. 22", question: "How many cases (কারক) are traditionally recognized in Bangla grammar?", options: ["6", "4", "5", "8"], correct: 0 },
+                { id: "bn2_14", board: "D.B. 20", question: "What is a 'Jotil Bakko' (জটিল বাক্য) in Bangla grammar?", options: ["A complex sentence", "A simple sentence", "A compound sentence", "An interrogative sentence"], correct: 0 },
+                { id: "bn2_15", board: "S.B. 21", question: "The Bangla language belongs to which language family?", options: ["Indo-Aryan", "Dravidian", "Sino-Tibetan", "Austroasiatic"], correct: 0 },
+                { id: "bn2_16", board: "C.B. 21", question: "What is 'Biporit Shobdo' (বিপরীত শব্দ)?", options: ["Antonym", "Synonym", "Homophone", "Compound word"], correct: 0 },
+                { id: "bn2_17", board: "Ctg.B. 21", question: "What is the term for words with similar meanings in Bangla?", options: ["Samarthak shabda (synonym)", "Biporit shabda", "Dhwoni", "Ban­an"], correct: 0 },
+                { id: "bn2_18", board: "R.B. 20", question: "Which punctuation mark is called 'Dari' (দাঁড়ি) in Bangla?", options: ["Full stop", "Comma", "Question mark", "Exclamation mark"], correct: 0 },
+                { id: "bn2_19", board: "J.B. 21", question: "What is 'Namapod' (নামপদ) in Bangla grammar?", options: ["A word that acts as a noun", "A verb form", "A type of sentence", "A prefix"], correct: 0 },
+                { id: "bn2_20", board: "B.B. 21", question: "What does 'Dhwoni' (ধ্বনি) refer to in Bangla linguistics?", options: ["Sound/phonetics", "Meaning", "Grammar structure", "Vocabulary"], correct: 0 }
+            ],
+            english_1st: [
+                { id: "e1_1", board: "D.B. 23", question: "Which part of speech describes an action?", options: ["Verb", "Noun", "Adjective", "Preposition"], correct: 0 },
+                { id: "e1_2", board: "R.B. 22", question: "A Subject + Verb + Object sentence pattern is called:", options: ["SVO structure", "VSO structure", "OVS structure", "SOV structure"], correct: 0 },
+                { id: "e1_3", board: "C.B. 23", question: "A word that joins two clauses is called a:", options: ["Conjunction", "Preposition", "Interjection", "Pronoun"], correct: 0 },
+                { id: "e1_4", board: "S.B. 23", question: "What is a synonym for \"Enormous\"?", options: ["Huge", "Tiny", "Narrow", "Weak"], correct: 0 },
+                { id: "e1_5", board: "D.B. 22", question: "Which word is a noun in \"The dog barked loudly.\"?", options: ["Dog", "Barked", "Loudly", "The"], correct: 0 },
+                { id: "e1_6", board: "R.B. 22", question: "What is the antonym of \"Difficult\"?", options: ["Easy", "Hard", "Complex", "Tough"], correct: 0 },
+                { id: "e1_7", board: "C.B. 23", question: "Identify the adjective in: \"She wore a beautiful dress.\"", options: ["Beautiful", "Wore", "Dress", "She"], correct: 0 },
+                { id: "e1_8", board: "Ctg.B. 22", question: "What type of sentence is \"Please close the door.\"?", options: ["Imperative", "Declarative", "Interrogative", "Exclamatory"], correct: 0 },
+                { id: "e1_9", board: "S.B. 22", question: "Choose the correct plural form of \"child\":", options: ["Children", "Childs", "Childes", "Childrens"], correct: 0 },
+                { id: "e1_10", board: "D.B. 21", question: "The main idea of a paragraph is usually called the:", options: ["Topic sentence", "Conclusion", "Introduction", "Body"], correct: 0 },
+                { id: "e1_11", board: "R.B. 21", question: "Which of these is a compound word?", options: ["Sunflower", "Beautiful", "Running", "Quickly"], correct: 0 },
+                { id: "e1_12", board: "J.B. 22", question: "A group of words without a finite verb is called a:", options: ["Phrase", "Clause", "Sentence", "Paragraph"], correct: 0 },
+                { id: "e1_13", board: "B.B. 22", question: "Choose the correct spelling:", options: ["Necessary", "Neccessary", "Necessery", "Neccesary"], correct: 0 },
+                { id: "e1_14", board: "D.B. 20", question: "What is the synonym of \"Happy\"?", options: ["Joyful", "Sad", "Angry", "Tired"], correct: 0 },
+                { id: "e1_15", board: "S.B. 21", question: "Identify the pronoun: \"She went to the market.\"", options: ["She", "Went", "To", "Market"], correct: 0 },
+                { id: "e1_16", board: "C.B. 21", question: "What is the term for a word that sounds like what it represents?", options: ["Onomatopoeia", "Metaphor", "Simile", "Alliteration"], correct: 0 },
+                { id: "e1_17", board: "Ctg.B. 21", question: "Which sentence is in the interrogative form?", options: ["Are you coming?", "You are coming.", "Come here.", "What a day!"], correct: 0 },
+                { id: "e1_18", board: "R.B. 20", question: "Choose the correct article: \"___ university is located near my house.\"", options: ["A", "An", "The", "No article"], correct: 0 },
+                { id: "e1_19", board: "J.B. 21", question: "What is the past participle of \"write\"?", options: ["Written", "Wrote", "Writing", "Writes"], correct: 0 },
+                { id: "e1_20", board: "B.B. 21", question: "Identify the correct sentence:", options: ["He goes to school every day.", "He go to school every day.", "He going to school every day.", "He gone to school every day."], correct: 0 }
+            ],
+            english_2nd: [
+                { id: "e2_1", board: "D.B. 23", question: "Choose the correct passive voice of \"She writes a letter.\"", options: ["A letter is written by her.", "A letter was written by her.", "A letter is being written.", "A letter written by her."], correct: 0 },
+                { id: "e2_2", board: "R.B. 23", question: "Choose the correct preposition: \"He is good ___ Mathematics.\"", options: ["at", "in", "on", "for"], correct: 0 },
+                { id: "e2_3", board: "Ctg.B. 22", question: "Choose the correct form: \"If it rains, I ___ stay home.\"", options: ["will", "would", "shall", "was"], correct: 0 },
+                { id: "e2_4", board: "J.B. 23", question: "What is the comparative form of \"good\"?", options: ["better", "gooder", "best", "more good"], correct: 0 },
+                { id: "e2_5", board: "D.B. 22", question: "Choose the correct question tag: \"She is coming, ___?\"", options: ["isn't she", "is she", "doesn't she", "isn't it"], correct: 0 },
+                { id: "e2_6", board: "R.B. 22", question: "Fill in the blank: \"I have been living here ___ 2015.\"", options: ["since", "for", "from", "at"], correct: 0 },
+                { id: "e2_7", board: "C.B. 23", question: "Choose the correct indirect speech: He said, \"I am tired.\" → He said that he ___ tired.", options: ["was", "is", "has been", "were"], correct: 0 },
+                { id: "e2_8", board: "Ctg.B. 22", question: "What is the correct plural of \"mouse\" (the animal)?", options: ["Mice", "Mouses", "Mices", "Mouse"], correct: 0 },
+                { id: "e2_9", board: "S.B. 22", question: "Choose the correct conditional form: \"If I ___ rich, I would travel the world.\"", options: ["were", "was", "am", "be"], correct: 0 },
+                { id: "e2_10", board: "D.B. 21", question: "Which word correctly completes: \"He is interested ___ music.\"?", options: ["in", "on", "at", "for"], correct: 0 },
+                { id: "e2_11", board: "R.B. 21", question: "Choose the correct sentence:", options: ["Neither of them is right.", "Neither of them are right.", "Neither of them were right.", "Neither of them right."], correct: 0 },
+                { id: "e2_12", board: "J.B. 22", question: "What is the superlative form of \"beautiful\"?", options: ["Most beautiful", "Beautifullest", "More beautiful", "Beautifuller"], correct: 0 },
+                { id: "e2_13", board: "B.B. 22", question: "Choose the correctly punctuated sentence:", options: ["Where are you going?", "Where are you going,", "where are you going?", "where are you going"], correct: 0 },
+                { id: "e2_14", board: "D.B. 20", question: "Fill in the blank: \"She has ___ finished her homework.\"", options: ["already", "yet", "still", "since"], correct: 0 },
+                { id: "e2_15", board: "S.B. 21", question: "Choose the correct verb form: \"By next year, I ___ graduated.\"", options: ["will have", "will", "would have", "have"], correct: 0 },
+                { id: "e2_16", board: "C.B. 21", question: "Identify the correctly formed negative sentence:", options: ["I do not like coffee.", "I not like coffee.", "I don't liking coffee.", "I doesn't like coffee."], correct: 0 },
+                { id: "e2_17", board: "Ctg.B. 21", question: "Choose the correct word order: \"always / She / on time / arrives\"", options: ["She always arrives on time.", "Always she arrives on time.", "She arrives always on time.", "On time she always arrives."], correct: 0 },
+                { id: "e2_18", board: "R.B. 20", question: "Choose the correct modal verb: \"You ___ see a doctor if the pain continues.\"", options: ["should", "will", "do", "is"], correct: 0 },
+                { id: "e2_19", board: "J.B. 21", question: "Fill in the blank: \"This is the book ___ I told you about.\"", options: ["that", "who", "whom", "whose"], correct: 0 },
+                { id: "e2_20", board: "B.B. 21", question: "Choose the correct spelling:", options: ["Environment", "Enviroment", "Environmnet", "Envirnoment"], correct: 0 }
+            ],
+            bgs: [
+                { id: "bgs1", board: "D.B. 23", question: "Bangladesh's parliament is officially known as the:", options: ["Jatiya Sangsad", "Lok Sabha", "National Assembly", "Majlis"], correct: 0 },
+                { id: "bgs2", board: "R.B. 22", question: "Which organization is the primary global body focused on international trade rules?", options: ["World Trade Organization", "World Health Organization", "UNESCO", "IMF"], correct: 0 },
+                { id: "bgs3", board: "C.B. 23", question: "The Liberation War Museum is located in which city?", options: ["Dhaka", "Chittagong", "Sylhet", "Khulna"], correct: 0 },
+                { id: "bgs4", board: "S.B. 22", question: "Which continent has the largest number of countries?", options: ["Africa", "Asia", "Europe", "South America"], correct: 0 }
+            ],
+            islam: [
+                { id: "isl1", board: "D.B. 23", question: "How many pillars of Islam are there?", options: ["5", "4", "6", "7"], correct: 0 },
+                { id: "isl2", board: "R.B. 23", question: "The holy book of Islam is called:", options: ["Al-Quran", "Torah", "Bible", "Vedas"], correct: 0 },
+                { id: "isl3", board: "Ctg.B. 22", question: "What is the Arabic term for the Islamic declaration of faith?", options: ["Shahada", "Salah", "Zakat", "Hajj"], correct: 0 },
+                { id: "isl4", board: "J.B. 22", question: "Ramadan is which month of the Islamic lunar calendar?", options: ["9th", "8th", "10th", "12th"], correct: 0 }
             ]
         };
 
@@ -571,13 +833,14 @@
         let totalExamDurationSeconds = 0;
         let currentUserName = localStorage.getItem('ssc_username') || null;
 
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
                 setTimeout(() => splash.style.visibility = 'hidden', 800);
             }, 2500);
-            initData();
+
+            await loadQuestions();
             renderDashboard();
 
             if (!currentUserName) {
@@ -634,16 +897,61 @@
             }
         }
 
-        function initData() {
-            const storedDb = localStorage.getItem('ssc_exam_db_v6');
-            if (storedDb) {
-                database = JSON.parse(storedDb);
+        // Questions now live in the shared Supabase 'questions' table, so an
+        // admin edit shows up for every visitor — not just the admin's own
+        // browser. Falls back to the built-in bank if Supabase isn't reachable.
+        async function loadQuestions() {
+            database = {};
+            sscSubjects.forEach(s => { database[s.id] = []; });
+
+            if (!supabaseClient) {
+                database = JSON.parse(JSON.stringify(realBoardQuestions));
                 sscSubjects.forEach(s => { if (!database[s.id]) database[s.id] = []; });
-            } else {
-                database = realBoardQuestions;
-                sscSubjects.forEach(s => { if (!database[s.id]) database[s.id] = []; });
-                localStorage.setItem('ssc_exam_db_v6', JSON.stringify(database));
+                return;
             }
+
+            const { data, error } = await supabaseClient.from('questions').select('*');
+
+            if (error) {
+                console.error('Failed to load questions from Supabase:', error);
+                database = JSON.parse(JSON.stringify(realBoardQuestions));
+                sscSubjects.forEach(s => { if (!database[s.id]) database[s.id] = []; });
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                // First-ever load: seed Supabase with the built-in question bank.
+                const seedRows = [];
+                sscSubjects.forEach(s => {
+                    (realBoardQuestions[s.id] || []).forEach(q => {
+                        seedRows.push({
+                            subject_id: s.id,
+                            board: q.board,
+                            question: q.question,
+                            options: q.options,
+                            correct: q.correct
+                        });
+                    });
+                });
+                if (seedRows.length > 0) {
+                    const { error: seedError } = await supabaseClient.from('questions').insert(seedRows);
+                    if (seedError) console.error('Seeding questions failed:', seedError);
+                }
+                database = JSON.parse(JSON.stringify(realBoardQuestions));
+                sscSubjects.forEach(s => { if (!database[s.id]) database[s.id] = []; });
+                return;
+            }
+
+            data.forEach(row => {
+                if (!database[row.subject_id]) database[row.subject_id] = [];
+                database[row.subject_id].push({
+                    id: row.id,
+                    board: row.board,
+                    question: row.question,
+                    options: row.options,
+                    correct: row.correct
+                });
+            });
         }
 
         function renderDashboard() {
@@ -978,11 +1286,21 @@
             sscSubjects.forEach(s => addSel.innerHTML += `<option value="${s.id}">${s.name}</option>`);
         }
 
-        function handleSaveQuestion(e) {
+        async function handleSaveQuestion(e) {
             e.preventDefault();
+
+            if (!supabaseClient) {
+                alert('Leaderboard/questions storage is not connected yet.');
+                return;
+            }
+            if (!currentSession) {
+                alert('Please sign in with Google (top right) first — question saves require a signed-in admin session.');
+                return;
+            }
+
             const subjectId = document.getElementById('admin-subject-select').value;
             const newQ = {
-                id: "q_" + Date.now(),
+                subject_id: subjectId,
                 board: document.getElementById('admin-board').value,
                 question: document.getElementById('admin-q-text').value,
                 options: [
@@ -994,11 +1312,25 @@
                 correct: parseInt(document.getElementById('admin-correct-opt').value)
             };
 
-            if (!database[subjectId]) database[subjectId] = [];
-            database[subjectId].push(newQ);
+            const { data, error } = await supabaseClient.from('questions').insert([newQ]).select();
 
-            localStorage.setItem('ssc_exam_db_v6', JSON.stringify(database));
-            alert('Board question saved!');
+            if (error) {
+                console.error('Failed to save question:', error);
+                alert('Could not save this question: ' + error.message);
+                return;
+            }
+
+            if (!database[subjectId]) database[subjectId] = [];
+            const saved = data[0];
+            database[subjectId].push({
+                id: saved.id,
+                board: saved.board,
+                question: saved.question,
+                options: saved.options,
+                correct: saved.correct
+            });
+
+            alert('Board question saved — this is now live for every visitor!');
             document.getElementById('add-q-form').reset();
             renderDashboard();
         }
