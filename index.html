@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Practice: Build from Scratch</title>
+    <title>SSC 2027 — Smart Board Exam Companion</title>
     <style>
         :root {
             --bg-base: #0a0f18;
@@ -300,9 +300,40 @@
             animation: lbPulse 1.4s infinite;
         }
         @keyframes lbPulse { 0%,100%{ opacity: 1; } 50%{ opacity: 0.3; } }
+    
+/* ===== SSC 2027 PREMIUM UI ===== */
+:root{--bg:#070b12;--surface:#0e1522;--surface2:#121c2b;--line:rgba(255,255,255,.09);--muted:#8fa0b8;--white:#f5f8ff;--blue:#5b8cff;--cyan:#48d9ff;--green:#35d39b;--amber:#ffbd4a;--danger:#ff5f6d;--shadow:0 24px 70px rgba(0,0,0,.42)}
+body{background:radial-gradient(900px 500px at 15% -10%,rgba(91,140,255,.16),transparent 60%),radial-gradient(700px 500px at 90% 10%,rgba(72,217,255,.10),transparent 60%),linear-gradient(180deg,#0a101a 0%,#06090f 100%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body::before{display:none}
+.app-header{height:72px;padding:.7rem max(1rem,calc((100vw - 1180px)/2));background:rgba(7,11,18,.78);border-bottom:1px solid var(--line);box-shadow:0 8px 30px rgba(0,0,0,.18)}
+.brand{display:flex;align-items:center;gap:.7rem;border:0;background:none;color:var(--white);cursor:pointer;text-align:left}.brand-mark{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#5b8cff,#49d9ff);color:#06101c;font-weight:950;box-shadow:0 8px 24px rgba(72,217,255,.2)}.brand strong{display:block;font-size:1rem}.brand small{display:block;color:var(--muted);font-size:.65rem}
+.nav-buttons{gap:.25rem;align-items:center}.nav-btn,.auth-btn{border:1px solid transparent;background:transparent;color:#aebbd0;padding:.55rem .8rem;border-radius:10px;font-weight:750;cursor:pointer;transition:.2s}.nav-btn:hover,.nav-btn.active-nav{background:rgba(255,255,255,.06);color:var(--white);border-color:var(--line)}.auth-btn{background:var(--white);color:#08101c;padding:.6rem 1rem}
+.container{max-width:1180px;margin:0 auto;padding:28px 18px 80px}
+.hero-card{min-height:330px;border:1px solid var(--line);border-radius:28px;padding:48px;display:flex;align-items:center;justify-content:space-between;overflow:hidden;position:relative;background:linear-gradient(135deg,rgba(17,29,47,.96),rgba(11,17,27,.92));box-shadow:var(--shadow)}.hero-copy{position:relative;z-index:2;max-width:650px}.eyebrow{font-size:.68rem;letter-spacing:.16em;font-weight:900;color:#78cfff}.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(53,211,155,.09);margin-right:7px}.hero-copy h2{font-size:clamp(2rem,5vw,4rem);line-height:1.02;letter-spacing:-.055em;margin:12px 0 16px;color:var(--white)}.hero-copy p{color:#a8b5c8;max-width:580px;font-size:1rem;line-height:1.7}.hero-actions{display:flex;gap:.7rem;margin-top:25px}
+.btn{border-radius:12px;padding:.72rem 1rem;border:0;font-weight:850;transition:.2s;cursor:pointer}.btn-primary{background:linear-gradient(135deg,#6a92ff,#42d6ff);color:#06101c;box-shadow:0 10px 30px rgba(74,155,255,.18)}.btn-primary:hover{transform:translateY(-2px)}.btn-ghost,.btn-secondary{background:rgba(255,255,255,.045);border:1px solid var(--line);color:var(--white);box-shadow:none}
+.hero-orbit{width:250px;height:250px;position:relative;display:grid;place-items:center}.hero-cap{font-size:6rem;filter:drop-shadow(0 15px 35px rgba(72,217,255,.28));z-index:2}.orbit-ring{position:absolute;border:1px solid rgba(91,140,255,.22);border-radius:50%;animation:spin 12s linear infinite}.ring-a{width:220px;height:220px}.ring-b{width:160px;height:160px;border-color:rgba(72,217,255,.18);animation-duration:8s;animation-direction:reverse}@keyframes spin{to{transform:rotate(360deg)}}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0 34px}.mini-stat{background:rgba(14,21,34,.8);border:1px solid var(--line);border-radius:17px;padding:17px;display:flex;gap:12px;align-items:center}.mini-icon{font-size:1.25rem}.mini-stat strong{display:block;font-size:1.05rem}.mini-stat small{display:block;color:var(--muted);font-size:.68rem;margin-top:3px}.section-heading{display:flex;justify-content:space-between;align-items:end;margin:8px 2px 14px}.section-heading h2{font-size:1.45rem;margin-top:5px}.section-note{font-size:.75rem;color:var(--muted)}
+.subject-grid{grid-template-columns:repeat(3,1fr);gap:14px;margin-top:0}.subject-card{min-height:175px;border:1px solid var(--line);border-left:0!important;border-radius:18px;padding:22px;background:linear-gradient(145deg,rgba(17,26,41,.94),rgba(10,15,24,.94));box-shadow:0 10px 30px rgba(0,0,0,.18);transition:.25s}.subject-card:hover{transform:translateY(-5px);border-color:var(--subject-color)!important;box-shadow:0 18px 45px rgba(0,0,0,.28)}.subject-tag{border:0;background:rgba(255,255,255,.06);border-radius:999px;padding:5px 9px;font-size:.6rem;letter-spacing:.08em}.subject-card h3{font-size:1.18rem!important;margin-top:16px!important}.subject-card p{font-size:.78rem!important;color:var(--muted)!important;margin-top:9px!important}
+.config-shell{max-width:760px;margin:15px auto}.back-link{border:0;background:none;color:#9fb0c8;cursor:pointer;padding:6px 0;margin-bottom:12px}.config-card{background:linear-gradient(145deg,#101a2a,#0b111b);border:1px solid var(--line);border-radius:25px;padding:34px;box-shadow:var(--shadow)}.config-icon{font-size:2rem;margin-bottom:12px}.config-card h2{font-size:2rem;margin:8px 0}.muted{color:var(--muted);font-size:.82rem}.config-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}.form-group{margin-bottom:0}label{font-size:.65rem;letter-spacing:.1em;font-weight:850;color:#8090a7}input,select,textarea{padding:.82rem;border-radius:11px;background:#080e17;border:1px solid var(--line);color:var(--white);outline:none}.launch-btn{width:100%;padding:1rem;margin-top:16px;font-size:.95rem}
+.exam-topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 2px}.exam-topbar h2{margin:5px 0}.timer-badge{background:rgba(255,189,74,.1);color:#ffd27c;border:1px solid rgba(255,189,74,.25);padding:.55rem .9rem;border-radius:12px;font-weight:900}.exam-progress{height:5px;background:#172131;border-radius:99px;overflow:hidden;margin-bottom:15px}.exam-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#5b8cff,#48d9ff);transition:width .3s}
+#questions-container .glass-card{background:linear-gradient(145deg,#101a29,#0b111b);border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:12px;box-shadow:0 12px 30px rgba(0,0,0,.18)}#questions-container h3{font-size:1.05rem!important;line-height:1.55;margin-top:10px}.option-item{background:#080e17;border:1px solid var(--line);border-radius:12px;padding:13px;transition:.18s}.option-item:hover:not(.locked){border-color:rgba(91,140,255,.55);background:#0c1522;transform:translateX(2px)}.submit-btn{width:100%;padding:1rem;margin:4px 0 25px}
+#results .glass-card{background:linear-gradient(145deg,#101b2c,#0b111b);border-radius:25px;border:1px solid var(--line)}#final-score{font-size:4rem!important;background:linear-gradient(135deg,#ffcf67,#48d9ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:.08em}table td{border-bottom-color:var(--line);padding:14px 10px}
+@media(max-width:800px){.app-header{height:auto;gap:10px}.nav-buttons{width:100%;justify-content:space-between}.nav-btn span{display:none}.nav-btn{flex:1}.hero-card{padding:30px;min-height:370px}.hero-orbit{position:absolute;right:-60px;bottom:-45px;opacity:.45}.stat-grid{grid-template-columns:repeat(2,1fr)}.subject-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.container{padding:16px 12px 70px}.hero-card{padding:24px;border-radius:21px}.hero-copy h2{font-size:2.2rem}.hero-copy p{font-size:.88rem}.hero-actions{flex-wrap:wrap}.subject-grid{grid-template-columns:1fr}.subject-card{min-height:145px}.config-card{padding:22px}.config-options{grid-template-columns:1fr}.exam-topbar{align-items:flex-start}.brand small{display:none}}
+
     </style>
     <!-- Supabase client (needed for the shared/global leaderboard) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style id="bangla-question-polish">
+#questions-container, #questions-container .glass-card, #questions-container h3,
+#questions-container .option-item, .subject-card, .config-card {
+  font-family: "Noto Sans Bengali","Noto Sans",system-ui,sans-serif;
+}
+#questions-container h3 { line-height: 1.75 !important; font-weight: 750; }
+#questions-container .option-item { line-height: 1.65; }
+</style>
+
 </head>
 <body>
 
@@ -313,71 +344,72 @@
         <div class="splash-title">PRACTICE: BUILD FROM SCRATCH</div>
     </div>
 
-    <header>
-        <h1>🎓 Practice: Build from Scratch</h1>
-        <div class="nav-buttons">
-            <button class="btn btn-secondary" onclick="showView('dashboard')">Home</button>
-            <button class="btn btn-secondary" onclick="renderStatsView()">Analytics 📊</button>
-            <button class="btn btn-secondary" onclick="renderLeaderboardView()">Leaderboard 🏆</button>
-            <button class="btn btn-secondary" id="google-auth-btn" onclick="handleAuthButtonClick()">Sign in with Google</button>
-        </div>
+    <header class="app-header">
+        <button class="brand" onclick="showView('dashboard')" aria-label="SSC 2027 home">
+            <span class="brand-mark">27</span>
+            <span><strong>SSC 2027</strong><small>Smart Study</small></span>
+        </button>
+        <nav class="nav-buttons" aria-label="Main navigation">
+            <button class="nav-btn active-nav" onclick="showView('dashboard')">⌂ <span>Home</span></button>
+            <button class="nav-btn" onclick="renderStatsView()">◔ <span>Analytics</span></button>
+            <button class="nav-btn" onclick="renderLeaderboardView()">♛ <span>Leaderboard</span></button>
+            <button class="auth-btn" id="google-auth-btn" onclick="handleAuthButtonClick()">Sign in</button>
+        </nav>
     </header>
 
     <div class="container">
 
         <div id="dashboard" class="view-section active">
-            <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                <div>
-                    <h2 class="glowing-welcome" id="welcome-user-text">Welcome, Sup Candidate</h2>
-                    <p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 0.3rem;">Select a subject to launch your practice session.</p>
+            <section class="hero-card">
+                <div class="hero-copy">
+                    <div class="eyebrow"><span class="live-dot"></span> SSC 2027 PREPARATION</div>
+                    <h2 id="welcome-user-text">Welcome, Candidate 👋</h2>
+                    <p>Practice board-style MCQs, build your streak, and see exactly where you need to improve.</p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary" onclick="document.querySelector('.subject-card')?.click()">🚀 Start Practice</button>
+                        <button class="btn btn-ghost" onclick="promptUserName()">Edit profile</button>
+                    </div>
                 </div>
-                <button class="btn btn-secondary" onclick="promptUserName()">Change User</button>
-            </div>
-
+                <div class="hero-orbit" aria-hidden="true"><div class="orbit-ring ring-a"></div><div class="orbit-ring ring-b"></div><div class="hero-cap">🎓</div></div>
+            </section>
+            <section class="stat-grid">
+                <div class="mini-stat"><span class="mini-icon">📝</span><div><strong id="dash-question-count">—</strong><small>Questions available</small></div></div>
+                <div class="mini-stat"><span class="mini-icon">🎯</span><div><strong id="dash-accuracy">—</strong><small>Your accuracy</small></div></div>
+                <div class="mini-stat"><span class="mini-icon">🔥</span><div><strong id="dash-streak">0</strong><small>Practice streak</small></div></div>
+                <div class="mini-stat"><span class="mini-icon">🏆</span><div><strong>SSC 2027</strong><small>Your target</small></div></div>
+            </section>
+            <div class="section-heading"><div><span class="eyebrow">YOUR STUDY PLAN</span><h2>Choose a subject</h2></div><span class="section-note">Tap a card to start</span></div>
             <div class="subject-grid" id="subject-cards"></div>
         </div>
 
         <div id="exam-config" class="view-section">
-            <div class="glass-card">
-                <h2 id="config-subject-title">Exam Setup</h2>
-                <p style="color: var(--text-sub); font-size: 0.85rem; margin-bottom: 1.2rem;">Customize your test parameters before launching.</p>
-                
-                <div class="form-group">
-                    <label>How many questions do you want to attempt?</label>
-                    <select id="config-q-count">
-                        <option value="5">5 Questions (Quick Quiz)</option>
-                        <option value="10">10 Questions</option>
-                        <option value="20">20 Questions</option>
-                        <option value="50">50 Questions (Full Board Mode)</option>
-                        <option value="all">All Available Questions</option>
-                    </select>
+            <div class="config-shell">
+                <button class="back-link" onclick="showView('dashboard')">← Back to subjects</button>
+                <div class="config-card">
+                    <div class="config-icon">🎯</div><div class="eyebrow">READY WHEN YOU ARE</div>
+                    <h2 id="config-subject-title">Exam Setup</h2>
+                    <p class="muted">Choose your practice mode. Focus on speed or simulate a longer board-style session.</p>
+                    <div class="config-options">
+                        <div class="form-group"><label>QUESTIONS</label><select id="config-q-count">
+                            <option value="5">5 — Quick Quiz</option><option value="10">10 — Focus</option><option value="20">20 — Practice</option><option value="50">50 — Full Board Mode</option><option value="all">All Available</option>
+                        </select></div>
+                        <div class="form-group"><label>TIME PER QUESTION</label><select id="config-time-per-q">
+                            <option value="60" selected>1 minute — Standard pace</option><option value="30">30 seconds — Speed</option><option value="90">1.5 minutes — Relaxed</option><option value="120">2 minutes — Deep practice</option>
+                        </select></div>
+                    </div>
+                    <button class="btn btn-primary launch-btn" onclick="launchConfiguredExam()">Start Practice 🚀</button>
                 </div>
-
-                <div class="form-group">
-                    <label>Time Limit per MCQ</label>
-                    <select id="config-time-per-q">
-                        <option value="60" selected>1 Minute per Question (Standard Board Pace)</option>
-                        <option value="30">30 Seconds per Question (Speed Practice)</option>
-                        <option value="90">1.5 Minutes per Question</option>
-                        <option value="120">2 Minutes per Question</option>
-                    </select>
-                </div>
-
-                <button class="btn btn-green" style="width: 100%; padding: 0.8rem; margin-top: 1rem;" onclick="launchConfiguredExam()">Start Exam 🎓</button>
             </div>
         </div>
 
         <div id="exam" class="view-section">
-            <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <div>
-                    <h2 id="quiz-title">Subject Exam</h2>
-                    <span id="quiz-count-label" style="color: var(--text-sub); font-size: 0.8rem;">0 Questions Loaded</span>
-                </div>
+            <div class="exam-topbar">
+                <div><span class="eyebrow">LIVE PRACTICE</span><h2 id="quiz-title">Subject Exam</h2><span id="quiz-count-label" class="muted">0 Questions Loaded</span></div>
                 <div class="timer-badge" id="exam-timer">⏱️ 00:00</div>
             </div>
-            
+            <div class="exam-progress"><span id="exam-progress-fill"></span></div>
             <div id="questions-container"></div>
-            <button class="btn btn-green" style="width: 100%; padding: 0.8rem;" onclick="submitExam()">Submit Exam</button>
+            <button class="btn btn-primary submit-btn" onclick="submitExam()">Finish & Submit ✓</button>
         </div>
 
         <div id="results" class="view-section">
@@ -634,136 +666,136 @@
                 { id: "c50", board: "চ.বো. ১৭", question: "কার্বনের যোজনী (valency) সাধারণত কত?", options: ["৪", "২", "৬", "৮"], correct: 0 }
             ],
             general_math: [
-                { id: "m1", board: "D.B. 23", question: "If A = {1, 2, 3}, what is the number of elements in power set P(A)?", options: ["3", "6", "8", "16"], correct: 2 },
-                { id: "m2", board: "R.B. 22", question: "What is the value of log₂ 16?", options: ["2", "3", "4", "8"], correct: 2 },
-                { id: "m3", board: "C.B. 23", question: "What is the sum of interior angles of a quadrilateral?", options: ["180°", "270°", "360°", "540°"], correct: 2 },
-                { id: "m4", board: "S.B. 23", question: "If x + 1/x = 2, what is the value of x² + 1/x²?", options: ["1", "2", "4", "0"], correct: 1 },
-                { id: "m5", board: "D.B. 22", question: "What is the value of √225?", options: ["15", "14", "16", "13"], correct: 0 },
-                { id: "m6", board: "R.B. 22", question: "A triangle with angles 60°, 60°, and 60° is what type?", options: ["Equilateral", "Isosceles", "Scalene", "Right-angled"], correct: 0 },
-                { id: "m7", board: "C.B. 23", question: "What is 25% expressed as a fraction?", options: ["1/4", "1/2", "1/5", "1/3"], correct: 0 },
-                { id: "m8", board: "Ctg.B. 22", question: "What is the value of π rounded to two decimal places?", options: ["3.14", "3.41", "3.12", "3.16"], correct: 0 },
-                { id: "m9", board: "S.B. 23", question: "Solve: 5x − 10 = 20. What is x?", options: ["6", "5", "4", "8"], correct: 0 },
-                { id: "m10", board: "D.B. 21", question: "What is the formula for the area of a rectangle?", options: ["length × width", "2(length + width)", "length + width", "length²"], correct: 0 },
-                { id: "m11", board: "R.B. 21", question: "What is the value of 2³ × 2²?", options: ["32", "16", "64", "8"], correct: 0 },
-                { id: "m12", board: "J.B. 22", question: "A number with exactly two factors, 1 and itself, is called a:", options: ["Prime number", "Composite number", "Even number", "Odd number"], correct: 0 },
-                { id: "m13", board: "B.B. 22", question: "What is the median of 3, 7, 9, 12, 15?", options: ["9", "7", "12", "10"], correct: 0 },
-                { id: "m14", board: "D.B. 20", question: "What is the sum of the interior angles of a hexagon?", options: ["720°", "540°", "360°", "900°"], correct: 0 },
-                { id: "m15", board: "S.B. 21", question: "What is 0.5 expressed as a percentage?", options: ["50%", "5%", "500%", "0.5%"], correct: 0 },
-                { id: "m16", board: "C.B. 21", question: "What is the reciprocal of 4?", options: ["1/4", "4", "-4", "0.4"], correct: 0 },
-                { id: "m17", board: "Ctg.B. 21", question: "If the radius of a circle is 7 cm, what is its diameter?", options: ["14 cm", "21 cm", "7 cm", "49 cm"], correct: 0 },
-                { id: "m18", board: "R.B. 20", question: "What is the value of x if 3x = 27?", options: ["9", "8", "6", "3"], correct: 0 },
-                { id: "m19", board: "J.B. 21", question: "What is the average of 10, 20, and 30?", options: ["20", "15", "25", "30"], correct: 0 },
-                { id: "m20", board: "B.B. 21", question: "What is the next number in the sequence 2, 4, 8, 16, ___?", options: ["32", "24", "20", "18"], correct: 0 }
+                { id: "m1", board: "D.B. 23", question: "A = {1, 2, 3} হলে, পাওয়ার সেট P(A)-তে উপাদানের সংখ্যা কত?", options: ["3", "6", "8", "16"], correct: 2 },
+                { id: "m2", board: "R.B. 22", question: "log₂ 16-এর মান কত?", options: ["2", "3", "4", "8"], correct: 2 },
+                { id: "m3", board: "C.B. 23", question: "একটি চতুর্ভুজের অন্তঃকোণের সমষ্টি কত?", options: ["১৮০°", "২৭০°", "৩৬০°", "৫৪০°"], correct: 2 },
+                { id: "m4", board: "S.B. 23", question: "x + 1/x = 2 হলে, x² + 1/x²-এর মান কত?", options: ["1", "2", "4", "0"], correct: 1 },
+                { id: "m5", board: "D.B. 22", question: "√225-এর মান কত?", options: ["15", "14", "16", "13"], correct: 0 },
+                { id: "m6", board: "R.B. 22", question: "৬০°, ৬০° ও ৬০° কোণবিশিষ্ট ত্রিভুজটি কী ধরনের?", options: ["সমবাহু", "সমদ্বিবাহু", "বিষমবাহু", "সমকোণী"], correct: 0 },
+                { id: "m7", board: "C.B. 23", question: "২৫%-কে ভগ্নাংশে প্রকাশ করলে কত হয়?", options: ["১/৪", "১/২", "১/৫", "১/৩"], correct: 0 },
+                { id: "m8", board: "Ctg.B. 22", question: "π-এর দুই দশমিক স্থান পর্যন্ত মান কত?", options: ["৩.১৪", "৩.৪১", "৩.১২", "৩.১৬"], correct: 0 },
+                { id: "m9", board: "S.B. 23", question: "সমাধান কর: 5x − 10 = 20। x-এর মান কত?", options: ["6", "5", "4", "8"], correct: 0 },
+                { id: "m10", board: "D.B. 21", question: "আয়তক্ষেত্রের ক্ষেত্রফলের সূত্র কোনটি?", options: ["দৈর্ঘ্য × প্রস্থ", "২(দৈর্ঘ্য + প্রস্থ)", "দৈর্ঘ্য + প্রস্থ", "দৈর্ঘ্য²"], correct: 0 },
+                { id: "m11", board: "R.B. 21", question: "2³ × 2²-এর মান কত?", options: ["32", "16", "64", "8"], correct: 0 },
+                { id: "m12", board: "J.B. 22", question: "যে সংখ্যার ঠিক দুটি গুণনীয়ক ১ এবং সংখ্যাটি নিজে, তাকে কী বলা হয়?", options: ["মৌলিক সংখ্যা", "যৌগিক সংখ্যা", "জোড় সংখ্যা", "বিজোড় সংখ্যা"], correct: 0 },
+                { id: "m13", board: "B.B. 22", question: "3, 7, 9, 12, 15-এর মধ্যক কত?", options: ["9", "7", "12", "10"], correct: 0 },
+                { id: "m14", board: "D.B. 20", question: "একটি ষড়ভুজের অন্তঃকোণের সমষ্টি কত?", options: ["৭২০°", "৫৪০°", "৩৬০°", "৯০০°"], correct: 0 },
+                { id: "m15", board: "S.B. 21", question: "0.5-কে শতকরা হিসেবে প্রকাশ করলে কত?", options: ["৫০%", "৫%", "৫০০%", "০.৫%"], correct: 0 },
+                { id: "m16", board: "C.B. 21", question: "৪-এর ব্যস্তক কত?", options: ["১/৪", "4", "-4", "0.4"], correct: 0 },
+                { id: "m17", board: "Ctg.B. 21", question: "একটি বৃত্তের ব্যাসার্ধ ৭ সেমি হলে ব্যাস কত?", options: ["১৪ সেমি", "২১ সেমি", "৭ সেমি", "৪৯ সেমি"], correct: 0 },
+                { id: "m18", board: "R.B. 20", question: "3x = 27 হলে x-এর মান কত?", options: ["9", "8", "6", "3"], correct: 0 },
+                { id: "m19", board: "J.B. 21", question: "10, 20 ও 30-এর গড় কত?", options: ["20", "15", "25", "30"], correct: 0 },
+                { id: "m20", board: "B.B. 21", question: "ধারাটি 2, 4, 8, 16, ___ হলে পরবর্তী সংখ্যা কত?", options: ["32", "24", "20", "18"], correct: 0 }
             ],
             ict: [
-                { id: "i1", board: "D.B. 23", question: "Who is considered the pioneer of the World Wide Web (WWW)?", options: ["Charles Babbage", "Steve Jobs", "Tim Berners-Lee", "Mark Zuckerberg"], correct: 2 },
-                { id: "i2", board: "R.B. 23", question: "Which base number system is directly understood by computers?", options: ["Decimal", "Binary", "Octal", "Hexadecimal"], correct: 1 },
-                { id: "i3", board: "C.B. 22", question: "Which extension is standard for spreadsheet template files?", options: [".docx", ".xlsx", ".pptx", ".pdf"], correct: 1 },
+                { id: "i1", board: "D.B. 23", question: "World Wide Web (WWW)-এর পথিকৃৎ হিসেবে কাকে বিবেচনা করা হয়?", options: ["চার্লস ব্যাবেজ", "স্টিভ জবস", "টিম বার্নার্স-লি", "মার্ক জাকারবার্গ"], correct: 2 },
+                { id: "i2", board: "R.B. 23", question: "কম্পিউটার সরাসরি কোন ভিত্তি সংখ্যাপদ্ধতি বোঝে?", options: ["দশমিক", "বাইনারি", "অক্টাল", "হেক্সাডেসিমাল"], correct: 1 },
+                { id: "i3", board: "C.B. 22", question: "স্প্রেডশিট টেমপ্লেট ফাইলের জন্য কোন এক্সটেনশনটি প্রচলিত?", options: [".docx", ".xlsx", ".pptx", ".pdf"], correct: 1 },
                 { id: "i4", board: "D.B. 22", question: "What does \"CPU\" stand for?", options: ["Central Processing Unit", "Computer Personal Unit", "Central Program Unit", "Central Processing Utility"], correct: 0 },
-                { id: "i5", board: "R.B. 22", question: "Which of these is an example of an operating system?", options: ["Windows", "Microsoft Word", "Google Chrome", "Excel"], correct: 0 },
+                { id: "i5", board: "R.B. 22", question: "\"CPU\" এর পূর্ণরূপ কী?", options: ["Central Processing Unit", "Computer Personal Unit", "Central Program Unit", "Central Processing Utility"], correct: 0 },
                 { id: "i6", board: "C.B. 23", question: "What does \"URL\" stand for?", options: ["Uniform Resource Locator", "Universal Resource Link", "United Resource Locator", "Uniform Reference Link"], correct: 0 },
-                { id: "i7", board: "Ctg.B. 22", question: "Which device is used to input handwritten text or images into a computer?", options: ["Scanner", "Printer", "Speaker", "Monitor"], correct: 0 },
+                { id: "i7", board: "Ctg.B. 22", question: "\"URL\" এর পূর্ণরূপ কী?", options: ["Uniform Resource Locator", "Universal Resource Link", "United Resource Locator", "Uniform Reference Link"], correct: 0 },
                 { id: "i8", board: "S.B. 22", question: "What is the full form of \"RAM\"?", options: ["Random Access Memory", "Read Access Memory", "Rapid Access Memory", "Random Application Memory"], correct: 0 },
-                { id: "i9", board: "D.B. 21", question: "Which language is primarily used for styling web pages?", options: ["CSS", "HTML", "Python", "Java"], correct: 0 },
+                { id: "i9", board: "D.B. 21", question: "\"RAM\" এর পূর্ণরূপ কী?", options: ["Random Access Memory", "Read Access Memory", "Rapid Access Memory", "Random Application Memory"], correct: 0 },
                 { id: "i10", board: "R.B. 21", question: "What does \"HTTP\" stand for?", options: ["HyperText Transfer Protocol", "HyperText Transmission Protocol", "High Transfer Text Protocol", "HyperText Total Protocol"], correct: 0 },
-                { id: "i11", board: "J.B. 22", question: "Which of these is a type of computer malware?", options: ["Trojan horse", "Firewall", "Antivirus", "Router"], correct: 0 },
-                { id: "i12", board: "B.B. 22", question: "What is the smallest unit of digital information?", options: ["Bit", "Byte", "Kilobyte", "Megabyte"], correct: 0 },
-                { id: "i13", board: "D.B. 20", question: "Which company developed the Android operating system?", options: ["Google", "Apple", "Microsoft", "IBM"], correct: 0 },
+                { id: "i11", board: "J.B. 22", question: "\"HTTP\" এর পূর্ণরূপ কী?", options: ["HyperText Transfer Protocol", "HyperText Transmission Protocol", "High Transfer Text Protocol", "HyperText Total Protocol"], correct: 0 },
+                { id: "i12", board: "B.B. 22", question: "ডিজিটাল তথ্যের ক্ষুদ্রতম একক কোনটি?", options: ["বিট", "বাইট", "কিলোবাইট", "মেগাবাইট"], correct: 0 },
+                { id: "i13", board: "D.B. 20", question: "Android অপারেটিং সিস্টেম কোন কোম্পানি তৈরি করেছে?", options: ["Google", "Apple", "Microsoft", "IBM"], correct: 0 },
                 { id: "i14", board: "S.B. 21", question: "What does \"Wi-Fi\" primarily provide?", options: ["Wireless internet connectivity", "Wired internet connectivity", "Bluetooth connectivity", "Satellite connectivity"], correct: 0 },
-                { id: "i15", board: "C.B. 21", question: "Which of these file formats is used for images?", options: ["JPEG", "DOCX", "MP3", "EXE"], correct: 0 },
-                { id: "i16", board: "Ctg.B. 21", question: "What is the term for unwanted, unsolicited email?", options: ["Spam", "Malware", "Cookie", "Cache"], correct: 0 },
+                { id: "i15", board: "C.B. 21", question: "\"Wi-Fi\" প্রধানত কী প্রদান করে?", options: ["তারবিহীন ইন্টারনেট সংযোগ", "তারযুক্ত ইন্টারনেট সংযোগ", "Bluetooth সংযোগ", "স্যাটেলাইট সংযোগ"], correct: 0 },
+                { id: "i16", board: "Ctg.B. 21", question: "অনাকাঙ্ক্ষিত ও অবাঞ্ছিত ই-মেইলকে কী বলা হয়?", options: ["স্প্যাম", "ম্যালওয়্যার", "কুকি", "ক্যাশ"], correct: 0 },
                 { id: "i17", board: "R.B. 20", question: "What does \"GUI\" stand for?", options: ["Graphical User Interface", "General User Interface", "Graphic Utility Interface", "Global User Interface"], correct: 0 },
-                { id: "i18", board: "J.B. 21", question: "Which of these is a popular database management system?", options: ["MySQL", "Photoshop", "PowerPoint", "Illustrator"], correct: 0 },
-                { id: "i19", board: "B.B. 21", question: "What is converting data into a coded form to prevent unauthorized access called?", options: ["Encryption", "Compression", "Formatting", "Duplication"], correct: 0 },
-                { id: "i20", board: "D.B. 19", question: "Which of these is an input device?", options: ["Keyboard", "Monitor", "Printer", "Speaker"], correct: 0 }
+                { id: "i18", board: "J.B. 21", question: "\"GUI\" এর পূর্ণরূপ কী?", options: ["Graphical User Interface", "General User Interface", "Graphic Utility Interface", "Global User Interface"], correct: 0 },
+                { id: "i19", board: "B.B. 21", question: "অননুমোদিত প্রবেশ রোধ করতে ডেটাকে সংকেতবদ্ধ রূপে রূপান্তর করাকে কী বলা হয়?", options: ["এনক্রিপশন", "কম্প্রেশন", "ফরম্যাটিং", "ডুপ্লিকেশন"], correct: 0 },
+                { id: "i20", board: "D.B. 19", question: "নিচের কোনটি একটি ইনপুট ডিভাইস?", options: ["কীবোর্ড", "মনিটর", "প্রিন্টার", "স্পিকার"], correct: 0 }
             ],
             biology: [
-                { id: "b1", board: "D.B. 23", question: "Which organelle is known as the powerhouse of the cell?", options: ["Ribosome", "Lysosome", "Mitochondria", "Golgi Body"], correct: 2 },
-                { id: "b2", board: "R.B. 22", question: "Which plastic pigment is responsible for the green color of leaves?", options: ["Chromoplast", "Chloroplast", "Leucoplast", "Carotenoid"], correct: 1 },
-                { id: "b3", board: "Ctg.B. 23", question: "What is the primary site of photosynthesis in vascular plants?", options: ["Stem", "Root", "Leaf", "Flower"], correct: 2 },
-                { id: "b4", board: "J.B. 23", question: "Which blood group is universally designated as the universal recipient?", options: ["A+", "B+", "AB+", "O-"], correct: 2 },
-                { id: "b5", board: "D.B. 22", question: "What is the basic structural and functional unit of life?", options: ["Cell", "Tissue", "Organ", "Organism"], correct: 0 },
-                { id: "b6", board: "R.B. 22", question: "Which organ is primarily responsible for pumping blood in the human body?", options: ["Heart", "Liver", "Kidney", "Lungs"], correct: 0 },
-                { id: "b7", board: "C.B. 23", question: "What is the process by which plants lose water through their leaves called?", options: ["Transpiration", "Photosynthesis", "Respiration", "Germination"], correct: 0 },
-                { id: "b8", board: "Ctg.B. 22", question: "Which gas do humans exhale during respiration?", options: ["Carbon dioxide", "Oxygen", "Nitrogen", "Hydrogen"], correct: 0 },
-                { id: "b9", board: "S.B. 22", question: "What is the male reproductive cell in humans called?", options: ["Sperm", "Egg", "Zygote", "Embryo"], correct: 0 },
-                { id: "b10", board: "D.B. 21", question: "Which part of a plant primarily absorbs water and minerals?", options: ["Root", "Stem", "Leaf", "Flower"], correct: 0 },
-                { id: "b11", board: "R.B. 21", question: "What is the study of heredity and variation called?", options: ["Genetics", "Ecology", "Taxonomy", "Physiology"], correct: 0 },
-                { id: "b12", board: "J.B. 22", question: "Which organ filters waste products from the blood?", options: ["Kidney", "Heart", "Lungs", "Liver"], correct: 0 },
-                { id: "b13", board: "B.B. 22", question: "What is the green pigment in plants responsible for photosynthesis called?", options: ["Chlorophyll", "Carotene", "Xanthophyll", "Anthocyanin"], correct: 0 },
-                { id: "b14", board: "D.B. 20", question: "Which of these is a function of the human skeletal system?", options: ["Support and protection", "Digestion", "Respiration only", "Circulation only"], correct: 0 },
-                { id: "b15", board: "S.B. 21", question: "What is the term for animals that eat only plants?", options: ["Herbivores", "Carnivores", "Omnivores", "Decomposers"], correct: 0 },
-                { id: "b16", board: "C.B. 21", question: "Which vitamin is produced in human skin when exposed to sunlight?", options: ["Vitamin D", "Vitamin A", "Vitamin C", "Vitamin K"], correct: 0 },
-                { id: "b17", board: "Ctg.B. 21", question: "What is the basic unit of heredity called?", options: ["Gene", "Cell", "Chromosome", "Protein"], correct: 0 },
-                { id: "b18", board: "R.B. 20", question: "Which process do plants use to convert sunlight into chemical energy?", options: ["Photosynthesis", "Respiration", "Fermentation", "Digestion"], correct: 0 },
-                { id: "b19", board: "J.B. 21", question: "What is the largest organ in the human body?", options: ["Skin", "Liver", "Heart", "Lungs"], correct: 0 },
-                { id: "b20", board: "B.B. 21", question: "Which blood component is primarily responsible for clotting?", options: ["Platelets", "Red blood cells", "White blood cells", "Plasma"], correct: 0 }
+                { id: "b1", board: "D.B. 23", question: "কোন কোষীয় অঙ্গাণুকে কোষের শক্তিঘর বলা হয়?", options: ["রাইবোসোম", "লাইসোসোম", "মাইটোকন্ড্রিয়া", "গলজি বডি"], correct: 2 },
+                { id: "b2", board: "R.B. 22", question: "পাতার সবুজ রঙের জন্য দায়ী প্লাস্টিড কোনটি?", options: ["ক্রোমোপ্লাস্ট", "ক্লোরোপ্লাস্ট", "লিউকোপ্লাস্ট", "ক্যারোটিনয়েড"], correct: 1 },
+                { id: "b3", board: "Ctg.B. 23", question: "সপুষ্পক উদ্ভিদে সালোকসংশ্লেষণের প্রধান স্থান কোনটি?", options: ["কাণ্ড", "মূল", "পাতা", "ফুল"], correct: 2 },
+                { id: "b4", board: "J.B. 23", question: "সার্বজনীন গ্রহীতা হিসেবে কোন রক্তের গ্রুপকে বিবেচনা করা হয়?", options: ["A+", "B+", "AB+", "O-"], correct: 2 },
+                { id: "b5", board: "D.B. 22", question: "জীবনের মৌলিক গঠনগত ও কার্যগত একক কী?", options: ["কোষ", "টিস্যু", "অঙ্গ", "জীব"], correct: 0 },
+                { id: "b6", board: "R.B. 22", question: "মানবদেহে রক্ত পাম্প করার জন্য প্রধানত কোন অঙ্গ দায়ী?", options: ["হৃদপিণ্ড", "যকৃত", "বৃক্ক", "ফুসফুস"], correct: 0 },
+                { id: "b7", board: "C.B. 23", question: "উদ্ভিদের পাতার মাধ্যমে পানি বের হয়ে যাওয়ার প্রক্রিয়াকে কী বলে?", options: ["প্রস্বেদন", "সালোকসংশ্লেষণ", "শ্বসন", "অঙ্কুরোদ্গম"], correct: 0 },
+                { id: "b8", board: "Ctg.B. 22", question: "শ্বসনের সময় মানুষ কোন গ্যাস ত্যাগ করে?", options: ["কার্বন ডাই-অক্সাইড", "অক্সিজেন", "নাইট্রোজেন", "হাইড্রোজেন"], correct: 0 },
+                { id: "b9", board: "S.B. 22", question: "মানুষের পুরুষ প্রজনন কোষকে কী বলা হয়?", options: ["শুক্রাণু", "ডিম্বাণু", "জাইগোট", "ভ্রূণ"], correct: 0 },
+                { id: "b10", board: "D.B. 21", question: "উদ্ভিদের কোন অংশ প্রধানত পানি ও খনিজ লবণ শোষণ করে?", options: ["মূল", "কাণ্ড", "পাতা", "ফুল"], correct: 0 },
+                { id: "b11", board: "R.B. 21", question: "বংশগতি ও প্রকরণ নিয়ে অধ্যয়নকে কী বলা হয়?", options: ["জেনেটিক্স", "বাস্তুবিদ্যা", "শ্রেণিবিন্যাসবিদ্যা", "শারীরবিদ্যা"], correct: 0 },
+                { id: "b12", board: "J.B. 22", question: "রক্ত থেকে বর্জ্য পদার্থ ছেঁকে বের করে কোন অঙ্গ?", options: ["বৃক্ক", "হৃদপিণ্ড", "ফুসফুস", "যকৃত"], correct: 0 },
+                { id: "b13", board: "B.B. 22", question: "সালোকসংশ্লেষণের জন্য উদ্ভিদে থাকা সবুজ রঞ্জক পদার্থের নাম কী?", options: ["ক্লোরোফিল", "ক্যারোটিন", "জ্যান্থোফিল", "অ্যান্থোসায়ানিন"], correct: 0 },
+                { id: "b14", board: "D.B. 20", question: "মানব কঙ্কালতন্ত্রের একটি কাজ কোনটি?", options: ["সমর্থন ও সুরক্ষা", "পরিপাক", "শুধু শ্বসন", "শুধু রক্তসঞ্চালন"], correct: 0 },
+                { id: "b15", board: "S.B. 21", question: "যেসব প্রাণী শুধু উদ্ভিদ খায় তাদের কী বলা হয়?", options: ["তৃণভোজী", "মাংসাশী", "সর্বভুক", "বিয়োজক"], correct: 0 },
+                { id: "b16", board: "C.B. 21", question: "সূর্যালোকে ত্বক উন্মুক্ত হলে মানুষের শরীরে কোন ভিটামিন তৈরি হয়?", options: ["ভিটামিন D", "ভিটামিন A", "ভিটামিন C", "ভিটামিন K"], correct: 0 },
+                { id: "b17", board: "Ctg.B. 21", question: "বংশগতির মৌলিক একককে কী বলা হয়?", options: ["জিন", "কোষ", "ক্রোমোজোম", "প্রোটিন"], correct: 0 },
+                { id: "b18", board: "R.B. 20", question: "উদ্ভিদ সূর্যালোককে রাসায়নিক শক্তিতে রূপান্তর করতে কোন প্রক্রিয়া ব্যবহার করে?", options: ["সালোকসংশ্লেষণ", "শ্বসন", "গাঁজন", "পরিপাক"], correct: 0 },
+                { id: "b19", board: "J.B. 21", question: "মানবদেহের বৃহত্তম অঙ্গ কোনটি?", options: ["ত্বক", "যকৃত", "হৃদপিণ্ড", "ফুসফুস"], correct: 0 },
+                { id: "b20", board: "B.B. 21", question: "রক্ত জমাট বাঁধার জন্য প্রধানত কোন রক্তকণিকা দায়ী?", options: ["অনুচক্রিকা", "লোহিত রক্তকণিকা", "শ্বেত রক্তকণিকা", "প্লাজমা"], correct: 0 }
             ],
             higher_math: [
-                { id: "hm1", board: "D.B. 23", question: "What is the value of sin 90°?", options: ["1", "0", "-1", "Undefined"], correct: 0 },
-                { id: "hm2", board: "R.B. 23", question: "If f(x) = x² + 3x, what is f(2)?", options: ["10", "8", "6", "12"], correct: 0 },
-                { id: "hm3", board: "C.B. 22", question: "The determinant of a 2x2 matrix [[a,b],[c,d]] is calculated as:", options: ["ad − bc", "ab − cd", "ad + bc", "ac − bd"], correct: 0 },
-                { id: "hm4", board: "J.B. 23", question: "What is the derivative of x³ with respect to x?", options: ["3x²", "x²", "3x", "x³"], correct: 0 },
-                { id: "hm5", board: "D.B. 22", question: "What is the value of cos 0°?", options: ["1", "0", "-1", "Undefined"], correct: 0 },
-                { id: "hm6", board: "R.B. 22", question: "What is the sum of the first 5 natural numbers?", options: ["15", "10", "20", "25"], correct: 0 },
-                { id: "hm7", board: "C.B. 23", question: "If a set A has 4 elements, how many subsets does it have?", options: ["16", "8", "4", "12"], correct: 0 },
-                { id: "hm8", board: "Ctg.B. 22", question: "What is the value of log₁₀ 100?", options: ["2", "1", "10", "100"], correct: 0 },
-                { id: "hm9", board: "S.B. 22", question: "What is the slope of the line y = 3x + 5?", options: ["3", "5", "-3", "8"], correct: 0 },
-                { id: "hm10", board: "D.B. 21", question: "What is the value of tan 45°?", options: ["1", "0", "-1", "Undefined"], correct: 0 },
-                { id: "hm11", board: "R.B. 21", question: "What is the formula for the area of a triangle?", options: ["½ × base × height", "base × height", "2 × base × height", "base + height"], correct: 0 },
-                { id: "hm12", board: "J.B. 22", question: "If i = √−1, what is i²?", options: ["−1", "1", "0", "i"], correct: 0 },
-                { id: "hm13", board: "B.B. 22", question: "What is the general nth term formula for an arithmetic sequence?", options: ["a + (n−1)d", "a × r^(n−1)", "a + nd", "n(a+d)"], correct: 0 },
-                { id: "hm14", board: "D.B. 20", question: "What is the value of 5! (5 factorial)?", options: ["120", "24", "60", "100"], correct: 0 },
-                { id: "hm15", board: "S.B. 21", question: "What is the derivative of a constant?", options: ["0", "1", "The constant itself", "Undefined"], correct: 0 },
-                { id: "hm16", board: "C.B. 21", question: "What is the standard form of a quadratic equation?", options: ["ax² + bx + c = 0", "ax + b = 0", "ax³ + bx² = 0", "a + bx = 0"], correct: 0 },
-                { id: "hm17", board: "Ctg.B. 21", question: "What is the sum of the interior angles of a pentagon?", options: ["540°", "360°", "720°", "450°"], correct: 0 },
+                { id: "hm1", board: "D.B. 23", question: "sin 90°-এর মান কত?", options: ["1", "0", "-1", "অসংজ্ঞায়িত"], correct: 0 },
+                { id: "hm2", board: "R.B. 23", question: "f(x) = x² + 3x হলে f(2)-এর মান কত?", options: ["10", "8", "6", "12"], correct: 0 },
+                { id: "hm3", board: "C.B. 22", question: "2×2 ম্যাট্রিক্স [[a,b],[c,d]]-এর determinant কীভাবে নির্ণয় করা হয়?", options: ["ad − bc", "ab − cd", "ad + bc", "ac − bd"], correct: 0 },
+                { id: "hm4", board: "J.B. 23", question: "x-এর সাপেক্ষে x³-এর ডেরিভেটিভ কত?", options: ["3x²", "x²", "3x", "x³"], correct: 0 },
+                { id: "hm5", board: "D.B. 22", question: "cos 0°-এর মান কত?", options: ["1", "0", "-1", "অসংজ্ঞায়িত"], correct: 0 },
+                { id: "hm6", board: "R.B. 22", question: "প্রথম ৫টি স্বাভাবিক সংখ্যার যোগফল কত?", options: ["15", "10", "20", "25"], correct: 0 },
+                { id: "hm7", board: "C.B. 23", question: "A সেটে ৪টি উপাদান থাকলে এর উপসেটের সংখ্যা কত?", options: ["16", "8", "4", "12"], correct: 0 },
+                { id: "hm8", board: "Ctg.B. 22", question: "log₁₀ 100-এর মান কত?", options: ["2", "1", "10", "100"], correct: 0 },
+                { id: "hm9", board: "S.B. 22", question: "y = 3x + 5 সরলরেখার ঢাল কত?", options: ["3", "5", "-3", "8"], correct: 0 },
+                { id: "hm10", board: "D.B. 21", question: "tan 45°-এর মান কত?", options: ["1", "0", "-1", "অসংজ্ঞায়িত"], correct: 0 },
+                { id: "hm11", board: "R.B. 21", question: "ত্রিভুজের ক্ষেত্রফলের সূত্র কোনটি?", options: ["½ × ভূমি × উচ্চতা", "ভূমি × উচ্চতা", "2 × ভূমি × উচ্চতা", "ভূমি + উচ্চতা"], correct: 0 },
+                { id: "hm12", board: "J.B. 22", question: "i = √−1 হলে i²-এর মান কত?", options: ["−1", "1", "0", "i"], correct: 0 },
+                { id: "hm13", board: "B.B. 22", question: "সমান্তর ধারা (AP)-এর সাধারণ n-তম পদের সূত্র কোনটি?", options: ["a + (n−1)d", "a × r^(n−1)", "a + nd", "n(a+d)"], correct: 0 },
+                { id: "hm14", board: "D.B. 20", question: "5! (5 factorial)-এর মান কত?", options: ["120", "24", "60", "100"], correct: 0 },
+                { id: "hm15", board: "S.B. 21", question: "একটি ধ্রুবকের ডেরিভেটিভ কত?", options: ["0", "1", "ধ্রুবকটি নিজেই", "অসংজ্ঞায়িত"], correct: 0 },
+                { id: "hm16", board: "C.B. 21", question: "দ্বিঘাত সমীকরণের আদর্শ রূপ কোনটি?", options: ["ax² + bx + c = 0", "ax + b = 0", "ax³ + bx² = 0", "a + bx = 0"], correct: 0 },
+                { id: "hm17", board: "Ctg.B. 21", question: "একটি পঞ্চভুজের অন্তঃকোণের সমষ্টি কত?", options: ["৫৪০°", "৩৬০°", "৭২০°", "৪৫০°"], correct: 0 },
                 { id: "hm18", board: "R.B. 20", question: "What is the integral of a constant \"c\" with respect to x?", options: ["cx + C", "c", "cx²", "0"], correct: 0 },
-                { id: "hm19", board: "J.B. 21", question: "What is the value of 10² − 6²?", options: ["64", "36", "100", "46"], correct: 0 },
-                { id: "hm20", board: "B.B. 21", question: "In a right triangle, which theorem relates the lengths of the sides?", options: ["Pythagorean theorem", "Binomial theorem", "Remainder theorem", "Factor theorem"], correct: 0 }
+                { id: "hm19", board: "J.B. 21", question: "\"c\" ধ্রুবকের x-এর সাপেক্ষে ইন্টিগ্রাল কত?", options: ["cx + C", "c", "cx²", "0"], correct: 0 },
+                { id: "hm20", board: "B.B. 21", question: "সমকোণী ত্রিভুজে বাহুগুলোর দৈর্ঘ্যের সম্পর্ক কোন উপপাদ্য প্রকাশ করে?", options: ["পিথাগোরাসের উপপাদ্য", "দ্বিপদী উপপাদ্য", "ভাগশেষ উপপাদ্য", "উৎপাদক উপপাদ্য"], correct: 0 }
             ],
             bangla_1st: [
-                { id: "bn1_1", board: "D.B. 23", question: "Who wrote the short story 'Kabuliwala'?", options: ["Rabindranath Tagore", "Kazi Nazrul Islam", "Bankim Chandra", "Sharat Chandra"], correct: 0 },
-                { id: "bn1_2", board: "R.B. 22", question: "Who is known as the 'Bidrohi Kobi' (Rebel Poet) of Bengali literature?", options: ["Kazi Nazrul Islam", "Rabindranath Tagore", "Jibanananda Das", "Sukanta Bhattacharya"], correct: 0 },
-                { id: "bn1_3", board: "C.B. 23", question: "'Sonar Tori' is a famous poetry collection written by:", options: ["Rabindranath Tagore", "Kazi Nazrul Islam", "Jasimuddin", "Michael Madhusudan Dutt"], correct: 0 },
-                { id: "bn1_4", board: "S.B. 22", question: "In Bangla grammar, 'sandhi' refers to:", options: ["Combination of two words or sounds", "Separation of a sentence", "A type of poem", "A grammatical case"], correct: 0 },
-                { id: "bn1_5", board: "D.B. 22", question: "Who wrote the novel 'Padma Nadir Majhi'?", options: ["Manik Bandopadhyay", "Bibhutibhushan Bandopadhyay", "Tarashankar Bandopadhyay", "Sharat Chandra Chattopadhyay"], correct: 0 },
-                { id: "bn1_6", board: "R.B. 22", question: "'Bishad Sindhu' is a famous novel written by:", options: ["Mir Mosharraf Hossain", "Kazi Nazrul Islam", "Rabindranath Tagore", "Jasimuddin"], correct: 0 },
-                { id: "bn1_7", board: "C.B. 23", question: "Who is regarded as the first modern poet of Bengali literature?", options: ["Michael Madhusudan Dutt", "Rabindranath Tagore", "Kazi Nazrul Islam", "Jibanananda Das"], correct: 0 },
-                { id: "bn1_8", board: "Ctg.B. 22", question: "'Nakshi Kanthar Math' is a famous poem written by:", options: ["Jasimuddin", "Rabindranath Tagore", "Kazi Nazrul Islam", "Sukanta Bhattacharya"], correct: 0 },
-                { id: "bn1_9", board: "S.B. 22", question: "Which literary form is 'Meghnad Badh Kavya'?", options: ["Epic poem", "Novel", "Short story", "Drama"], correct: 0 },
-                { id: "bn1_10", board: "D.B. 21", question: "Rabindranath Tagore won the Nobel Prize in Literature for which work?", options: ["Gitanjali", "Gora", "Shesher Kobita", "Ghare Baire"], correct: 0 },
-                { id: "bn1_11", board: "R.B. 21", question: "Who wrote 'Devdas'?", options: ["Sharat Chandra Chattopadhyay", "Bankim Chandra Chattopadhyay", "Rabindranath Tagore", "Manik Bandopadhyay"], correct: 0 },
-                { id: "bn1_12", board: "J.B. 22", question: "What is the term for a traditional Bengali folk narrative song?", options: ["Palagaan", "Rabindra Sangeet", "Nazrul Geeti", "Ghazal"], correct: 0 },
-                { id: "bn1_13", board: "B.B. 22", question: "Who wrote 'Anandamath', which contains the song 'Vande Mataram'?", options: ["Bankim Chandra Chattopadhyay", "Rabindranath Tagore", "Michael Madhusudan Dutt", "Sharat Chandra"], correct: 0 },
-                { id: "bn1_14", board: "D.B. 20", question: "'Chokher Bali' is a novel written by:", options: ["Rabindranath Tagore", "Sharat Chandra", "Bankim Chandra", "Kazi Nazrul Islam"], correct: 0 },
-                { id: "bn1_15", board: "S.B. 21", question: "The Bengali Language Movement, commemorated by 'Amar Ekushey', took place in which year?", options: ["1952", "1947", "1971", "1969"], correct: 0 },
-                { id: "bn1_16", board: "C.B. 21", question: "Who wrote the patriotic poem collection 'Agnibina'?", options: ["Kazi Nazrul Islam", "Rabindranath Tagore", "Jasimuddin", "Sukanta Bhattacharya"], correct: 0 },
-                { id: "bn1_17", board: "Ctg.B. 21", question: "'Lalon Geeti' is associated with which mystic poet-singer?", options: ["Lalon Shah", "Hason Raja", "Radharaman Dutta", "Abbasuddin Ahmed"], correct: 0 },
-                { id: "bn1_18", board: "R.B. 20", question: "Which Bengali poet is known as the national poet of Bangladesh?", options: ["Kazi Nazrul Islam", "Rabindranath Tagore", "Jasimuddin", "Shamsur Rahman"], correct: 0 },
-                { id: "bn1_19", board: "J.B. 21", question: "'Char Adhyay' is a novel by which author?", options: ["Rabindranath Tagore", "Sharat Chandra", "Bankim Chandra", "Manik Bandopadhyay"], correct: 0 },
-                { id: "bn1_20", board: "B.B. 21", question: "What literary form best describes 'Nabanna'?", options: ["Drama", "Novel", "Poem", "Essay"], correct: 0 }
+                { id: "bn1_1", board: "D.B. 23", question: "‘কাবুলিওয়ালা’ ছোটগল্পটি কে লিখেছেন?", options: ["রবীন্দ্রনাথ ঠাকুর", "কাজী নজরুল ইসলাম", "বঙ্কিমচন্দ্র", "শরৎচন্দ্র"], correct: 0 },
+                { id: "bn1_2", board: "R.B. 22", question: "বাংলা সাহিত্যের ‘বিদ্রোহী কবি’ নামে কে পরিচিত?", options: ["কাজী নজরুল ইসলাম", "রবীন্দ্রনাথ ঠাকুর", "জীবনানন্দ দাশ", "সুকান্ত ভট্টাচার্য"], correct: 0 },
+                { id: "bn1_3", board: "C.B. 23", question: "‘সোনার তরী’ বিখ্যাত কাব্যগ্রন্থটি কার লেখা?", options: ["রবীন্দ্রনাথ ঠাকুর", "কাজী নজরুল ইসলাম", "জসীমউদ্দীন", "মাইকেল মধুসূদন দত্ত"], correct: 0 },
+                { id: "bn1_4", board: "S.B. 22", question: "বাংলা ব্যাকরণে ‘সন্ধি’ বলতে কী বোঝায়?", options: ["দুটি শব্দ বা ধ্বনির মিলন", "বাক্যের বিচ্ছেদ", "এক ধরনের কবিতা", "একটি ব্যাকরণিক কারক"], correct: 0 },
+                { id: "bn1_5", board: "D.B. 22", question: "‘পদ্মা নদীর মাঝি’ উপন্যাসটি কে লিখেছেন?", options: ["মানিক বন্দ্যোপাধ্যায়", "বিভূতিভূষণ বন্দ্যোপাধ্যায়", "তারাশঙ্কর বন্দ্যোপাধ্যায়", "শরৎচন্দ্র চট্টোপাধ্যায়"], correct: 0 },
+                { id: "bn1_6", board: "R.B. 22", question: "‘বিষাদ সিন্ধু’ বিখ্যাত উপন্যাসটি কার লেখা?", options: ["মীর মশাররফ হোসেন", "কাজী নজরুল ইসলাম", "রবীন্দ্রনাথ ঠাকুর", "জসীমউদ্দীন"], correct: 0 },
+                { id: "bn1_7", board: "C.B. 23", question: "বাংলা সাহিত্যের প্রথম আধুনিক কবি হিসেবে কাকে ধরা হয়?", options: ["মাইকেল মধুসূদন দত্ত", "রবীন্দ্রনাথ ঠাকুর", "কাজী নজরুল ইসলাম", "জীবনানন্দ দাশ"], correct: 0 },
+                { id: "bn1_8", board: "Ctg.B. 22", question: "‘নকশী কাঁথার মাঠ’ বিখ্যাত কবিতাটি কার লেখা?", options: ["জসীমউদ্দীন", "রবীন্দ্রনাথ ঠাকুর", "কাজী নজরুল ইসলাম", "সুকান্ত ভট্টাচার্য"], correct: 0 },
+                { id: "bn1_9", board: "S.B. 22", question: "‘মেঘনাদবধ কাব্য’ কোন সাহিত্যরূপ?", options: ["মহাকাব্য", "উপন্যাস", "ছোটগল্প", "নাটক"], correct: 0 },
+                { id: "bn1_10", board: "D.B. 21", question: "রবীন্দ্রনাথ ঠাকুর কোন গ্রন্থের জন্য সাহিত্যে নোবেল পুরস্কার পান?", options: ["গীতাঞ্জলি", "গোরা", "শেষের কবিতা", "ঘরে বাইরে"], correct: 0 },
+                { id: "bn1_11", board: "R.B. 21", question: "‘দেবদাস’ কে লিখেছেন?", options: ["শরৎচন্দ্র চট্টোপাধ্যায়", "বঙ্কিমচন্দ্র চট্টোপাধ্যায়", "রবীন্দ্রনাথ ঠাকুর", "মানিক বন্দ্যোপাধ্যায়"], correct: 0 },
+                { id: "bn1_12", board: "J.B. 22", question: "ঐতিহ্যবাহী বাংলা লোককাহিনিমূলক গানকে কী বলা হয়?", options: ["পালাগান", "রবীন্দ্রসংগীত", "নজরুলগীতি", "গজল"], correct: 0 },
+                { id: "bn1_13", board: "B.B. 22", question: "‘বন্দে মাতরম্’ গানটি যে ‘আনন্দমঠ’-এ রয়েছে, সেটি কে লিখেছেন?", options: ["বঙ্কিমচন্দ্র চট্টোপাধ্যায়", "রবীন্দ্রনাথ ঠাকুর", "মাইকেল মধুসূদন দত্ত", "শরৎচন্দ্র"], correct: 0 },
+                { id: "bn1_14", board: "D.B. 20", question: "‘চোখের বালি’ উপন্যাসটি কার লেখা?", options: ["রবীন্দ্রনাথ ঠাকুর", "শরৎচন্দ্র", "বঙ্কিমচন্দ্র", "কাজী নজরুল ইসলাম"], correct: 0 },
+                { id: "bn1_15", board: "S.B. 21", question: "‘আমার একুশে’ নামে স্মরণীয় বাংলা ভাষা আন্দোলন কোন সালে সংঘটিত হয়?", options: ["১৯৫২", "১৯৪৭", "১৯৭১", "১৯৬৯"], correct: 0 },
+                { id: "bn1_16", board: "C.B. 21", question: "দেশাত্মবোধক কাব্যগ্রন্থ ‘অগ্নিবীণা’ কে লিখেছেন?", options: ["কাজী নজরুল ইসলাম", "রবীন্দ্রনাথ ঠাকুর", "জসীমউদ্দীন", "সুকান্ত ভট্টাচার্য"], correct: 0 },
+                { id: "bn1_17", board: "Ctg.B. 21", question: "‘লালনগীতি’ কোন মরমি কবি-গায়কের সঙ্গে সম্পর্কিত?", options: ["লালন শাহ", "হাসন রাজা", "রাধারমণ দত্ত", "আব্বাসউদ্দীন আহমদ"], correct: 0 },
+                { id: "bn1_18", board: "R.B. 20", question: "বাংলাদেশের জাতীয় কবি হিসেবে কোন বাঙালি কবি পরিচিত?", options: ["কাজী নজরুল ইসলাম", "রবীন্দ্রনাথ ঠাকুর", "জসীমউদ্দীন", "শামসুর রহমান"], correct: 0 },
+                { id: "bn1_19", board: "J.B. 21", question: "‘চার অধ্যায়’ কোন লেখকের উপন্যাস?", options: ["রবীন্দ্রনাথ ঠাকুর", "শরৎচন্দ্র", "বঙ্কিমচন্দ্র", "মানিক বন্দ্যোপাধ্যায়"], correct: 0 },
+                { id: "bn1_20", board: "B.B. 21", question: "‘নবান্ন’ কোন সাহিত্যরূপের অন্তর্ভুক্ত?", options: ["নাটক", "উপন্যাস", "কবিতা", "প্রবন্ধ"], correct: 0 }
             ],
             bangla_2nd: [
-                { id: "bn2_1", board: "D.B. 23", question: "In Bangla grammar, 'Karok' (কারক) describes the relationship between which two parts of a sentence?", options: ["Verb and noun", "Adjective and adverb", "Subject and object only", "Two verbs"], correct: 0 },
-                { id: "bn2_2", board: "R.B. 23", question: "How many vowel sounds (স্বরবর্ণ) are there in the Bangla alphabet?", options: ["11", "10", "12", "9"], correct: 0 },
-                { id: "bn2_3", board: "Ctg.B. 22", question: "'Sadhu Bhasha' in Bangla refers to:", options: ["The formal, classical style of writing", "Spoken colloquial style", "A regional dialect", "Sign language"], correct: 0 },
-                { id: "bn2_4", board: "J.B. 22", question: "The Bangla script evolved from which ancient script?", options: ["Brahmi script", "Latin script", "Arabic script", "Devanagari script"], correct: 0 },
-                { id: "bn2_5", board: "D.B. 22", question: "What does 'Ban­an' (বানান) refer to in Bangla grammar?", options: ["Spelling", "Pronunciation", "Punctuation", "Grammar rules"], correct: 0 },
-                { id: "bn2_6", board: "R.B. 22", question: "How many consonant letters (ব্যঞ্জনবর্ণ) are there in the Bangla alphabet?", options: ["39", "35", "40", "33"], correct: 0 },
-                { id: "bn2_7", board: "C.B. 23", question: "A 'Sarbanam' (সর্বনাম) in Bangla grammar refers to which part of speech?", options: ["Pronoun", "Verb", "Adjective", "Adverb"], correct: 0 },
-                { id: "bn2_8", board: "Ctg.B. 22", question: "What is 'Bisheshan' (বিশেষণ) in Bangla grammar?", options: ["Adjective", "Noun", "Verb", "Conjunction"], correct: 0 },
-                { id: "bn2_9", board: "S.B. 22", question: "What does 'Kriya' (ক্রিয়া) mean in Bangla grammar?", options: ["Verb", "Noun", "Pronoun", "Adjective"], correct: 0 },
-                { id: "bn2_10", board: "D.B. 21", question: "What is the term for a compound word formed by combining two or more words in Bangla?", options: ["Samas", "Sandhi", "Pratyay", "Upasarga"], correct: 0 },
-                { id: "bn2_11", board: "R.B. 21", question: "'Prottoy' (প্রত্যয়) in Bangla grammar refers to:", options: ["A suffix added to a root word", "A prefix", "A type of sentence", "A punctuation mark"], correct: 0 },
-                { id: "bn2_12", board: "J.B. 22", question: "What is 'Upasarga' (উপসর্গ) in Bangla grammar?", options: ["A prefix added before a word", "A suffix", "A type of pronoun", "A conjunction"], correct: 0 },
-                { id: "bn2_13", board: "B.B. 22", question: "How many cases (কারক) are traditionally recognized in Bangla grammar?", options: ["6", "4", "5", "8"], correct: 0 },
-                { id: "bn2_14", board: "D.B. 20", question: "What is a 'Jotil Bakko' (জটিল বাক্য) in Bangla grammar?", options: ["A complex sentence", "A simple sentence", "A compound sentence", "An interrogative sentence"], correct: 0 },
-                { id: "bn2_15", board: "S.B. 21", question: "The Bangla language belongs to which language family?", options: ["Indo-Aryan", "Dravidian", "Sino-Tibetan", "Austroasiatic"], correct: 0 },
-                { id: "bn2_16", board: "C.B. 21", question: "What is 'Biporit Shobdo' (বিপরীত শব্দ)?", options: ["Antonym", "Synonym", "Homophone", "Compound word"], correct: 0 },
-                { id: "bn2_17", board: "Ctg.B. 21", question: "What is the term for words with similar meanings in Bangla?", options: ["Samarthak shabda (synonym)", "Biporit shabda", "Dhwoni", "Ban­an"], correct: 0 },
-                { id: "bn2_18", board: "R.B. 20", question: "Which punctuation mark is called 'Dari' (দাঁড়ি) in Bangla?", options: ["Full stop", "Comma", "Question mark", "Exclamation mark"], correct: 0 },
-                { id: "bn2_19", board: "J.B. 21", question: "What is 'Namapod' (নামপদ) in Bangla grammar?", options: ["A word that acts as a noun", "A verb form", "A type of sentence", "A prefix"], correct: 0 },
-                { id: "bn2_20", board: "B.B. 21", question: "What does 'Dhwoni' (ধ্বনি) refer to in Bangla linguistics?", options: ["Sound/phonetics", "Meaning", "Grammar structure", "Vocabulary"], correct: 0 }
+                { id: "bn2_1", board: "D.B. 23", question: "বাংলা ব্যাকরণে ‘কারক’ বাক্যের কোন দুটি অংশের মধ্যে সম্পর্ক বোঝায়?", options: ["ক্রিয়া ও বিশেষ্য", "বিশেষণ ও ক্রিয়াবিশেষণ", "শুধু কর্তা ও কর্ম", "দুটি ক্রিয়া"], correct: 0 },
+                { id: "bn2_2", board: "R.B. 23", question: "বাংলা বর্ণমালায় স্বরবর্ণের সংখ্যা কত?", options: ["১১", "১০", "১২", "৯"], correct: 0 },
+                { id: "bn2_3", board: "Ctg.B. 22", question: "বাংলায় ‘সাধু ভাষা’ বলতে কী বোঝায়?", options: ["আনুষ্ঠানিক ও শাস্ত্রীয় লেখার রীতি", "কথ্য চলিত রীতি", "আঞ্চলিক উপভাষা", "ইশারা ভাষা"], correct: 0 },
+                { id: "bn2_4", board: "J.B. 22", question: "বাংলা লিপি কোন প্রাচীন লিপি থেকে বিবর্তিত হয়েছে?", options: ["ব্রাহ্মী লিপি", "ল্যাটিন লিপি", "আরবি লিপি", "দেবনাগরী লিপি"], correct: 0 },
+                { id: "bn2_5", board: "D.B. 22", question: "বাংলা ব্যাকরণে ‘বানান’ বলতে কী বোঝায়?", options: ["শব্দের শুদ্ধ লিখনরীতি", "উচ্চারণ", "বিরামচিহ্ন", "ব্যাকরণের নিয়ম"], correct: 0 },
+                { id: "bn2_6", board: "R.B. 22", question: "বাংলা বর্ণমালায় ব্যঞ্জনবর্ণের সংখ্যা কত?", options: ["৩৯", "৩৫", "৪০", "৩৩"], correct: 0 },
+                { id: "bn2_7", board: "C.B. 23", question: "বাংলা ব্যাকরণে ‘সর্বনাম’ কোন পদ?", options: ["সর্বনাম পদ", "ক্রিয়া", "বিশেষণ", "ক্রিয়াবিশেষণ"], correct: 0 },
+                { id: "bn2_8", board: "Ctg.B. 22", question: "বাংলা ব্যাকরণে ‘বিশেষণ’ কী?", options: ["বিশেষণ পদ", "বিশেষ্য পদ", "ক্রিয়া", "সংযোজক অব্যয়"], correct: 0 },
+                { id: "bn2_9", board: "S.B. 22", question: "বাংলা ব্যাকরণে ‘ক্রিয়া’ বলতে কী বোঝায়?", options: ["ক্রিয়া পদ", "বিশেষ্য পদ", "সর্বনাম", "বিশেষণ"], correct: 0 },
+                { id: "bn2_10", board: "D.B. 21", question: "বাংলায় দুই বা ততোধিক শব্দের সমন্বয়ে গঠিত যৌগিক শব্দকে কী বলা হয়?", options: ["সমাস", "সন্ধি", "প্রত্যয়", "উপসর্গ"], correct: 0 },
+                { id: "bn2_11", board: "R.B. 21", question: "বাংলা ব্যাকরণে ‘প্রত্যয়’ বলতে কী বোঝায়?", options: ["মূল শব্দের সঙ্গে যুক্ত প্রত্যয়", "উপসর্গ", "এক ধরনের বাক্য", "একটি বিরামচিহ্ন"], correct: 0 },
+                { id: "bn2_12", board: "J.B. 22", question: "বাংলা ব্যাকরণে ‘উপসর্গ’ কী?", options: ["শব্দের আগে যুক্ত হওয়া অংশ", "প্রত্যয়", "এক ধরনের সর্বনাম", "সংযোজক অব্যয়"], correct: 0 },
+                { id: "bn2_13", board: "B.B. 22", question: "বাংলা ব্যাকরণে প্রচলিত কারকের সংখ্যা কত?", options: ["৬", "৪", "৫", "৮"], correct: 0 },
+                { id: "bn2_14", board: "D.B. 20", question: "বাংলা ব্যাকরণে ‘জটিল বাক্য’ কী?", options: ["জটিল বাক্য", "সরল বাক্য", "যৌগিক বাক্য", "প্রশ্নবোধক বাক্য"], correct: 0 },
+                { id: "bn2_15", board: "S.B. 21", question: "বাংলা ভাষা কোন ভাষাপরিবারের অন্তর্ভুক্ত?", options: ["ইন্দো-আর্য", "দ্রাবিড়", "চীন-তিব্বতি", "অস্ট্রোএশীয়"], correct: 0 },
+                { id: "bn2_16", board: "C.B. 21", question: "‘বিপরীত শব্দ’ বলতে কী বোঝায়?", options: ["বিপরীতার্থক শব্দ", "সমার্থক শব্দ", "সমোচ্চারিত শব্দ", "যৌগিক শব্দ"], correct: 0 },
+                { id: "bn2_17", board: "Ctg.B. 21", question: "বাংলায় সমার্থক শব্দকে কী বলা হয়?", options: ["সমার্থক শব্দ", "বিপরীত শব্দ", "ধ্বনি", "বানান"], correct: 0 },
+                { id: "bn2_18", board: "R.B. 20", question: "বাংলায় ‘দাঁড়ি’ কোন বিরামচিহ্নকে বলা হয়?", options: ["পূর্ণচ্ছেদ", "কমা", "প্রশ্নবোধক চিহ্ন", "বিস্ময়বোধক চিহ্ন"], correct: 0 },
+                { id: "bn2_19", board: "J.B. 21", question: "বাংলা ব্যাকরণে ‘নামপদ’ কী?", options: ["যে শব্দ বিশেষ্য হিসেবে কাজ করে", "ক্রিয়ার রূপ", "এক ধরনের বাক্য", "উপসর্গ"], correct: 0 },
+                { id: "bn2_20", board: "B.B. 21", question: "বাংলা ভাষাবিজ্ঞানে ‘ধ্বনি’ বলতে কী বোঝায়?", options: ["শব্দধ্বনি/ধ্বনিবিজ্ঞান", "অর্থ", "ব্যাকরণগত কাঠামো", "শব্দভাণ্ডার"], correct: 0 }
             ],
             english_1st: [
                 { id: "e1_1", board: "D.B. 23", question: "Which part of speech describes an action?", options: ["Verb", "Noun", "Adjective", "Preposition"], correct: 0 },
@@ -964,10 +996,11 @@
                 card.className = 'subject-card';
                 card.style.setProperty('--subject-color', subj.color);
                 card.onclick = () => openExamConfig(subj.id);
+                const icons = {physics:"⚡", chemistry:"🧪", higher_math:"∑", general_math:"📐", biology:"🧬", ict:"💻", bangla_1st:"ক", bangla_2nd:"ক", english_1st:"A", english_2nd:"A", bgs:"🌏", islam:"☪"};
                 card.innerHTML = `
-                    <span class="subject-tag">${subj.name.toUpperCase()}</span>
-                    <h3 style="font-size: 1.1rem; margin-top: 0.2rem;">${subj.name}</h3>
-                    <p style="color: var(--text-sub); font-size: 0.85rem; margin-top: 0.4rem;">${count} Questions Available</p>
+                    <span class="subject-tag">${icons[subj.id] || "📚"} &nbsp; ${subj.name.toUpperCase()}</span>
+                    <h3>${subj.name}</h3>
+                    <p>${count} questions available</p>
                 `;
                 container.appendChild(card);
             });
@@ -1028,6 +1061,7 @@
             const subjObj = sscSubjects.find(s => s.id === currentSubjectId);
             document.getElementById('quiz-title').innerText = `${subjObj.name} Exam`;
             document.getElementById('quiz-count-label').innerText = `${activeExamQuestions.length} Questions Selected`;
+            const progressBar = document.getElementById('exam-progress-fill'); if (progressBar) progressBar.style.width = '0%';
 
             const container = document.getElementById('questions-container');
             container.innerHTML = '';
@@ -1055,6 +1089,7 @@
 
             lockedQuestions[qIndex] = true;
             userAnswers[qIndex] = optIndex;
+            const progressBar = document.getElementById('exam-progress-fill'); if (progressBar) progressBar.style.width = `${(Object.keys(userAnswers).length / activeExamQuestions.length) * 100}%`;
 
             const isCorrect = (optIndex === correctOptIndex);
             const targetEl = document.getElementById(`opt_${qIndex}_${optIndex}`);
