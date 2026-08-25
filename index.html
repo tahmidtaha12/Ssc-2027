@@ -334,7 +334,7 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
 #questions-container .option-item { line-height: 1.65; }
 </style>
 
-</head>
+<style>#dash-question-count,#dash-accuracy,#dash-streak{font-variant-numeric:tabular-nums}.subject-card{cursor:pointer}</style></head>
 <body>
 
     <div id="splash-screen">
@@ -873,6 +873,7 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
             }, 2500);
 
             await loadQuestions();
+            setTimeout(updateDashboardStats, 500);
             renderDashboard();
 
             if (!currentUserName) {
@@ -1163,6 +1164,22 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
             const history = JSON.parse(localStorage.getItem('ssc_analytics_history') || '[]');
             history.unshift(record);
             localStorage.setItem('ssc_analytics_history', JSON.stringify(history));
+            updateDashboardStats();
+        }
+
+        function updateDashboardStats() {
+            const history = JSON.parse(localStorage.getItem('ssc_analytics_history') || '[]');
+            const total = Object.values(database || {}).reduce((n, a) => n + (Array.isArray(a) ? a.length : 0), 0);
+            const q = document.getElementById('dash-question-count');
+            if (q) q.textContent = total;
+            let correct = 0, answered = 0;
+            history.forEach(x => { const m = String(x.score || '').match(/(\d+)\s*\/\s*(\d+)/); if(m){correct+=+m[1]; answered+=+m[2];} });
+            const a=document.getElementById('dash-accuracy');
+            if(a) a.textContent=answered ? ((correct/answered)*100).toFixed(1)+'%' : '—';
+            const days=[...new Set(history.map(x=>{const d=new Date(x.date); return isNaN(d)?null:d.toDateString()}).filter(Boolean))];
+            let cur=new Date(); cur.setHours(0,0,0,0); if(!days.includes(cur.toDateString())) cur.setDate(cur.getDate()-1);
+            let streak=0; while(days.includes(cur.toDateString())){streak++;cur.setDate(cur.getDate()-1);}
+            const st=document.getElementById('dash-streak'); if(st) st.textContent=streak;
         }
 
         function renderStatsView() {
@@ -1296,6 +1313,7 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
         function showView(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
+            if (viewId === 'dashboard') updateDashboardStats();
             if (viewId !== 'leaderboard' && leaderboardPollId) {
                 clearInterval(leaderboardPollId);
                 leaderboardPollId = null;
@@ -1380,4 +1398,4 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
         }
     </script>
 </body>
-</html>
+    </html>
