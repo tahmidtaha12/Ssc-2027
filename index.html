@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSC 2027 — Smart Board Exam Companion</title>
+    <title>Studify 🎓 — SSC 2027</title>
     <style>
         :root {
             --bg-base: #0a0f18;
@@ -334,7 +334,12 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
 #questions-container .option-item { line-height: 1.65; }
 </style>
 
-<style>#dash-question-count,#dash-accuracy,#dash-streak{font-variant-numeric:tabular-nums}.subject-card{cursor:pointer}</style></head>
+
+<style id="studify-fire-upgrade">
+.lb-hero{display:flex;justify-content:space-between;align-items:center;padding:30px 34px;border-radius:25px;border:1px solid var(--line);background:linear-gradient(135deg,#111d30,#0a1019);box-shadow:var(--shadow)}.lb-hero h2{font-size:clamp(2rem,5vw,3rem);margin:8px 0}.lb-hero p{color:var(--muted);margin:0}.lb-trophy{font-size:5rem}.lb-controls{display:flex;align-items:end;gap:12px;margin:15px 0}.lb-grow{flex:1}.control-label{display:block;font-size:.62rem;letter-spacing:.12em;font-weight:900;color:#8191a7;margin-bottom:6px}.lb-tabs{display:flex;background:#0b111b;border:1px solid var(--line);padding:3px;border-radius:12px;width:max-content}.lb-tab{border:0;background:transparent;color:#91a0b5;padding:8px 13px;border-radius:9px;font-weight:800;cursor:pointer}.lb-tab.active{background:#18253a;color:#fff}.lb-refresh{height:39px;width:42px;border-radius:11px;border:1px solid var(--line);background:#0e1725;color:#dce7f8;font-size:1.2rem;cursor:pointer}.lb-podium{display:grid;grid-template-columns:1fr 1.12fr 1fr;align-items:end;gap:10px;margin:20px 0}.lb-podium-card{min-height:145px;padding:16px 10px;border:1px solid var(--line);border-radius:19px;background:#0c131f;text-align:center}.lb-podium-card.first{min-height:180px;border-color:rgba(255,193,75,.3)}.lb-medal{font-size:1.5rem}.lb-avatar{width:44px;height:44px;margin:7px auto;border-radius:50%;display:grid;place-items:center;background:#17243a;font-weight:950}.lb-podium-card.first .lb-avatar{width:54px;height:54px;background:#c79738;color:#171009}.lb-name{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lb-podium-subject{font-size:.65rem;color:var(--muted)}.lb-podium-score{font-size:.8rem;font-weight:900;margin-top:8px}.lb-podium-accuracy{font-size:.65rem;color:#7bdcff}.lb-board-card{border:1px solid var(--line);border-radius:21px;background:#0c131f;overflow:hidden}.lb-board-head{display:flex;justify-content:space-between;align-items:center;padding:17px 19px;border-bottom:1px solid var(--line)}.lb-board-head span{font-size:.68rem;color:var(--muted);margin-left:8px}.lb-live{color:#62dfac!important;font-weight:900}.lb-row{display:grid;grid-template-columns:54px minmax(130px,1.7fr) minmax(90px,1fr) 90px 90px;align-items:center;gap:10px;padding:14px 19px;border-bottom:1px solid rgba(255,255,255,.055)}.lb-row:hover{background:rgba(255,255,255,.025)}.lb-rank-num{font-weight:950;color:#72839a}.lb-user{display:flex;align-items:center;gap:10px;min-width:0}.lb-row-avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#162237;font-size:.72rem;font-weight:900}.lb-user-name{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lb-user-sub,.lb-subject-name{font-size:.65rem;color:var(--muted)}.lb-score-val{font-weight:900}.lb-accuracy-val{font-weight:900;color:#72d9ff}.lb-loading,.lb-empty{text-align:center;padding:34px;color:var(--muted)}
+.aegis-fab{position:fixed;right:20px;bottom:84px;width:60px;height:60px;border-radius:20px;border:1px solid rgba(122,216,255,.35);background:linear-gradient(135deg,#152943,#0c1828);color:#dff8ff;font-size:1.7rem;box-shadow:0 15px 45px rgba(0,0,0,.35);cursor:pointer;z-index:900}.aegis-panel{position:fixed;right:20px;bottom:154px;width:min(390px,calc(100vw - 28px));height:min(590px,calc(100vh - 185px));background:#0b121d;border:1px solid var(--line);border-radius:22px;box-shadow:0 25px 80px rgba(0,0,0,.5);z-index:901;display:none;overflow:hidden}.aegis-panel.open{display:flex;flex-direction:column}.aegis-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.aegis-head small{display:block;color:var(--muted);margin-top:2px}.aegis-close{background:none;border:0;color:#9aacbf;font-size:1.4rem;cursor:pointer}.aegis-messages{flex:1;overflow:auto;padding:16px}.aegis-msg{max-width:88%;padding:11px 13px;border-radius:15px;margin:8px 0;line-height:1.55;font-size:.86rem}.aegis-msg.ai{background:#121e2f;border:1px solid rgba(255,255,255,.05)}.aegis-msg.user{margin-left:auto;background:#183452}.aegis-chips{display:flex;gap:6px;overflow:auto;padding:0 16px 10px}.aegis-chip{white-space:nowrap;border:1px solid var(--line);background:#101a29;color:#a9bad0;padding:7px 9px;border-radius:999px;font-size:.7rem}.aegis-input{padding:11px;border-top:1px solid var(--line);display:flex;gap:7px}.aegis-input textarea{flex:1;resize:none;min-height:42px}.aegis-send{width:44px;border:0;border-radius:12px;background:#2b83b8;color:#fff;font-weight:900}@media(max-width:700px){.lb-hero{padding:24px}.lb-trophy{font-size:4rem}.lb-controls{flex-wrap:wrap}.lb-grow{width:100%}.lb-row{grid-template-columns:36px minmax(120px,1fr) 65px 65px;padding:12px 10px}.lb-row .lb-subject-name{display:none}}
+</style>
+</head>
 <body>
 
     <div id="splash-screen">
@@ -347,7 +352,7 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
     <header class="app-header">
         <button class="brand" onclick="showView('dashboard')" aria-label="SSC 2027 home">
             <span class="brand-mark">27</span>
-            <span><strong>SSC 2027</strong><small>Smart Study</small></span>
+            <span><strong>Studify</strong><small>SSC 2027 • Smart Study</small></span>
         </button>
         <nav class="nav-buttons" aria-label="Main navigation">
             <button class="nav-btn active-nav" onclick="showView('dashboard')">⌂ <span>Home</span></button>
@@ -873,7 +878,6 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
             }, 2500);
 
             await loadQuestions();
-            setTimeout(updateDashboardStats, 500);
             renderDashboard();
 
             if (!currentUserName) {
@@ -1164,22 +1168,6 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
             const history = JSON.parse(localStorage.getItem('ssc_analytics_history') || '[]');
             history.unshift(record);
             localStorage.setItem('ssc_analytics_history', JSON.stringify(history));
-            updateDashboardStats();
-        }
-
-        function updateDashboardStats() {
-            const history = JSON.parse(localStorage.getItem('ssc_analytics_history') || '[]');
-            const total = Object.values(database || {}).reduce((n, a) => n + (Array.isArray(a) ? a.length : 0), 0);
-            const q = document.getElementById('dash-question-count');
-            if (q) q.textContent = total;
-            let correct = 0, answered = 0;
-            history.forEach(x => { const m = String(x.score || '').match(/(\d+)\s*\/\s*(\d+)/); if(m){correct+=+m[1]; answered+=+m[2];} });
-            const a=document.getElementById('dash-accuracy');
-            if(a) a.textContent=answered ? ((correct/answered)*100).toFixed(1)+'%' : '—';
-            const days=[...new Set(history.map(x=>{const d=new Date(x.date); return isNaN(d)?null:d.toDateString()}).filter(Boolean))];
-            let cur=new Date(); cur.setHours(0,0,0,0); if(!days.includes(cur.toDateString())) cur.setDate(cur.getDate()-1);
-            let streak=0; while(days.includes(cur.toDateString())){streak++;cur.setDate(cur.getDate()-1);}
-            const st=document.getElementById('dash-streak'); if(st) st.textContent=streak;
         }
 
         function renderStatsView() {
@@ -1313,7 +1301,6 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
         function showView(viewId) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
-            if (viewId === 'dashboard') updateDashboardStats();
             if (viewId !== 'leaderboard' && leaderboardPollId) {
                 clearInterval(leaderboardPollId);
                 leaderboardPollId = null;
@@ -1397,5 +1384,20 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
             }
         }
     </script>
+<button class="aegis-fab" onclick="toggleAegis()" aria-label="Open Aegis">🛡️</button><div id="aegis-panel" class="aegis-panel"><div class="aegis-head"><div><strong>🛡️ Aegis</strong><small>Your AI study companion</small></div><button class="aegis-close" onclick="toggleAegis()">×</button></div><div id="aegis-messages" class="aegis-messages"><div class="aegis-msg ai">Hi! I’m Aegis. Ask me about a concept, question, or problem. I can give a hint, explain it, or solve it step by step.</div></div><div class="aegis-chips"><button class="aegis-chip" onclick="aegisQuick('Give me a hint, not the answer.')">💡 Hint</button><button class="aegis-chip" onclick="aegisQuick('Explain this simply.')">🧠 Explain</button><button class="aegis-chip" onclick="aegisQuick('Solve this step by step.')">✏️ Solve</button></div><div class="aegis-input"><textarea id="aegis-input" placeholder="Ask Aegis…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAegis()}"></textarea><button class="aegis-send" onclick="sendAegis()">➤</button></div></div>
+<script id="studify-fire-js">
+(function(){
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const ini=n=>String(n||'AI').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+window.__lbSort='score';
+window.setLeaderboardSort=(s,b)=>{window.__lbSort=s;document.querySelectorAll('.lb-tab').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active');window.loadLeaderboardData&&window.loadLeaderboardData()};
+window.renderLeaderboardPodium=rows=>{const p=document.getElementById('lb-podium');if(!p)return;const a=[rows[1],rows[0],rows[2]],c=['second','first','third'],m=['🥈','🥇','🥉'];p.innerHTML=a.map((r,i)=>r?`<div class="lb-podium-card ${c[i]}"><div class="lb-medal">${m[i]}</div><div class="lb-avatar">${ini(r.name)}</div><div class="lb-name">${esc(r.name||'Anonymous')}</div><div class="lb-podium-subject">${esc(r.subject||'All Subjects')}</div><div class="lb-podium-score">${esc(r.score)} / ${esc(r.total)}</div><div class="lb-podium-accuracy">${esc(r.accuracy)}% accuracy</div></div>`:'<div></div>').join('')};
+window.loadLeaderboardData=async()=>{const l=document.getElementById('leaderboard-table-body'),c=document.getElementById('lb-result-count');if(!window.supabaseClient){if(l)l.innerHTML='<div class="lb-empty">Leaderboard isn’t connected yet.</div>';return}let q=supabaseClient.from('leaderboard').select('*').limit(50),f=document.getElementById('lb-subject-filter')?.value||'all';if(f!=='all')q=q.eq('subject',f);const {data,error}=await q;if(error){l.innerHTML='<div class="lb-empty">Couldn’t load rankings right now.</div>';return}const rows=(data||[]).sort((a,b)=>window.__lbSort==='accuracy'?(+b.accuracy||0)-(+a.accuracy||0):(+b.score||0)-(+a.score||0));renderLeaderboardPodium(rows.slice(0,3));if(c)c.textContent=`${rows.length} candidates`;l.innerHTML=rows.length?rows.map((r,i)=>`<div class="lb-row"><div class="lb-rank-num">#${i+1}</div><div class="lb-user"><div class="lb-row-avatar">${ini(r.name)}</div><div><div class="lb-user-name">${esc(r.name||'Anonymous')}</div><div class="lb-user-sub">${r.created_at?new Date(r.created_at).toLocaleDateString([], {month:'short',day:'numeric'}):''}</div></div></div><div class="lb-subject-name">${esc(r.subject||'—')}</div><div class="lb-score-val">${esc(r.score)} / ${esc(r.total)}</div><div class="lb-accuracy-val">${esc(r.accuracy)}%</div></div>`).join(''):'<div class="lb-empty">No scores yet — be the first! 🚀</div>'};
+
+window.toggleAegis=()=>document.getElementById('aegis-panel')?.classList.toggle('open');
+window.aegisQuick=t=>{const i=document.getElementById('aegis-input');i.value=t;sendAegis()};
+window.sendAegis=async()=>{const i=document.getElementById('aegis-input'),b=document.getElementById('aegis-messages'),t=i.value.trim();if(!t)return;b.insertAdjacentHTML('beforeend',`<div class="aegis-msg user">${esc(t)}</div>`);i.value='';const p=document.createElement('div');p.className='aegis-msg ai';p.textContent='Aegis is thinking…';b.appendChild(p);try{const r=await fetch('/api/aegis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:t,subject:window.currentSubjectId||null})});if(!r.ok)throw 0;const d=await r.json();p.textContent=d.reply||'No response.'}catch(e){p.textContent='Aegis UI is ready. Connect the secure /api/aegis backend to activate live AI answers.'}b.scrollTop=b.scrollHeight};
+})();
+</script>
 </body>
     </html>
