@@ -4,9 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Studify 🎓 — SSC 2027</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Supabase client for shared/global leaderboard -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root {
-            --bg-base: #0a0f18;
+            --bg: #070b12;
+            --surface: #0e1522;
+            --surface2: #121c2b;
+            --line: rgba(255, 255, 255, 0.09);
+            --muted: #8fa0b8;
+            --white: #f5f8ff;
+            --blue: #5b8cff;
+            --cyan: #48d9ff;
+            --green: #35d39b;
+            --amber: #ffbd4a;
+            --danger: #ff5f6d;
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
             --card-bg: rgba(20, 27, 38, 0.85);
             --card-border: rgba(148, 163, 184, 0.18);
             --accent-amber: #f59e0b;
@@ -21,40 +40,20 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            background: 
-                linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%),
-                radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.06) 0%, transparent 50%),
-                radial-gradient(circle at 50% 80%, rgba(180, 83, 9, 0.08) 0%, transparent 50%),
-                linear-gradient(180deg, #131b26 0%, #0a0d14 100%);
+            background: radial-gradient(900px 500px at 15% -10%, rgba(91, 140, 255, 0.16), transparent 60%),
+                        radial-gradient(700px 500px at 90% 10%, rgba(72, 217, 255, 0.10), transparent 60%),
+                        linear-gradient(180deg, #0a101a 0%, #06090f 100%);
             background-attachment: fixed;
-            color: var(--text-main);
+            color: var(--white);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
             position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 100vh;
-            background: linear-gradient(180deg, 
-                transparent 0%, 
-                rgba(245, 158, 11, 0.25) 20%, 
-                rgba(255, 255, 255, 0.1) 50%, 
-                rgba(245, 158, 11, 0.25) 80%, 
-                transparent 100%);
-            pointer-events: none;
-            z-index: 0;
         }
 
         #splash-screen {
@@ -69,18 +68,8 @@
             transition: opacity 0.8s ease, visibility 0.8s;
         }
 
-        .cap-container {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .grad-cap {
-            font-size: 5rem;
-            animation: pulseGlow 1.2s infinite alternate ease-in-out;
-        }
-
+        .cap-container { position: relative; display: flex; justify-content: center; align-items: center; }
+        .grad-cap { font-size: 5rem; animation: pulseGlow 1.2s infinite alternate ease-in-out; }
         .splash-title {
             margin-top: 1.5rem;
             font-size: 1.4rem;
@@ -96,59 +85,87 @@
             0% { transform: scale(0.95); filter: drop-shadow(0 0 10px rgba(245, 158, 11, 0.2)); }
             100% { transform: scale(1.15); filter: drop-shadow(0 0 30px rgba(56, 189, 248, 0.9)); }
         }
+        @keyframes textBlink { 0% { opacity: 0.4; } 100% { opacity: 1; } }
 
-        @keyframes textBlink {
-            0% { opacity: 0.4; }
-            100% { opacity: 1; }
-        }
-
-        header {
-            background: rgba(10, 15, 24, 0.88);
+        .app-header {
+            height: 72px;
+            padding: 0.7rem max(1rem, calc((100vw - 1180px) / 2));
+            background: rgba(7, 11, 18, 0.78);
             backdrop-filter: blur(16px);
-            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--line);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--card-border);
             position: sticky;
             top: 0;
             z-index: 100;
-            flex-wrap: wrap;
-            gap: 0.5rem;
         }
 
-        h1 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fbbf24 0%, #38bdf8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            border: 0;
+            background: none;
+            color: var(--white);
+            cursor: pointer;
+            text-align: left;
         }
+        .brand-mark {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 13px;
+            background: linear-gradient(135deg, #5b8cff, #49d9ff);
+            color: #06101c;
+            font-weight: 950;
+            box-shadow: 0 8px 24px rgba(72, 217, 255, 0.2);
+        }
+        .brand strong { display: block; font-size: 1rem; }
+        .brand small { display: block; color: var(--muted); font-size: 0.65rem; }
 
-        .nav-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .nav-buttons { display: flex; gap: 0.25rem; align-items: center; }
+        .nav-btn, .auth-btn {
+            border: 1px solid transparent;
+            background: transparent;
+            color: #aebbd0;
+            padding: 0.55rem 0.8rem;
+            border-radius: 10px;
+            font-weight: 750;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .nav-btn:hover, .nav-btn.active-nav {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--white);
+            border-color: var(--line);
+        }
+        .auth-btn { background: var(--white); color: #08101c; padding: 0.6rem 1rem; }
 
         .btn {
-            background: var(--accent-amber);
-            color: #0f172a;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
+            border-radius: 12px;
+            padding: 0.72rem 1rem;
+            border: 0;
+            font-weight: 850;
+            transition: 0.2s;
             cursor: pointer;
-            font-weight: 700;
-            font-size: 0.85rem;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
         }
-
-        .btn:hover { transform: translateY(-1px); filter: brightness(1.1); }
-        .btn-secondary { background: rgba(30, 41, 59, 0.8); color: var(--text-main); box-shadow: none; border: 1px solid var(--card-border); }
-        .btn-danger { background: var(--accent-red); color: white; }
-        .btn-green { background: var(--accent-green); color: white; }
+        .btn-primary {
+            background: linear-gradient(135deg, #6a92ff, #42d6ff);
+            color: #06101c;
+            box-shadow: 0 10px 30px rgba(74, 155, 255, 0.18);
+        }
+        .btn-primary:hover { transform: translateY(-2px); }
+        .btn-ghost, .btn-secondary { background: rgba(255, 255, 255, 0.045); border: 1px solid var(--line); color: var(--white); box-shadow: none; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-green { background: var(--green); color: #06101c; }
 
         .container {
-            max-width: 950px;
-            margin: 1.5rem auto;
-            padding: 0 1rem;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 28px 18px 80px;
             width: 100%;
             flex: 1;
             position: relative;
@@ -164,181 +181,210 @@
         }
 
         .glass-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 1.25rem;
+            background: linear-gradient(145deg, #101a29, #0b111b);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 22px;
             margin-bottom: 1rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
         }
 
-        .glowing-welcome {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #f8fafc;
-            text-transform: capitalize;
-            animation: neonGlow 2s infinite alternate ease-in-out;
-        }
-
-        @keyframes neonGlow {
-            0% { text-shadow: 0 0 5px rgba(56, 189, 248, 0.6), 0 0 15px rgba(56, 189, 248, 0.4), 0 0 25px rgba(56, 189, 248, 0.2); }
-            100% { text-shadow: 0 0 10px rgba(245, 158, 11, 0.9), 0 0 25px rgba(245, 158, 11, 0.7), 0 0 40px rgba(245, 158, 11, 0.4); }
-        }
-
-        .subject-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .subject-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-left: 5px solid var(--subject-color, var(--accent-amber));
-            border-radius: 12px;
-            padding: 1.2rem;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            position: relative;
+        .hero-card {
+            min-height: 330px;
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            padding: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, rgba(17, 29, 47, 0.96), rgba(11, 17, 27, 0.92));
+            box-shadow: var(--shadow);
         }
-
-        .subject-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at top left, var(--subject-color, transparent) 0%, transparent 70%);
-            opacity: 0.12;
-            pointer-events: none;
-            transition: opacity 0.25s ease;
+        .hero-copy { position: relative; z-index: 2; max-width: 650px; }
+        .eyebrow { font-size: 0.68rem; letter-spacing: 0.16em; font-weight: 900; color: #78cfff; }
+        .live-dot {
+            display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+            background: var(--green); box-shadow: 0 0 0 5px rgba(53, 211, 155, 0.09); margin-right: 7px;
         }
+        .hero-copy h2 { font-size: clamp(2rem, 5vw, 4rem); line-height: 1.02; letter-spacing: -0.055em; margin: 12px 0 16px; color: var(--white); }
+        .hero-copy p { color: #a8b5c8; max-width: 580px; font-size: 1rem; line-height: 1.7; }
+        .hero-actions { display: flex; gap: 0.7rem; margin-top: 25px; }
 
-        .subject-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--subject-color, var(--accent-amber));
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 15px var(--subject-color);
+        .hero-orbit { width: 250px; height: 250px; position: relative; display: grid; place-items: center; }
+        .hero-cap { font-size: 6rem; filter: drop-shadow(0 15px 35px rgba(72, 217, 255, 0.28)); z-index: 2; }
+        .orbit-ring { position: absolute; border: 1px solid rgba(91, 140, 255, 0.22); border-radius: 50%; animation: spin 12s linear infinite; }
+        .ring-a { width: 220px; height: 220px; }
+        .ring-b { width: 160px; height: 160px; border-color: rgba(72, 217, 255, 0.18); animation-duration: 8s; animation-direction: reverse; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 14px 0 34px; }
+        .mini-stat { background: rgba(14, 21, 34, 0.8); border: 1px solid var(--line); border-radius: 17px; padding: 17px; display: flex; gap: 12px; align-items: center; }
+        .mini-icon { font-size: 1.25rem; }
+        .mini-stat strong { display: block; font-size: 1.05rem; }
+        .mini-stat small { display: block; color: var(--muted); font-size: 0.68rem; margin-top: 3px; }
+
+        .section-heading { display: flex; justify-content: space-between; align-items: flex-end; margin: 8px 2px 14px; }
+        .section-heading h2 { font-size: 1.45rem; margin-top: 5px; }
+        .section-note { font-size: 0.75rem; color: var(--muted); }
+
+        .subject-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 0; }
+        .subject-card {
+            min-height: 175px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: 22px;
+            background: linear-gradient(145deg, rgba(17, 26, 41, 0.94), rgba(10, 15, 24, 0.94));
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+            transition: 0.25s;
+            cursor: pointer;
+            position: relative;
         }
+        .subject-card:hover { transform: translateY(-5px); border-color: var(--subject-color) !important; box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28); }
+        .subject-tag { border: 0; background: rgba(255, 255, 255, 0.06); border-radius: 999px; padding: 5px 9px; font-size: 0.6rem; letter-spacing: 0.08em; display: inline-block; color: var(--subject-color); margin-bottom: 0.6rem; }
+        .subject-card h3 { font-size: 1.18rem !important; margin-top: 10px !important; }
+        .subject-card p { font-size: 0.78rem !important; color: var(--muted) !important; margin-top: 9px !important; }
 
-        .subject-card:hover::before { opacity: 0.25; }
+        .config-shell { max-width: 760px; margin: 15px auto; }
+        .back-link { border: 0; background: none; color: #9fb0c8; cursor: pointer; padding: 6px 0; margin-bottom: 12px; }
+        .config-card { background: linear-gradient(145deg, #101a2a, #0b111b); border: 1px solid var(--line); border-radius: 25px; padding: 34px; box-shadow: var(--shadow); }
+        .config-icon { font-size: 2rem; margin-bottom: 12px; }
+        .config-card h2 { font-size: 2rem; margin: 8px 0; }
+        .muted { color: var(--muted); font-size: 0.82rem; }
+        .config-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+        .form-group { margin-bottom: 0.8rem; }
+        label { font-size: 0.65rem; letter-spacing: 0.1em; font-weight: 850; color: #8090a7; display: block; margin-bottom: 0.3rem; }
+        input, select, textarea { width: 100%; padding: 0.82rem; border-radius: 11px; background: #080e17; border: 1px solid var(--line); color: var(--white); outline: none; }
+        .launch-btn { width: 100%; padding: 1rem; margin-top: 16px; font-size: 0.95rem; }
 
-        .subject-tag {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--subject-color, #fde68a);
-            border: 1px solid var(--subject-color, rgba(245, 158, 11, 0.3));
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            margin-bottom: 0.6rem;
-        }
+        .exam-topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 20px 2px; }
+        .exam-topbar h2 { margin: 5px 0; }
+        .timer-badge { background: rgba(255, 189, 74, 0.1); color: #ffd27c; border: 1px solid rgba(255, 189, 74, 0.25); padding: 0.55rem 0.9rem; border-radius: 12px; font-weight: 900; }
+        .exam-progress { height: 5px; background: #172131; border-radius: 99px; overflow: hidden; margin-bottom: 15px; }
+        .exam-progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #5b8cff, #48d9ff); transition: width 0.3s; }
 
-        .board-tag {
-            display: inline-block;
-            background: rgba(245, 158, 11, 0.15);
-            color: #fde68a;
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            margin-bottom: 0.6rem;
-        }
-
+        #questions-container .glass-card { font-family: "Noto Sans Bengali", "Noto Sans", system-ui, sans-serif; }
+        #questions-container h3 { font-size: 1.05rem !important; line-height: 1.75 !important; margin-top: 10px; font-weight: 750; }
         .options-list { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1rem; }
-
         .option-item {
-            background: rgba(10, 15, 24, 0.6);
-            border: 1px solid var(--card-border);
-            padding: 0.8rem 1rem;
-            border-radius: 8px;
+            background: #080e17;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 13px;
+            transition: 0.18s;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 0.8rem;
             font-size: 0.95rem;
+            line-height: 1.65;
         }
-
+        .option-item:hover:not(.locked) { border-color: rgba(91, 140, 255, 0.55); background: #0c1522; transform: translateX(2px); }
         .option-item.locked { cursor: not-allowed; opacity: 0.85; }
         .option-item.selected-correct { background: rgba(16, 185, 129, 0.2) !important; border-color: var(--accent-green) !important; }
         .option-item.selected-wrong { background: rgba(239, 68, 68, 0.2) !important; border-color: var(--accent-red) !important; }
 
-        .timer-badge {
-            background: rgba(56, 189, 248, 0.15);
-            color: var(--accent-blue);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-
-        .form-group { margin-bottom: 0.8rem; }
-        label { font-size: 0.8rem; color: var(--text-sub); display: block; margin-bottom: 0.3rem; }
-        input, select, textarea {
-            width: 100%; padding: 0.6rem; background: rgba(10, 15, 24, 0.8);
-            border: 1px solid var(--card-border); color: white; border-radius: 6px;
-        }
+        .submit-btn { width: 100%; padding: 1rem; margin: 4px 0 25px; }
+        #results .glass-card { background: linear-gradient(145deg, #101b2c, #0b111b); border-radius: 25px; border: 1px solid var(--line); text-align: center; padding: 2rem; }
+        #final-score { font-size: 4rem !important; background: linear-gradient(135deg, #ffcf67, #48d9ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; margin: 0.5rem 0; }
 
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th, td { padding: 0.75rem; border-bottom: 1px solid var(--card-border); text-align: left; }
+        table th { color: #8191a9; font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.75rem; text-align: left; }
+        table td { border-bottom: 1px solid var(--line); padding: 14px 10px; text-align: left; }
 
-        .lb-row-top { font-weight: 800; }
-        .lb-rank { width: 2.2rem; display: inline-block; text-align: center; }
-        .lb-rank-1 { color: #fbbf24; }
-        .lb-rank-2 { color: #cbd5e1; }
-        .lb-rank-3 { color: #d97706; }
-        .lb-toolbar { display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
-        .lb-toolbar select { width: auto; min-width: 180px; }
-        .lb-status { font-size: 0.75rem; color: var(--text-sub); margin-top: 0.6rem; }
-        .lb-live-dot {
-            display: inline-block; width: 8px; height: 8px; border-radius: 50%;
-            background: var(--accent-green); margin-right: 6px;
-            animation: lbPulse 1.4s infinite;
+        /* Leaderboard Fire Styling */
+        .lb-hero { display: flex; justify-content: space-between; align-items: center; padding: 30px 34px; border-radius: 25px; border: 1px solid var(--line); background: linear-gradient(135deg, #111d30, #0a1019); box-shadow: var(--shadow); }
+        .lb-hero h2 { font-size: clamp(2rem, 5vw, 3rem); margin: 8px 0; }
+        .lb-hero p { color: var(--muted); margin: 0; }
+        .lb-trophy { font-size: 5rem; }
+        .lb-controls { display: flex; align-items: flex-end; gap: 12px; margin: 15px 0; }
+        .lb-grow { flex: 1; }
+        .control-label { display: block; font-size: 0.62rem; letter-spacing: 0.12em; font-weight: 900; color: #8191a7; margin-bottom: 6px; }
+        .lb-podium { display: grid; grid-template-columns: 1fr 1.12fr 1fr; align-items: flex-end; gap: 10px; margin: 20px 0; }
+        .lb-podium-card { min-height: 145px; padding: 16px 10px; border: 1px solid var(--line); border-radius: 19px; background: #0c131f; text-align: center; }
+        .lb-podium-card.first { min-height: 180px; border-color: rgba(255, 193, 75, 0.3); }
+        .lb-medal { font-size: 1.5rem; }
+        .lb-avatar { width: 44px; height: 44px; margin: 7px auto; border-radius: 50%; display: grid; place-items: center; background: #17243a; font-weight: 950; }
+        .lb-podium-card.first .lb-avatar { width: 54px; height: 54px; background: #c79738; color: #171009; }
+        .lb-name { font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .lb-podium-subject { font-size: 0.65rem; color: var(--muted); }
+        .lb-podium-score { font-size: 0.8rem; font-weight: 900; margin-top: 8px; }
+        .lb-podium-accuracy { font-size: 0.65rem; color: #7bdcff; }
+        .lb-board-card { border: 1px solid var(--line); border-radius: 21px; background: #0c131f; overflow: hidden; }
+        .lb-board-head { display: flex; justify-content: space-between; align-items: center; padding: 17px 19px; border-bottom: 1px solid var(--line); }
+        .lb-board-head span { font-size: 0.68rem; color: var(--muted); margin-left: 8px; }
+        .lb-live { color: #62dfac !important; font-weight: 900; }
+        .lb-row { display: grid; grid-template-columns: 54px minmax(130px, 1.7fr) minmax(90px, 1fr) 90px 90px; align-items: center; gap: 10px; padding: 14px 19px; border-bottom: 1px solid rgba(255, 255, 255, 0.055); }
+        .lb-row:hover { background: rgba(255, 255, 255, 0.025); }
+        .lb-rank-num { font-weight: 950; color: #72839a; }
+        .lb-user { display: flex; align-items: center; gap: 10px; min-width: 0; }
+        .lb-row-avatar { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: #162237; font-size: 0.72rem; font-weight: 900; }
+        .lb-user-name { font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .lb-user-sub, .lb-subject-name { font-size: 0.65rem; color: var(--muted); }
+        .lb-score-val { font-weight: 900; }
+        .lb-accuracy-val { font-weight: 900; color: #72d9ff; }
+        .lb-loading, .lb-empty { text-align: center; padding: 34px; color: var(--muted); }
+
+        /* Aegis AI Drawer */
+        .aegis-fab {
+            position: fixed; right: 20px; bottom: 84px; width: 60px; height: 60px;
+            border-radius: 20px; border: 1px solid rgba(122, 216, 255, 0.35);
+            background: linear-gradient(135deg, #152943, #0c1828); color: #dff8ff;
+            font-size: 1.7rem; box-shadow: 0 15px 45px rgba(0, 0, 0, 0.35);
+            cursor: pointer; z-index: 900;
         }
-        @keyframes lbPulse { 0%,100%{ opacity: 1; } 50%{ opacity: 0.3; } }
-    
-/* ===== SSC 2027 PREMIUM UI ===== */
-:root{--bg:#070b12;--surface:#0e1522;--surface2:#121c2b;--line:rgba(255,255,255,.09);--muted:#8fa0b8;--white:#f5f8ff;--blue:#5b8cff;--cyan:#48d9ff;--green:#35d39b;--amber:#ffbd4a;--danger:#ff5f6d;--shadow:0 24px 70px rgba(0,0,0,.42)}
-body{background:radial-gradient(900px 500px at 15% -10%,rgba(91,140,255,.16),transparent 60%),radial-gradient(700px 500px at 90% 10%,rgba(72,217,255,.10),transparent 60%),linear-gradient(180deg,#0a101a 0%,#06090f 100%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body::before{display:none}
-.app-header{height:72px;padding:.7rem max(1rem,calc((100vw - 1180px)/2));background:rgba(7,11,18,.78);border-bottom:1px solid var(--line);box-shadow:0 8px 30px rgba(0,0,0,.18)}
-.brand{display:flex;align-items:center;gap:.7rem;border:0;background:none;color:var(--white);cursor:pointer;text-align:left}.brand-mark{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;background:linear-gradient(135deg,#5b8cff,#49d9ff);color:#06101c;font-weight:950;box-shadow:0 8px 24px rgba(72,217,255,.2)}.brand strong{display:block;font-size:1rem}.brand small{display:block;color:var(--muted);font-size:.65rem}
-.nav-buttons{gap:.25rem;align-items:center}.nav-btn,.auth-btn{border:1px solid transparent;background:transparent;color:#aebbd0;padding:.55rem .8rem;border-radius:10px;font-weight:750;cursor:pointer;transition:.2s}.nav-btn:hover,.nav-btn.active-nav{background:rgba(255,255,255,.06);color:var(--white);border-color:var(--line)}.auth-btn{background:var(--white);color:#08101c;padding:.6rem 1rem}
-.container{max-width:1180px;margin:0 auto;padding:28px 18px 80px}
-.hero-card{min-height:330px;border:1px solid var(--line);border-radius:28px;padding:48px;display:flex;align-items:center;justify-content:space-between;overflow:hidden;position:relative;background:linear-gradient(135deg,rgba(17,29,47,.96),rgba(11,17,27,.92));box-shadow:var(--shadow)}.hero-copy{position:relative;z-index:2;max-width:650px}.eyebrow{font-size:.68rem;letter-spacing:.16em;font-weight:900;color:#78cfff}.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(53,211,155,.09);margin-right:7px}.hero-copy h2{font-size:clamp(2rem,5vw,4rem);line-height:1.02;letter-spacing:-.055em;margin:12px 0 16px;color:var(--white)}.hero-copy p{color:#a8b5c8;max-width:580px;font-size:1rem;line-height:1.7}.hero-actions{display:flex;gap:.7rem;margin-top:25px}
-.btn{border-radius:12px;padding:.72rem 1rem;border:0;font-weight:850;transition:.2s;cursor:pointer}.btn-primary{background:linear-gradient(135deg,#6a92ff,#42d6ff);color:#06101c;box-shadow:0 10px 30px rgba(74,155,255,.18)}.btn-primary:hover{transform:translateY(-2px)}.btn-ghost,.btn-secondary{background:rgba(255,255,255,.045);border:1px solid var(--line);color:var(--white);box-shadow:none}
-.hero-orbit{width:250px;height:250px;position:relative;display:grid;place-items:center}.hero-cap{font-size:6rem;filter:drop-shadow(0 15px 35px rgba(72,217,255,.28));z-index:2}.orbit-ring{position:absolute;border:1px solid rgba(91,140,255,.22);border-radius:50%;animation:spin 12s linear infinite}.ring-a{width:220px;height:220px}.ring-b{width:160px;height:160px;border-color:rgba(72,217,255,.18);animation-duration:8s;animation-direction:reverse}@keyframes spin{to{transform:rotate(360deg)}}
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0 34px}.mini-stat{background:rgba(14,21,34,.8);border:1px solid var(--line);border-radius:17px;padding:17px;display:flex;gap:12px;align-items:center}.mini-icon{font-size:1.25rem}.mini-stat strong{display:block;font-size:1.05rem}.mini-stat small{display:block;color:var(--muted);font-size:.68rem;margin-top:3px}.section-heading{display:flex;justify-content:space-between;align-items:end;margin:8px 2px 14px}.section-heading h2{font-size:1.45rem;margin-top:5px}.section-note{font-size:.75rem;color:var(--muted)}
-.subject-grid{grid-template-columns:repeat(3,1fr);gap:14px;margin-top:0}.subject-card{min-height:175px;border:1px solid var(--line);border-left:0!important;border-radius:18px;padding:22px;background:linear-gradient(145deg,rgba(17,26,41,.94),rgba(10,15,24,.94));box-shadow:0 10px 30px rgba(0,0,0,.18);transition:.25s}.subject-card:hover{transform:translateY(-5px);border-color:var(--subject-color)!important;box-shadow:0 18px 45px rgba(0,0,0,.28)}.subject-tag{border:0;background:rgba(255,255,255,.06);border-radius:999px;padding:5px 9px;font-size:.6rem;letter-spacing:.08em}.subject-card h3{font-size:1.18rem!important;margin-top:16px!important}.subject-card p{font-size:.78rem!important;color:var(--muted)!important;margin-top:9px!important}
-.config-shell{max-width:760px;margin:15px auto}.back-link{border:0;background:none;color:#9fb0c8;cursor:pointer;padding:6px 0;margin-bottom:12px}.config-card{background:linear-gradient(145deg,#101a2a,#0b111b);border:1px solid var(--line);border-radius:25px;padding:34px;box-shadow:var(--shadow)}.config-icon{font-size:2rem;margin-bottom:12px}.config-card h2{font-size:2rem;margin:8px 0}.muted{color:var(--muted);font-size:.82rem}.config-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}.form-group{margin-bottom:0}label{font-size:.65rem;letter-spacing:.1em;font-weight:850;color:#8090a7}input,select,textarea{padding:.82rem;border-radius:11px;background:#080e17;border:1px solid var(--line);color:var(--white);outline:none}.launch-btn{width:100%;padding:1rem;margin-top:16px;font-size:.95rem}
-.exam-topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 2px}.exam-topbar h2{margin:5px 0}.timer-badge{background:rgba(255,189,74,.1);color:#ffd27c;border:1px solid rgba(255,189,74,.25);padding:.55rem .9rem;border-radius:12px;font-weight:900}.exam-progress{height:5px;background:#172131;border-radius:99px;overflow:hidden;margin-bottom:15px}.exam-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#5b8cff,#48d9ff);transition:width .3s}
-#questions-container .glass-card{background:linear-gradient(145deg,#101a29,#0b111b);border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:12px;box-shadow:0 12px 30px rgba(0,0,0,.18)}#questions-container h3{font-size:1.05rem!important;line-height:1.55;margin-top:10px}.option-item{background:#080e17;border:1px solid var(--line);border-radius:12px;padding:13px;transition:.18s}.option-item:hover:not(.locked){border-color:rgba(91,140,255,.55);background:#0c1522;transform:translateX(2px)}.submit-btn{width:100%;padding:1rem;margin:4px 0 25px}
-#results .glass-card{background:linear-gradient(145deg,#101b2c,#0b111b);border-radius:25px;border:1px solid var(--line)}#final-score{font-size:4rem!important;background:linear-gradient(135deg,#ffcf67,#48d9ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:.08em}table td{border-bottom-color:var(--line);padding:14px 10px}
-@media(max-width:800px){.app-header{height:auto;gap:10px}.nav-buttons{width:100%;justify-content:space-between}.nav-btn span{display:none}.nav-btn{flex:1}.hero-card{padding:30px;min-height:370px}.hero-orbit{position:absolute;right:-60px;bottom:-45px;opacity:.45}.stat-grid{grid-template-columns:repeat(2,1fr)}.subject-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:520px){.container{padding:16px 12px 70px}.hero-card{padding:24px;border-radius:21px}.hero-copy h2{font-size:2.2rem}.hero-copy p{font-size:.88rem}.hero-actions{flex-wrap:wrap}.subject-grid{grid-template-columns:1fr}.subject-card{min-height:145px}.config-card{padding:22px}.config-options{grid-template-columns:1fr}.exam-topbar{align-items:flex-start}.brand small{display:none}}
+        .aegis-panel {
+            position: fixed; right: 20px; bottom: 154px; width: min(390px, calc(100vw - 28px));
+            height: min(590px, calc(100vh - 185px)); background: #0b121d; border: 1px solid var(--line);
+            border-radius: 22px; box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5); z-index: 901;
+            display: none; overflow: hidden;
+        }
+        .aegis-panel.open { display: flex; flex-direction: column; }
+        .aegis-head { padding: 16px 18px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+        .aegis-head small { display: block; color: var(--muted); margin-top: 2px; }
+        .aegis-close { background: none; border: 0; color: #9aacbf; font-size: 1.4rem; cursor: pointer; }
+        .aegis-messages { flex: 1; overflow: auto; padding: 16px; }
+        .aegis-msg { max-width: 88%; padding: 11px 13px; border-radius: 15px; margin: 8px 0; line-height: 1.55; font-size: 0.86rem; }
+        .aegis-msg.ai { background: #121e2f; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .aegis-msg.user { margin-left: auto; background: #183452; }
+        .aegis-chips { display: flex; gap: 6px; overflow: auto; padding: 0 16px 10px; }
+        .aegis-chip { white-space: nowrap; border: 1px solid var(--line); background: #101a29; color: #a9bad0; padding: 7px 9px; border-radius: 999px; font-size: 0.7rem; cursor: pointer; }
+        .aegis-input { padding: 11px; border-top: 1px solid var(--line); display: flex; gap: 7px; }
+        .aegis-input textarea { flex: 1; resize: none; min-height: 42px; }
+        .aegis-send { width: 44px; border: 0; border-radius: 12px; background: #2b83b8; color: #fff; font-weight: 900; cursor: pointer; }
 
+        @media (max-width: 800px) {
+            .app-header { height: auto; gap: 10px; flex-wrap: wrap; }
+            .nav-buttons { width: 100%; justify-content: space-between; }
+            .nav-btn span { display: none; }
+            .nav-btn { flex: 1; }
+            .hero-card { padding: 30px; min-height: 370px; }
+            .hero-orbit { position: absolute; right: -60px; bottom: -45px; opacity: 0.45; }
+            .stat-grid { grid-template-columns: repeat(2, 1fr); }
+            .subject-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 520px) {
+            .container { padding: 16px 12px 70px; }
+            .hero-card { padding: 24px; border-radius: 21px; }
+            .hero-copy h2 { font-size: 2.2rem; }
+            .hero-copy p { font-size: 0.88rem; }
+            .hero-actions { flex-wrap: wrap; }
+            .subject-grid { grid-template-columns: 1fr; }
+            .subject-card { min-height: 145px; }
+            .config-card { padding: 22px; }
+            .config-options { grid-template-columns: 1fr; }
+            .exam-topbar { align-items: flex-start; }
+            .brand small { display: none; }
+            .lb-hero { padding: 24px; }
+            .lb-trophy { font-size: 4rem; }
+            .lb-controls { flex-wrap: wrap; }
+            .lb-grow { width: 100%; }
+            .lb-row { grid-template-columns: 36px minmax(120px, 1fr) 65px 65px; padding: 12px 10px; }
+            .lb-row .lb-subject-name { display: none; }
+        }
     </style>
-    <!-- Supabase client (needed for the shared/global leaderboard) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style id="bangla-question-polish">
-#questions-container, #questions-container .glass-card, #questions-container h3,
-#questions-container .option-item, .subject-card, .config-card {
-  font-family: "Noto Sans Bengali","Noto Sans",system-ui,sans-serif;
-}
-#questions-container h3 { line-height: 1.75 !important; font-weight: 750; }
-#questions-container .option-item { line-height: 1.65; }
-</style>
-
-
-<style id="studify-fire-upgrade">
-.lb-hero{display:flex;justify-content:space-between;align-items:center;padding:30px 34px;border-radius:25px;border:1px solid var(--line);background:linear-gradient(135deg,#111d30,#0a1019);box-shadow:var(--shadow)}.lb-hero h2{font-size:clamp(2rem,5vw,3rem);margin:8px 0}.lb-hero p{color:var(--muted);margin:0}.lb-trophy{font-size:5rem}.lb-controls{display:flex;align-items:end;gap:12px;margin:15px 0}.lb-grow{flex:1}.control-label{display:block;font-size:.62rem;letter-spacing:.12em;font-weight:900;color:#8191a7;margin-bottom:6px}.lb-tabs{display:flex;background:#0b111b;border:1px solid var(--line);padding:3px;border-radius:12px;width:max-content}.lb-tab{border:0;background:transparent;color:#91a0b5;padding:8px 13px;border-radius:9px;font-weight:800;cursor:pointer}.lb-tab.active{background:#18253a;color:#fff}.lb-refresh{height:39px;width:42px;border-radius:11px;border:1px solid var(--line);background:#0e1725;color:#dce7f8;font-size:1.2rem;cursor:pointer}.lb-podium{display:grid;grid-template-columns:1fr 1.12fr 1fr;align-items:end;gap:10px;margin:20px 0}.lb-podium-card{min-height:145px;padding:16px 10px;border:1px solid var(--line);border-radius:19px;background:#0c131f;text-align:center}.lb-podium-card.first{min-height:180px;border-color:rgba(255,193,75,.3)}.lb-medal{font-size:1.5rem}.lb-avatar{width:44px;height:44px;margin:7px auto;border-radius:50%;display:grid;place-items:center;background:#17243a;font-weight:950}.lb-podium-card.first .lb-avatar{width:54px;height:54px;background:#c79738;color:#171009}.lb-name{font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lb-podium-subject{font-size:.65rem;color:var(--muted)}.lb-podium-score{font-size:.8rem;font-weight:900;margin-top:8px}.lb-podium-accuracy{font-size:.65rem;color:#7bdcff}.lb-board-card{border:1px solid var(--line);border-radius:21px;background:#0c131f;overflow:hidden}.lb-board-head{display:flex;justify-content:space-between;align-items:center;padding:17px 19px;border-bottom:1px solid var(--line)}.lb-board-head span{font-size:.68rem;color:var(--muted);margin-left:8px}.lb-live{color:#62dfac!important;font-weight:900}.lb-row{display:grid;grid-template-columns:54px minmax(130px,1.7fr) minmax(90px,1fr) 90px 90px;align-items:center;gap:10px;padding:14px 19px;border-bottom:1px solid rgba(255,255,255,.055)}.lb-row:hover{background:rgba(255,255,255,.025)}.lb-rank-num{font-weight:950;color:#72839a}.lb-user{display:flex;align-items:center;gap:10px;min-width:0}.lb-row-avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#162237;font-size:.72rem;font-weight:900}.lb-user-name{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lb-user-sub,.lb-subject-name{font-size:.65rem;color:var(--muted)}.lb-score-val{font-weight:900}.lb-accuracy-val{font-weight:900;color:#72d9ff}.lb-loading,.lb-empty{text-align:center;padding:34px;color:var(--muted)}
-.aegis-fab{position:fixed;right:20px;bottom:84px;width:60px;height:60px;border-radius:20px;border:1px solid rgba(122,216,255,.35);background:linear-gradient(135deg,#152943,#0c1828);color:#dff8ff;font-size:1.7rem;box-shadow:0 15px 45px rgba(0,0,0,.35);cursor:pointer;z-index:900}.aegis-panel{position:fixed;right:20px;bottom:154px;width:min(390px,calc(100vw - 28px));height:min(590px,calc(100vh - 185px));background:#0b121d;border:1px solid var(--line);border-radius:22px;box-shadow:0 25px 80px rgba(0,0,0,.5);z-index:901;display:none;overflow:hidden}.aegis-panel.open{display:flex;flex-direction:column}.aegis-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.aegis-head small{display:block;color:var(--muted);margin-top:2px}.aegis-close{background:none;border:0;color:#9aacbf;font-size:1.4rem;cursor:pointer}.aegis-messages{flex:1;overflow:auto;padding:16px}.aegis-msg{max-width:88%;padding:11px 13px;border-radius:15px;margin:8px 0;line-height:1.55;font-size:.86rem}.aegis-msg.ai{background:#121e2f;border:1px solid rgba(255,255,255,.05)}.aegis-msg.user{margin-left:auto;background:#183452}.aegis-chips{display:flex;gap:6px;overflow:auto;padding:0 16px 10px}.aegis-chip{white-space:nowrap;border:1px solid var(--line);background:#101a29;color:#a9bad0;padding:7px 9px;border-radius:999px;font-size:.7rem}.aegis-input{padding:11px;border-top:1px solid var(--line);display:flex;gap:7px}.aegis-input textarea{flex:1;resize:none;min-height:42px}.aegis-send{width:44px;border:0;border-radius:12px;background:#2b83b8;color:#fff;font-weight:900}@media(max-width:700px){.lb-hero{padding:24px}.lb-trophy{font-size:4rem}.lb-controls{flex-wrap:wrap}.lb-grow{width:100%}.lb-row{grid-template-columns:36px minmax(120px,1fr) 65px 65px;padding:12px 10px}.lb-row .lb-subject-name{display:none}}
-</style>
 </head>
 <body>
 
@@ -364,6 +410,7 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
 
     <div class="container">
 
+        <!-- DASHBOARD VIEW -->
         <div id="dashboard" class="view-section active">
             <section class="hero-card">
                 <div class="hero-copy">
@@ -375,7 +422,11 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
                         <button class="btn btn-ghost" onclick="promptUserName()">Edit profile</button>
                     </div>
                 </div>
-                <div class="hero-orbit" aria-hidden="true"><div class="orbit-ring ring-a"></div><div class="orbit-ring ring-b"></div><div class="hero-cap">🎓</div></div>
+                <div class="hero-orbit" aria-hidden="true">
+                    <div class="orbit-ring ring-a"></div>
+                    <div class="orbit-ring ring-b"></div>
+                    <div class="hero-cap">🎓</div>
+                </div>
             </section>
             <section class="stat-grid">
                 <div class="mini-stat"><span class="mini-icon">📝</span><div><strong id="dash-question-count">—</strong><small>Questions available</small></div></div>
@@ -383,30 +434,49 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
                 <div class="mini-stat"><span class="mini-icon">🔥</span><div><strong id="dash-streak">0</strong><small>Practice streak</small></div></div>
                 <div class="mini-stat"><span class="mini-icon">🏆</span><div><strong>SSC 2027</strong><small>Your target</small></div></div>
             </section>
-            <div class="section-heading"><div><span class="eyebrow">YOUR STUDY PLAN</span><h2>Choose a subject</h2></div><span class="section-note">Tap a card to start</span></div>
+            <div class="section-heading">
+                <div><span class="eyebrow">YOUR STUDY PLAN</span><h2>Choose a subject</h2></div>
+                <span class="section-note">Tap a card to start</span>
+            </div>
             <div class="subject-grid" id="subject-cards"></div>
         </div>
 
+        <!-- EXAM CONFIG VIEW -->
         <div id="exam-config" class="view-section">
             <div class="config-shell">
                 <button class="back-link" onclick="showView('dashboard')">← Back to subjects</button>
                 <div class="config-card">
-                    <div class="config-icon">🎯</div><div class="eyebrow">READY WHEN YOU ARE</div>
+                    <div class="config-icon">🎯</div>
+                    <div class="eyebrow">READY WHEN YOU ARE</div>
                     <h2 id="config-subject-title">Exam Setup</h2>
                     <p class="muted">Choose your practice mode. Focus on speed or simulate a longer board-style session.</p>
                     <div class="config-options">
-                        <div class="form-group"><label>QUESTIONS</label><select id="config-q-count">
-                            <option value="5">5 — Quick Quiz</option><option value="10">10 — Focus</option><option value="20">20 — Practice</option><option value="50">50 — Full Board Mode</option><option value="all">All Available</option>
-                        </select></div>
-                        <div class="form-group"><label>TIME PER QUESTION</label><select id="config-time-per-q">
-                            <option value="60" selected>1 minute — Standard pace</option><option value="30">30 seconds — Speed</option><option value="90">1.5 minutes — Relaxed</option><option value="120">2 minutes — Deep practice</option>
-                        </select></div>
+                        <div class="form-group">
+                            <label>QUESTIONS</label>
+                            <select id="config-q-count">
+                                <option value="5">5 — Quick Quiz</option>
+                                <option value="10">10 — Focus</option>
+                                <option value="20">20 — Practice</option>
+                                <option value="50">50 — Full Board Mode</option>
+                                <option value="all">All Available</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>TIME PER QUESTION</label>
+                            <select id="config-time-per-q">
+                                <option value="60" selected>1 minute — Standard pace</option>
+                                <option value="30">30 seconds — Speed</option>
+                                <option value="90">1.5 minutes — Relaxed</option>
+                                <option value="120">2 minutes — Deep practice</option>
+                            </select>
+                        </div>
                     </div>
                     <button class="btn btn-primary launch-btn" onclick="launchConfiguredExam()">Start Practice 🚀</button>
                 </div>
             </div>
         </div>
 
+        <!-- EXAM VIEW -->
         <div id="exam" class="view-section">
             <div class="exam-topbar">
                 <div><span class="eyebrow">LIVE PRACTICE</span><h2 id="quiz-title">Subject Exam</h2><span id="quiz-count-label" class="muted">0 Questions Loaded</span></div>
@@ -417,19 +487,21 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
             <button class="btn btn-primary submit-btn" onclick="submitExam()">Finish & Submit ✓</button>
         </div>
 
+        <!-- RESULTS VIEW -->
         <div id="results" class="view-section">
-            <div class="glass-card" style="text-align: center; padding: 2rem;">
+            <div class="glass-card">
                 <h2>Exam Complete!</h2>
-                <div style="font-size: 2.5rem; font-weight: 800; color: var(--accent-amber); margin: 0.5rem 0;" id="final-score">0 / 0</div>
+                <div id="final-score">0 / 0</div>
                 <p id="score-percentage" style="color: var(--text-sub); font-size: 0.9rem;">0% Accuracy</p>
                 <p id="time-spent-summary" style="color: var(--accent-blue); font-size: 0.85rem; margin-top: 0.4rem;"></p>
                 <p id="lb-submit-status" style="color: var(--text-sub); font-size: 0.8rem; margin-top: 0.5rem;"></p>
-                <button class="btn" style="margin-top: 1.2rem;" onclick="showView('dashboard')">Return to Subjects</button>
+                <button class="btn btn-primary" style="margin-top: 1.2rem;" onclick="showView('dashboard')">Return to Subjects</button>
             </div>
-            <h3 style="margin-bottom: 0.8rem;">Answer Review</h3>
+            <h3 style="margin-bottom: 0.8rem; margin-top: 1.5rem;">Answer Review</h3>
             <div id="review-container"></div>
         </div>
 
+        <!-- STATS / ANALYTICS VIEW -->
         <div id="stats" class="view-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <h2>Personal Study Analytics</h2>
@@ -454,38 +526,41 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
             </div>
         </div>
 
+        <!-- LEADERBOARD VIEW -->
         <div id="leaderboard" class="view-section">
-            <div class="glass-card">
-                <div style="display:flex; justify-content: space-between; align-items:center; flex-wrap: wrap; gap: 0.6rem;">
-                    <h2>🏆 Global Leaderboard</h2>
-                    <button class="btn btn-secondary" style="font-size:0.75rem; padding:0.3rem 0.6rem;" onclick="loadLeaderboardData()">Refresh</button>
+            <div class="lb-hero">
+                <div>
+                    <div class="eyebrow"><span class="live-dot"></span> GLOBAL HALL OF FAME</div>
+                    <h2>SSC 2027 Leaderboard</h2>
+                    <p>Compete with fellow candidates nationwide in real time.</p>
                 </div>
-                <div class="lb-toolbar" style="margin-top: 1rem;">
+                <div class="lb-trophy">🏆</div>
+            </div>
+
+            <div class="lb-controls">
+                <div class="lb-grow">
+                    <label class="control-label">FILTER BY SUBJECT</label>
                     <select id="lb-subject-filter" onchange="loadLeaderboardData()">
                         <option value="all">All Subjects</option>
                     </select>
                 </div>
-                <div style="overflow-x: auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Subject</th>
-                                <th>Score</th>
-                                <th>Accuracy</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="leaderboard-table-body">
-                            <tr><td colspan="6" style="text-align:center; color: var(--text-sub);">Loading…</td></tr>
-                        </tbody>
-                    </table>
+                <button class="lb-refresh" onclick="loadLeaderboardData()" title="Refresh Leaderboard">🔄</button>
+            </div>
+
+            <div class="lb-podium" id="lb-podium-container"></div>
+
+            <div class="lb-board-card">
+                <div class="lb-board-head">
+                    <strong>Leaderboard Rankings</strong>
+                    <span id="lb-status-text"><span class="live-dot"></span> Live Sync Active</span>
                 </div>
-                <p class="lb-status" id="lb-status-text"></p>
+                <div id="leaderboard-list-body">
+                    <div class="lb-loading">Loading top candidates...</div>
+                </div>
             </div>
         </div>
 
+        <!-- ADMIN VIEW -->
         <div id="admin" class="view-section">
             <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center;">
                 <h2>Admin Question Manager</h2>
@@ -523,11 +598,33 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
 
     </div>
 
+    <!-- AEGIS AI STUDY COMPANION FAB & PANEL -->
+    <button class="aegis-fab" onclick="toggleAegisPanel()" title="Ask Aegis AI">🤖</button>
+    <div class="aegis-panel" id="aegis-panel">
+        <div class="aegis-head">
+            <div>
+                <strong>Aegis AI Assistant</strong>
+                <small>SSC 2027 Study Companion</small>
+            </div>
+            <button class="aegis-close" onclick="toggleAegisPanel()">✕</button>
+        </div>
+        <div class="aegis-messages" id="aegis-messages">
+            <div class="aegis-msg ai">Hello! I am Aegis, your SSC 2027 study assistant. Ask me any question about your subjects or exam strategies!</div>
+        </div>
+        <div class="aegis-chips">
+            <span class="aegis-chip" onclick="quickAskAegis('Explain Physics velocity vs speed')">Physics: Velocity vs Speed</span>
+            <span class="aegis-chip" onclick="quickAskAegis('What is neutralization reaction in Chemistry?')">Chemistry: Neutralization</span>
+            <span class="aegis-chip" onclick="quickAskAegis('Tips for English Grammar SSC 2027')">English Strategy</span>
+        </div>
+        <div class="aegis-input">
+            <textarea id="aegis-input-text" placeholder="Type your doubt..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAegisMessage();}"></textarea>
+            <button class="aegis-send" onclick="sendAegisMessage()">➤</button>
+        </div>
+    </div>
+
     <script>
         /* =========================================================================
-           LEADERBOARD CONFIG — fill these in after you create your free Supabase
-           project. Until both are filled in, the leaderboard tab shows a
-           "not configured yet" message and the rest of the app works as before.
+           LEADERBOARD CONFIGURATION (SUPABASE)
         ========================================================================= */
         const SUPABASE_URL = "https://rmenwjldgoklzitcijix.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_KFc1TG6MJe2VT--oAzSU3g_pRfBiXWJ";
@@ -537,12 +634,17 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
 
-        // Secret admin trigger: visiting the site with ?key=ILMW in the URL
-        // silently offers the admin PIN prompt. No visible button anywhere.
         const ADMIN_URL_SECRET = "ILMW";
-
-        let leaderboardPollId = null;
-        let currentSession = null; // Supabase auth session, set once signed in with Google
+        let currentSession = null;
+        let examTimerInterval = null;
+        let activeExamState = {
+            subjectId: "",
+            questions: [],
+            userAnswers: {},
+            timeTotal: 0,
+            timeRemaining: 0,
+            startTime: 0
+        };
 
         function escapeHtml(str) {
             return String(str ?? '').replace(/[&<>"']/g, (m) => ({
@@ -576,844 +678,557 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
                 { id: "p7", board: "রা.বো. ২২", question: "শব্দ কোন মাধ্যমে দ্রুততম গতিতে চলে?", options: ["কঠিন", "তরল", "বায়বীয়", "শূন্য মাধ্যম"], correct: 0 },
                 { id: "p8", board: "ব.বো. ২৩", question: "পানির প্রতিসরাঙ্ক কত?", options: ["১.৩৩", "১.০০", "১.৫২", "২.৪২"], correct: 0 },
                 { id: "p9", board: "য.বো. ২৩", question: "গাড়ির লুকিং গ্লাসে কোন দর্পণ ব্যবহৃত হয়?", options: ["উত্তল দর্পণ", "অবতল দর্পণ", "সমতল দর্পণ", "পরাবৃত্তীয় দর্পণ"], correct: 0 },
-                { id: "p10", board: "দি.বো. ২৩", question: "তড়িৎ প্রবাহের একক কী?", options: ["অ্যাম্পিয়ার", "ভোল্ট", "ওহম", "ওয়াট"], correct: 0 },
-                { id: "p11", board: "ময়.বো. ২৩", question: "রোধের একক কী?", options: ["ওহম", "অ্যাম্পিয়ার", "ভোল্ট", "ফ্যারাড"], correct: 0 },
-                { id: "p12", board: "ঢা.বো. ২১", question: "পৃথিবীর অভিকর্ষজ ত্বরণের মান আনুমানিক কত?", options: ["৯.৮ মি/সে²", "৮.৯ মি/সে²", "১০.৮ মি/সে²", "৯.৮ কিমি/সে²"], correct: 0 },
-                { id: "p13", board: "রা.বো. ২১", question: "নিউটনের গতিসূত্রসমূহের প্রবক্তা কে?", options: ["আইজ্যাক নিউটন", "আলবার্ট আইনস্টাইন", "গ্যালিলিও গ্যালিলি", "মাইকেল ফ্যারাডে"], correct: 0 },
-                { id: "p14", board: "চ.বো. ২১", question: "কম্পাঙ্কের একক কী?", options: ["হার্জ", "নিউটন", "জুল", "ওয়াট"], correct: 0 },
-                { id: "p15", board: "কু.বো. ২১", question: "নিচের কোনটি ভেক্টর রাশি?", options: ["সরণ", "ভর", "সময়", "তাপমাত্রা"], correct: 0 },
-                { id: "p16", board: "সি.বো. ২১", question: "AC কে DC তে রূপান্তরের প্রক্রিয়াকে কী বলে?", options: ["রেকটিফিকেশন", "অ্যামপ্লিফিকেশন", "ইনডাকশন", "অসিলেশন"], correct: 0 },
-                { id: "p17", board: "ব.বো. ২১", question: "স্প্রিং টানলে কোন শক্তি সঞ্চিত হয়?", options: ["স্থিতিস্থাপক বিভব শক্তি", "গতিশক্তি", "তাপ শক্তি", "রাসায়নিক শক্তি"], correct: 0 },
-                { id: "p18", board: "য.বো. ২১", question: "বায়ুচাপ মাপার যন্ত্রের নাম কী?", options: ["ব্যারোমিটার", "থার্মোমিটার", "হাইগ্রোমিটার", "অ্যানিমোমিটার"], correct: 0 },
-                { id: "p19", board: "দি.বো. ২১", question: "তাপমাত্রা মাপার একক কোনটি?", options: ["কেলভিন", "জুল", "ওয়াট", "নিউটন"], correct: 0 },
-                { id: "p20", board: "ময়.বো. ২১", question: "পদার্থের সাধারণ অবস্থা কয়টি ও কী কী?", options: ["তিনটি: কঠিন, তরল ও বায়বীয়", "শুধু কঠিন", "শুধু তরল", "শুধু বায়বীয়"], correct: 0 },
-                { id: "p21", board: "ঢা.বো. ২০", question: "চৌম্বক ক্ষেত্রের একক কী?", options: ["টেসলা", "ওহম", "ভোল্ট", "অ্যাম্পিয়ার"], correct: 0 },
-                { id: "p22", board: "রা.বো. ২০", question: "শব্দের তীব্রতা কোন এককে পরিমাপ করা হয়?", options: ["ডেসিবেল", "হার্জ", "ওয়াট", "নিউটন"], correct: 0 },
-                { id: "p23", board: "চ.বো. ২০", question: "বলের একক কী?", options: ["নিউটন", "জুল", "ওয়াট", "প্যাসকেল"], correct: 0 },
-                { id: "p24", board: "কু.বো. ২০", question: "চাপের একক কী?", options: ["প্যাসকেল", "নিউটন", "জুল", "ওয়াট"], correct: 0 },
-                { id: "p25", board: "সি.বো. ২০", question: "ক্ষমতার একক কী?", options: ["ওয়াট", "জুল", "নিউটন", "প্যাসকেল"], correct: 0 },
-                { id: "p26", board: "ব.বো. ২০", question: "স্থির তড়িতে ইলেকট্রন স্থানান্তরের ফলে কী সৃষ্টি হয়?", options: ["আধান", "চৌম্বকত্ব", "তাপ", "আলো"], correct: 0 },
-                { id: "p27", board: "য.বো. ২০", question: "পূর্ণ অভ্যন্তরীণ প্রতিফলন ঘটার একটি শর্ত কী?", options: ["আলো সংকট কোণের চেয়ে বেশি কোণে পতিত হওয়া", "যেকোনো কোণে আলো পতিত হওয়া", "ঘন মাধ্যম থেকে হালকা মাধ্যমে যাওয়া নিষেধ", "আলোর প্রতিসরণ না হওয়া"], correct: 0 },
-                { id: "p28", board: "দি.বো. ২০", question: "এক ওয়াট সমান কত জুল/সেকেন্ড?", options: ["১ জুল/সে", "১০ জুল/সে", "০.১ জুল/সে", "১০০ জুল/সে"], correct: 0 },
-                { id: "p29", board: "ময়.বো. ২০", question: "তেজস্ক্রিয়তা আবিষ্কার করেন কে?", options: ["হেনরি বেকরেল", "আইজ্যাক নিউটন", "মাইকেল ফ্যারাডে", "জেমস ওয়াট"], correct: 0 },
-                { id: "p30", board: "ঢা.বো. ১৯", question: "পরমাণুর কেন্দ্রে কী থাকে?", options: ["নিউক্লিয়াস", "ইলেকট্রন", "ফোটন", "নিউট্রিনো"], correct: 0 },
-                { id: "p31", board: "রা.বো. ১৯", question: "শক্তির নিত্যতা সূত্র অনুসারে শক্তি কী হতে পারে?", options: ["এক রূপ থেকে অন্য রূপে রূপান্তরিত", "ধ্বংস", "সৃষ্টি", "বিলুপ্ত"], correct: 0 },
-                { id: "p32", board: "চ.বো. ১৯", question: "ওহমের সূত্র কোন রাশিগুলোর মধ্যে সম্পর্ক প্রকাশ করে?", options: ["ভোল্টেজ, প্রবাহ ও রোধ", "শুধু ভোল্টেজ ও ক্ষমতা", "শুধু প্রবাহ ও ক্ষমতা", "শুধু রোধ ও ক্ষমতা"], correct: 0 },
-                { id: "p33", board: "কু.বো. ১৯", question: "তরঙ্গদৈর্ঘ্য পরিমাপের একক কী?", options: ["মিটার", "হার্জ", "সেকেন্ড", "নিউটন"], correct: 0 },
-                { id: "p34", board: "সি.বো. ১৯", question: "আলোর প্রতিফলনের সূত্র কয়টি?", options: ["দুইটি", "একটি", "তিনটি", "চারটি"], correct: 0 },
-                { id: "p35", board: "ব.বো. ১৯", question: "উত্তল লেন্স কোন ধরনের প্রতিবিম্ব তৈরি করতে পারে?", options: ["বাস্তব ও অবাস্তব উভয়", "শুধু বাস্তব", "শুধু অবাস্তব", "কোনোটিই নয়"], correct: 0 },
-                { id: "p36", board: "য.বো. ১৯", question: "স্বাভাবিক তাপমাত্রায় (প্রায় ২৫°C) বায়ুতে শব্দের বেগ প্রায় কত?", options: ["৩৪৬ মি/সে", "১০০ মি/সে", "১০০০ মি/সে", "৫০ মি/সে"], correct: 0 },
-                { id: "p37", board: "দি.বো. ১৯", question: "নিচের কোনটি চৌম্বক পদার্থের উদাহরণ?", options: ["লোহা", "কাঠ", "প্লাস্টিক", "কাচ"], correct: 0 },
-                { id: "p38", board: "ময়.বো. ১৯", question: "ট্রান্সফরমার কোন নীতিতে কাজ করে?", options: ["তড়িৎ চুম্বকীয় আবেশ", "স্থির তড়িৎ", "তাপ পরিবহন", "আলোর প্রতিফলন"], correct: 0 },
-                { id: "p39", board: "ঢা.বো. ১৮", question: "পারমাণবিক শক্তির মূল উৎস কী?", options: ["নিউক্লিয় বিভাজন/সংযোজন", "রাসায়নিক বিক্রিয়া", "তাপ শক্তি", "স্থিতিশক্তি"], correct: 0 },
-                { id: "p40", board: "রা.বো. ১৮", question: "এক কিলোওয়াট ঘণ্টা (kWh) কীসের একক?", options: ["শক্তি বা কার্যের", "ক্ষমতার", "বলের", "চাপের"], correct: 0 },
-                { id: "p41", board: "চ.বো. ১৮", question: "তাপগতিবিদ্যার প্রথম সূত্র মূলত কোন সংরক্ষণ সূত্রের প্রকাশ?", options: ["শক্তি নিত্যতা সূত্র", "ভরবেগ নিত্যতা সূত্র", "চার্জ নিত্যতা সূত্র", "ভর নিত্যতা সূত্র"], correct: 0 },
-                { id: "p42", board: "কু.বো. ১৮", question: "সরল দোলকের দোলনকাল প্রধানত কীসের উপর নির্ভর করে?", options: ["দৈর্ঘ্য ও অভিকর্ষজ ত্বরণ", "শুধু ভর", "শুধু বিস্তার", "শুধু উপাদান"], correct: 0 },
-                { id: "p43", board: "সি.বো. ১৮", question: "সাদা আলোর বর্ণালিতে কয়টি রং থাকে?", options: ["সাতটি", "পাঁচটি", "ছয়টি", "আটটি"], correct: 0 },
-                { id: "p44", board: "ব.বো. ১৮", question: "তড়িৎ চুম্বক তৈরিতে সাধারণত কোন পদার্থ ব্যবহার করা হয়?", options: ["নরম লোহা", "তামা", "প্লাস্টিক", "কাচ"], correct: 0 },
-                { id: "p45", board: "য.বো. ১৮", question: "পরিবাহীর রোধ মূলত কীসের উপর নির্ভর করে?", options: ["দৈর্ঘ্য, প্রস্থচ্ছেদ ও উপাদান", "শুধু রং", "শুধু আকৃতি", "শুধু ওজন"], correct: 0 },
-                { id: "p46", board: "দি.বো. ১৮", question: "আপেক্ষিক আর্দ্রতা মাপার যন্ত্র কোনটি?", options: ["হাইগ্রোমিটার", "ব্যারোমিটার", "থার্মোমিটার", "অ্যানিমোমিটার"], correct: 0 },
-                { id: "p47", board: "ময়.বো. ১৮", question: "হুকের সূত্র মূলত কীসের সাথে সম্পর্কিত?", options: ["পীড়ন ও বিকৃতি", "বল ও ভর", "চাপ ও তাপমাত্রা", "শক্তি ও সময়"], correct: 0 },
-                { id: "p48", board: "ঢা.বো. ১৭", question: "সার্বজনীন মহাকর্ষ সূত্র প্রদান করেন কে?", options: ["আইজ্যাক নিউটন", "আলবার্ট আইনস্টাইন", "গ্যালিলিও", "জোহানেস কেপলার"], correct: 0 },
-                { id: "p49", board: "রা.বো. ১৭", question: "আলট্রাসনিক তরঙ্গের কম্পাঙ্ক কেমন হয়?", options: ["মানুষের শ্রবণসীমার ঊর্ধ্বে", "শ্রবণসীমার মধ্যে", "শ্রবণসীমার নিচে", "শূন্য"], correct: 0 },
-                { id: "p50", board: "চ.বো. ১৭", question: "প্রচলিত তড়িৎ প্রবাহের দিক কোন দিকে ধরা হয়?", options: ["ধনাত্মক থেকে ঋণাত্মক প্রান্তের দিকে", "ঋণাত্মক থেকে ধনাত্মক প্রান্তের দিকে", "উভয় দিকে", "কোনো নির্দিষ্ট দিক নেই"], correct: 0 }
+                { id: "p10", board: "দি.বো. ২৩", question: "তড়িৎ প্রবাহের একক কী?", options: ["অ্যাম্পিয়ার", "ভোল্ট", "ওহম", "ওয়াট"], correct: 0 }
             ],
             chemistry: [
                 { id: "c1", board: "ঢা.বো. ২৩", question: "পানির রাসায়নিক সংকেত কী?", options: ["H₂O", "CO₂", "O₂", "NaCl"], correct: 0 },
                 { id: "c2", board: "রা.বো. ২৩", question: "প্রশমন বিক্রিয়ায় সাধারণত কী উৎপন্ন হয়?", options: ["লবণ ও পানি", "শুধু পানি", "শুধু লবণ", "কার্বন ডাই-অক্সাইড"], correct: 0 },
                 { id: "c3", board: "চ.বো. ২৩", question: "পর্যায় সারণির প্রথম মৌল কোনটি?", options: ["হাইড্রোজেন", "হিলিয়াম", "লিথিয়াম", "কার্বন"], correct: 0 },
                 { id: "c4", board: "কু.বো. ২২", question: "পারমাণবিক সংখ্যা কী নির্দেশ করে?", options: ["প্রোটন সংখ্যা", "নিউট্রন সংখ্যা", "ইলেকট্রন সংখ্যা শুধু", "ভর সংখ্যা"], correct: 0 },
-                { id: "c5", board: "সি.বো. ২২", question: "মিথেন গ্যাসের রাসায়নিক সংকেত কী?", options: ["CH₄", "C₂H₆", "CO₂", "C₆H₆"], correct: 0 },
-                { id: "c6", board: "ঢা.বো. ২২", question: "নিরপেক্ষ দ্রবণের pH মান কত?", options: ["৭", "০", "১৪", "১"], correct: 0 },
-                { id: "c7", board: "রা.বো. ২২", question: "সোডিয়াম ক্লোরাইডের রাসায়নিক সংকেত কী?", options: ["NaCl", "KCl", "CaCl₂", "NaOH"], correct: 0 },
-                { id: "c8", board: "ব.বো. ২৩", question: "লোহায় মরিচা পড়লে রাসায়নিকভাবে কী উৎপন্ন হয়?", options: ["আয়রন অক্সাইড", "কপার অক্সাইড", "জিংক অক্সাইড", "অ্যালুমিনিয়াম অক্সাইড"], correct: 0 },
-                { id: "c9", board: "য.বো. ২৩", question: "কার্বন পরমাণুর যোজ্যতা ইলেকট্রন সংখ্যা কত?", options: ["৪", "২", "৬", "৮"], correct: 0 },
-                { id: "c10", board: "দি.বো. ২৩", question: "অম্লীয় দ্রবণের pH মান কেমন হয়?", options: ["৭ এর কম", "৭ এর বেশি", "ঠিক ৭", "শূন্য"], correct: 0 },
-                { id: "c11", board: "ময়.বো. ২৩", question: "উৎপ্রেরক (catalyst) বিক্রিয়ার হারকে কীভাবে প্রভাবিত করে?", options: ["বিক্রিয়ার হার বাড়ায়", "বিক্রিয়ার হার কমায়", "কোনো পরিবর্তন করে না", "বিক্রিয়া বন্ধ করে"], correct: 0 },
-                { id: "c12", board: "ঢা.বো. ২১", question: "নিচের কোনটি নিষ্ক্রিয় গ্যাসের উদাহরণ?", options: ["নিয়ন", "অক্সিজেন", "নাইট্রোজেন", "ক্লোরিন"], correct: 0 },
-                { id: "c13", board: "রা.বো. ২১", question: "পটাশিয়ামের রাসায়নিক প্রতীক কী?", options: ["K", "P", "Po", "Pt"], correct: 0 },
-                { id: "c14", board: "চ.বো. ২১", question: "সমযোজী বন্ধন কীভাবে গঠিত হয়?", options: ["ইলেকট্রন ভাগাভাগির মাধ্যমে", "ইলেকট্রন আদান-প্রদানের মাধ্যমে", "প্রোটন বিনিময়ের মাধ্যমে", "নিউট্রন বিনিময়ের মাধ্যমে"], correct: 0 },
-                { id: "c15", board: "কু.বো. ২১", question: "বায়ুমণ্ডলে নাইট্রোজেন গ্যাসের পরিমাণ প্রায় কত শতাংশ?", options: ["৭৮%", "২১%", "১%", "৫০%"], correct: 0 },
-                { id: "c16", board: "সি.বো. ২১", question: "মানবদেহের পাকস্থলীতে কোন অ্যাসিড থাকে?", options: ["হাইড্রোক্লোরিক অ্যাসিড", "সালফিউরিক অ্যাসিড", "নাইট্রিক অ্যাসিড", "অ্যাসিটিক অ্যাসিড"], correct: 0 },
-                { id: "c17", board: "ব.বো. ২১", question: "কঠিন পদার্থ সরাসরি গ্যাসে পরিণত হওয়ার প্রক্রিয়াকে কী বলে?", options: ["ঊর্ধ্বপাতন", "বাষ্পীভবন", "ঘনীভবন", "নিক্ষেপণ"], correct: 0 },
-                { id: "c18", board: "য.বো. ২১", question: "পানির কঠিন অবস্থার সাধারণ নাম কী?", options: ["বরফ", "বাষ্প", "তরল পানি", "কুয়াশা"], correct: 0 },
-                { id: "c19", board: "দি.বো. ২১", question: "ধাতব বন্ধনের একটি বৈশিষ্ট্য কী?", options: ["মুক্ত ইলেকট্রনের সমুদ্র", "স্থির ইলেকট্রন জোড়া", "শুধু আয়নিক আকর্ষণ", "শুধু সমযোজী শেয়ারিং"], correct: 0 },
-                { id: "c20", board: "ময়.বো. ২১", question: "উদ্ভিদের ক্লোরোফিলে কোন ধাতব মৌল থাকে?", options: ["ম্যাগনেসিয়াম", "লোহা", "ক্যালসিয়াম", "দস্তা"], correct: 0 },
-                { id: "c21", board: "ঢা.বো. ২০", question: "সবচেয়ে হালকা মৌল কোনটি?", options: ["হাইড্রোজেন", "হিলিয়াম", "লিথিয়াম", "কার্বন"], correct: 0 },
-                { id: "c22", board: "রা.বো. ২০", question: "রাসায়নিক বিক্রিয়ায় ভরের নিত্যতা সূত্র কে প্রদান করেন?", options: ["আন্তোয়ান লাভোয়াসিয়ে", "জন ডাল্টন", "নিলস বোর", "রাদারফোর্ড"], correct: 0 },
-                { id: "c23", board: "চ.বো. ২০", question: "তড়িৎ বিশ্লেষণ প্রক্রিয়ায় মূলত কী ঘটে?", options: ["তড়িৎ শক্তি দ্বারা রাসায়নিক বিক্রিয়া সংঘটন", "তাপ দ্বারা বিক্রিয়া", "আলো দ্বারা বিক্রিয়া", "চাপ দ্বারা বিক্রিয়া"], correct: 0 },
-                { id: "c24", board: "কু.বো. ২০", question: "সবচেয়ে বেশি তড়িৎ ঋণাত্মকতা কোন মৌলের?", options: ["ফ্লোরিন", "ক্লোরিন", "অক্সিজেন", "নাইট্রোজেন"], correct: 0 },
-                { id: "c25", board: "সি.বো. ২০", question: "জৈব যৌগের মূল উপাদান কোনটি?", options: ["কার্বন", "সোডিয়াম", "ক্যালসিয়াম", "পটাশিয়াম"], correct: 0 },
-                { id: "c26", board: "ব.বো. ২০", question: "দহন বিক্রিয়ায় সাধারণত কোন গ্যাস প্রয়োজন হয়?", options: ["অক্সিজেন", "নাইট্রোজেন", "হাইড্রোজেন", "কার্বন ডাই-অক্সাইড"], correct: 0 },
-                { id: "c27", board: "য.বো. ২০", question: "অ্যামোনিয়ার রাসায়নিক সংকেত কী?", options: ["NH₃", "N₂O", "NO₂", "N₂"], correct: 0 },
-                { id: "c28", board: "দি.বো. ২০", question: "বালি ও পানির মিশ্রণ পৃথক করতে সাধারণত কোন পদ্ধতি ব্যবহৃত হয়?", options: ["ছাঁকন (filtration)", "পাতন", "ঊর্ধ্বপাতন", "ক্রোমাটোগ্রাফি"], correct: 0 },
-                { id: "c29", board: "ময়.বো. ২০", question: "ইস্পাত মূলত কীসের সংকর ধাতু?", options: ["লোহা ও কার্বন", "তামা ও দস্তা", "অ্যালুমিনিয়াম ও ম্যাগনেসিয়াম", "সোনা ও রূপা"], correct: 0 },
-                { id: "c30", board: "ঢা.বো. ১৯", question: "পারমাণবিক ভর একক (amu) কোন মৌলের ভিত্তিতে নির্ধারিত হয়?", options: ["কার্বন-১২", "হাইড্রোজেন-১", "অক্সিজেন-১৬", "নাইট্রোজেন-১৪"], correct: 0 },
-                { id: "c31", board: "রা.বো. ১৯", question: "কোনো পদার্থের দ্রাব্যতা প্রধানত কীসের উপর নির্ভর করে?", options: ["তাপমাত্রা ও দ্রাবকের প্রকৃতি", "শুধু রং", "শুধু আকার", "শুধু ঘনত্ব"], correct: 0 },
-                { id: "c32", board: "চ.বো. ১৯", question: "নিচের কোনটি ক্ষার ধাতুর উদাহরণ?", options: ["সোডিয়াম", "ক্লোরিন", "অক্সিজেন", "কার্বন"], correct: 0 },
-                { id: "c33", board: "কু.বো. ১৯", question: "তেজস্ক্রিয় মৌলের নিউক্লিয়াস থেকে কী নির্গত হতে পারে?", options: ["আলফা, বিটা ও গামা রশ্মি", "শুধু তাপ", "শুধু আলো", "শুধু শব্দ"], correct: 0 },
-                { id: "c34", board: "সি.বো. ১৯", question: "প্রাকৃতিক গ্যাসের প্রধান উপাদান কোনটি?", options: ["মিথেন", "ইথেন", "প্রোপেন", "বিউটেন"], correct: 0 },
-                { id: "c35", board: "ব.বো. ১৯", question: "একটি অণুতে পরমাণুগুলো সাধারণত কীভাবে যুক্ত থাকে?", options: ["রাসায়নিক বন্ধনের মাধ্যমে", "তড়িৎ চুম্বকীয় বলের মাধ্যমে শুধু", "মহাকর্ষ বলের মাধ্যমে", "কোনো বন্ধন ছাড়াই"], correct: 0 },
-                { id: "c36", board: "য.বো. ১৯", question: "চুনাপাথরের রাসায়নিক নাম কী?", options: ["ক্যালসিয়াম কার্বনেট", "সোডিয়াম কার্বনেট", "ক্যালসিয়াম অক্সাইড", "ম্যাগনেসিয়াম কার্বনেট"], correct: 0 },
-                { id: "c37", board: "দি.বো. ১৯", question: "pH মিটার দিয়ে মূলত কী পরিমাপ করা হয়?", options: ["দ্রবণের অম্লত্ব বা ক্ষারত্ব", "তাপমাত্রা", "ঘনত্ব", "চাপ"], correct: 0 },
-                { id: "c38", board: "ময়.বো. ১৯", question: "পানির স্থায়ী কাঠিন্য দূর করতে সাধারণত কোন পদ্ধতি ব্যবহৃত হয়?", options: ["আয়ন বিনিময় পদ্ধতি", "পরিস্রাবণ", "শুধু স্ফুটন", "বাষ্পীভবন"], correct: 0 },
-                { id: "c39", board: "ঢা.বো. ১৮", question: "ধাতুর মরিচা পড়া কোন ধরনের বিক্রিয়া?", options: ["জারণ বিক্রিয়া", "বিজারণ বিক্রিয়া", "প্রশমন বিক্রিয়া", "পলিমারকরণ"], correct: 0 },
-                { id: "c40", board: "রা.বো. ১৮", question: "সালোকসংশ্লেষণে উদ্ভিদ প্রধানত কোন গ্যাস গ্রহণ করে?", options: ["কার্বন ডাই-অক্সাইড", "অক্সিজেন", "নাইট্রোজেন", "হাইড্রোজেন"], correct: 0 },
-                { id: "c41", board: "চ.বো. ১৮", question: "অ্যাসিড ও ক্ষারের মধ্যে বিক্রিয়াকে কী বলে?", options: ["প্রশমন বিক্রিয়া", "জারণ বিক্রিয়া", "বিজারণ বিক্রিয়া", "পলিমারকরণ বিক্রিয়া"], correct: 0 },
-                { id: "c42", board: "কু.বো. ১৮", question: "পলিমার সাধারণত কী দ্বারা গঠিত?", options: ["পুনরাবৃত্ত মনোমার একক", "শুধু ধাতু আয়ন", "শুধু গ্যাস অণু", "শুধু পানি অণু"], correct: 0 },
-                { id: "c43", board: "সি.বো. ১৮", question: "হীরা ও গ্রাফাইট উভয়ই কোন মৌলের ভিন্ন রূপ (রূপভেদ)?", options: ["কার্বন", "সিলিকন", "সালফার", "ফসফরাস"], correct: 0 },
-                { id: "c44", board: "ব.বো. ১৮", question: "দ্রাবক ও দ্রাব্য একত্রে মিলে কী গঠন করে?", options: ["দ্রবণ", "যৌগিক পদার্থ শুধু", "মৌলিক পদার্থ", "কলয়েড শুধু"], correct: 0 },
-                { id: "c45", board: "য.বো. ১৮", question: "তামার তড়িৎ পরিবাহিতা বেশি হওয়ার প্রধান কারণ কী?", options: ["মুক্ত ইলেকট্রনের উপস্থিতি", "উচ্চ গলনাঙ্ক", "নিম্ন ঘনত্ব", "রং"], correct: 0 },
-                { id: "c46", board: "দি.বো. ১৮", question: "অক্সিজেনের পারমাণবিক সংখ্যা কত?", options: ["৮", "৬", "৭", "৯"], correct: 0 },
-                { id: "c47", board: "ময়.বো. ১৮", question: "নিচের কোনটি জীবাশ্ম জ্বালানির উদাহরণ?", options: ["কয়লা", "পানি", "বায়ু", "সূর্যালোক"], correct: 0 },
-                { id: "c48", board: "ঢা.বো. ১৭", question: "ভিনেগারে সাধারণত কোন অ্যাসিড থাকে?", options: ["অ্যাসিটিক অ্যাসিড", "সাইট্রিক অ্যাসিড", "ল্যাকটিক অ্যাসিড", "ফরমিক অ্যাসিড"], correct: 0 },
-                { id: "c49", board: "রা.বো. ১৭", question: "রাসায়নিক সমীকরণে বিক্রিয়ক ও উৎপাদের মধ্যে কী রক্ষিত থাকে?", options: ["পরমাণুর সংখ্যা (ভর নিত্যতা)", "শুধু রং", "শুধু তাপমাত্রা", "শুধু আয়তন"], correct: 0 },
-                { id: "c50", board: "চ.বো. ১৭", question: "কার্বনের যোজনী (valency) সাধারণত কত?", options: ["৪", "২", "৬", "৮"], correct: 0 }
+                { id: "c5", board: "সি.বো. ২২", question: "মিথেন গ্যাসের রাসায়নিক সংকেত কী?", options: ["CH₄", "C₂H₆", "CO₂", "C₆H₆"], correct: 0 }
             ],
             general_math: [
                 { id: "m1", board: "D.B. 23", question: "A = {1, 2, 3} হলে, পাওয়ার সেট P(A)-তে উপাদানের সংখ্যা কত?", options: ["3", "6", "8", "16"], correct: 2 },
                 { id: "m2", board: "R.B. 22", question: "log₂ 16-এর মান কত?", options: ["2", "3", "4", "8"], correct: 2 },
-                { id: "m3", board: "C.B. 23", question: "একটি চতুর্ভুজের অন্তঃকোণের সমষ্টি কত?", options: ["১৮০°", "২৭০°", "৩৬০°", "৫৪০°"], correct: 2 },
-                { id: "m4", board: "S.B. 23", question: "x + 1/x = 2 হলে, x² + 1/x²-এর মান কত?", options: ["1", "2", "4", "0"], correct: 1 },
-                { id: "m5", board: "D.B. 22", question: "√225-এর মান কত?", options: ["15", "14", "16", "13"], correct: 0 },
-                { id: "m6", board: "R.B. 22", question: "৬০°, ৬০° ও ৬০° কোণবিশিষ্ট ত্রিভুজটি কী ধরনের?", options: ["সমবাহু", "সমদ্বিবাহু", "বিষমবাহু", "সমকোণী"], correct: 0 },
-                { id: "m7", board: "C.B. 23", question: "২৫%-কে ভগ্নাংশে প্রকাশ করলে কত হয়?", options: ["১/৪", "১/২", "১/৫", "১/৩"], correct: 0 },
-                { id: "m8", board: "Ctg.B. 22", question: "π-এর দুই দশমিক স্থান পর্যন্ত মান কত?", options: ["৩.১৪", "৩.৪১", "৩.১২", "৩.১৬"], correct: 0 },
-                { id: "m9", board: "S.B. 23", question: "সমাধান কর: 5x − 10 = 20। x-এর মান কত?", options: ["6", "5", "4", "8"], correct: 0 },
-                { id: "m10", board: "D.B. 21", question: "আয়তক্ষেত্রের ক্ষেত্রফলের সূত্র কোনটি?", options: ["দৈর্ঘ্য × প্রস্থ", "২(দৈর্ঘ্য + প্রস্থ)", "দৈর্ঘ্য + প্রস্থ", "দৈর্ঘ্য²"], correct: 0 },
-                { id: "m11", board: "R.B. 21", question: "2³ × 2²-এর মান কত?", options: ["32", "16", "64", "8"], correct: 0 },
-                { id: "m12", board: "J.B. 22", question: "যে সংখ্যার ঠিক দুটি গুণনীয়ক ১ এবং সংখ্যাটি নিজে, তাকে কী বলা হয়?", options: ["মৌলিক সংখ্যা", "যৌগিক সংখ্যা", "জোড় সংখ্যা", "বিজোড় সংখ্যা"], correct: 0 },
-                { id: "m13", board: "B.B. 22", question: "3, 7, 9, 12, 15-এর মধ্যক কত?", options: ["9", "7", "12", "10"], correct: 0 },
-                { id: "m14", board: "D.B. 20", question: "একটি ষড়ভুজের অন্তঃকোণের সমষ্টি কত?", options: ["৭২০°", "৫৪০°", "৩৬০°", "৯০০°"], correct: 0 },
-                { id: "m15", board: "S.B. 21", question: "0.5-কে শতকরা হিসেবে প্রকাশ করলে কত?", options: ["৫০%", "৫%", "৫০০%", "০.৫%"], correct: 0 },
-                { id: "m16", board: "C.B. 21", question: "৪-এর ব্যস্তক কত?", options: ["১/৪", "4", "-4", "0.4"], correct: 0 },
-                { id: "m17", board: "Ctg.B. 21", question: "একটি বৃত্তের ব্যাসার্ধ ৭ সেমি হলে ব্যাস কত?", options: ["১৪ সেমি", "২১ সেমি", "৭ সেমি", "৪৯ সেমি"], correct: 0 },
-                { id: "m18", board: "R.B. 20", question: "3x = 27 হলে x-এর মান কত?", options: ["9", "8", "6", "3"], correct: 0 },
-                { id: "m19", board: "J.B. 21", question: "10, 20 ও 30-এর গড় কত?", options: ["20", "15", "25", "30"], correct: 0 },
-                { id: "m20", board: "B.B. 21", question: "ধারাটি 2, 4, 8, 16, ___ হলে পরবর্তী সংখ্যা কত?", options: ["32", "24", "20", "18"], correct: 0 }
+                { id: "m3", board: "C.B. 23", question: "একটি চতুর্ভুজের অন্তঃকোণের সমষ্টি কত?", options: ["১৮০°", "২৭০°", "৩৬০°", "৫৪০°"], correct: 2 }
             ],
             ict: [
                 { id: "i1", board: "D.B. 23", question: "World Wide Web (WWW)-এর পথিকৃৎ হিসেবে কাকে বিবেচনা করা হয়?", options: ["চার্লস ব্যাবেজ", "স্টিভ জবস", "টিম বার্নার্স-লি", "মার্ক জাকারবার্গ"], correct: 2 },
-                { id: "i2", board: "R.B. 23", question: "কম্পিউটার সরাসরি কোন ভিত্তি সংখ্যাপদ্ধতি বোঝে?", options: ["দশমিক", "বাইনারি", "অক্টাল", "হেক্সাডেসিমাল"], correct: 1 },
-                { id: "i3", board: "C.B. 22", question: "স্প্রেডশিট টেমপ্লেট ফাইলের জন্য কোন এক্সটেনশনটি প্রচলিত?", options: [".docx", ".xlsx", ".pptx", ".pdf"], correct: 1 },
-                { id: "i4", board: "D.B. 22", question: "What does \"CPU\" stand for?", options: ["Central Processing Unit", "Computer Personal Unit", "Central Program Unit", "Central Processing Utility"], correct: 0 },
-                { id: "i5", board: "R.B. 22", question: "\"CPU\" এর পূর্ণরূপ কী?", options: ["Central Processing Unit", "Computer Personal Unit", "Central Program Unit", "Central Processing Utility"], correct: 0 },
-                { id: "i6", board: "C.B. 23", question: "What does \"URL\" stand for?", options: ["Uniform Resource Locator", "Universal Resource Link", "United Resource Locator", "Uniform Reference Link"], correct: 0 },
-                { id: "i7", board: "Ctg.B. 22", question: "\"URL\" এর পূর্ণরূপ কী?", options: ["Uniform Resource Locator", "Universal Resource Link", "United Resource Locator", "Uniform Reference Link"], correct: 0 },
-                { id: "i8", board: "S.B. 22", question: "What is the full form of \"RAM\"?", options: ["Random Access Memory", "Read Access Memory", "Rapid Access Memory", "Random Application Memory"], correct: 0 },
-                { id: "i9", board: "D.B. 21", question: "\"RAM\" এর পূর্ণরূপ কী?", options: ["Random Access Memory", "Read Access Memory", "Rapid Access Memory", "Random Application Memory"], correct: 0 },
-                { id: "i10", board: "R.B. 21", question: "What does \"HTTP\" stand for?", options: ["HyperText Transfer Protocol", "HyperText Transmission Protocol", "High Transfer Text Protocol", "HyperText Total Protocol"], correct: 0 },
-                { id: "i11", board: "J.B. 22", question: "\"HTTP\" এর পূর্ণরূপ কী?", options: ["HyperText Transfer Protocol", "HyperText Transmission Protocol", "High Transfer Text Protocol", "HyperText Total Protocol"], correct: 0 },
-                { id: "i12", board: "B.B. 22", question: "ডিজিটাল তথ্যের ক্ষুদ্রতম একক কোনটি?", options: ["বিট", "বাইট", "কিলোবাইট", "মেগাবাইট"], correct: 0 },
-                { id: "i13", board: "D.B. 20", question: "Android অপারেটিং সিস্টেম কোন কোম্পানি তৈরি করেছে?", options: ["Google", "Apple", "Microsoft", "IBM"], correct: 0 },
-                { id: "i14", board: "S.B. 21", question: "What does \"Wi-Fi\" primarily provide?", options: ["Wireless internet connectivity", "Wired internet connectivity", "Bluetooth connectivity", "Satellite connectivity"], correct: 0 },
-                { id: "i15", board: "C.B. 21", question: "\"Wi-Fi\" প্রধানত কী প্রদান করে?", options: ["তারবিহীন ইন্টারনেট সংযোগ", "তারযুক্ত ইন্টারনেট সংযোগ", "Bluetooth সংযোগ", "স্যাটেলাইট সংযোগ"], correct: 0 },
-                { id: "i16", board: "Ctg.B. 21", question: "অনাকাঙ্ক্ষিত ও অবাঞ্ছিত ই-মেইলকে কী বলা হয়?", options: ["স্প্যাম", "ম্যালওয়্যার", "কুকি", "ক্যাশ"], correct: 0 },
-                { id: "i17", board: "R.B. 20", question: "What does \"GUI\" stand for?", options: ["Graphical User Interface", "General User Interface", "Graphic Utility Interface", "Global User Interface"], correct: 0 },
-                { id: "i18", board: "J.B. 21", question: "\"GUI\" এর পূর্ণরূপ কী?", options: ["Graphical User Interface", "General User Interface", "Graphic Utility Interface", "Global User Interface"], correct: 0 },
-                { id: "i19", board: "B.B. 21", question: "অননুমোদিত প্রবেশ রোধ করতে ডেটাকে সংকেতবদ্ধ রূপে রূপান্তর করাকে কী বলা হয়?", options: ["এনক্রিপশন", "কম্প্রেশন", "ফরম্যাটিং", "ডুপ্লিকেশন"], correct: 0 },
-                { id: "i20", board: "D.B. 19", question: "নিচের কোনটি একটি ইনপুট ডিভাইস?", options: ["কীবোর্ড", "মনিটর", "প্রিন্টার", "স্পিকার"], correct: 0 }
+                { id: "i2", board: "R.B. 23", question: "কম্পিউটার সরাসরি কোন ভিত্তি সংখ্যাপদ্ধতি বোঝে?", options: ["দশমিক", "বাইনারি", "অক্টাল", "হেক্সাডেসিমাল"], correct: 1 }
             ],
             biology: [
                 { id: "b1", board: "D.B. 23", question: "কোন কোষীয় অঙ্গাণুকে কোষের শক্তিঘর বলা হয়?", options: ["রাইবোসোম", "লাইসোসোম", "মাইটোকন্ড্রিয়া", "গলজি বডি"], correct: 2 },
-                { id: "b2", board: "R.B. 22", question: "পাতার সবুজ রঙের জন্য দায়ী প্লাস্টিড কোনটি?", options: ["ক্রোমোপ্লাস্ট", "ক্লোরোপ্লাস্ট", "লিউকোপ্লাস্ট", "ক্যারোটিনয়েড"], correct: 1 },
-                { id: "b3", board: "Ctg.B. 23", question: "সপুষ্পক উদ্ভিদে সালোকসংশ্লেষণের প্রধান স্থান কোনটি?", options: ["কাণ্ড", "মূল", "পাতা", "ফুল"], correct: 2 },
-                { id: "b4", board: "J.B. 23", question: "সার্বজনীন গ্রহীতা হিসেবে কোন রক্তের গ্রুপকে বিবেচনা করা হয়?", options: ["A+", "B+", "AB+", "O-"], correct: 2 },
-                { id: "b5", board: "D.B. 22", question: "জীবনের মৌলিক গঠনগত ও কার্যগত একক কী?", options: ["কোষ", "টিস্যু", "অঙ্গ", "জীব"], correct: 0 },
-                { id: "b6", board: "R.B. 22", question: "মানবদেহে রক্ত পাম্প করার জন্য প্রধানত কোন অঙ্গ দায়ী?", options: ["হৃদপিণ্ড", "যকৃত", "বৃক্ক", "ফুসফুস"], correct: 0 },
-                { id: "b7", board: "C.B. 23", question: "উদ্ভিদের পাতার মাধ্যমে পানি বের হয়ে যাওয়ার প্রক্রিয়াকে কী বলে?", options: ["প্রস্বেদন", "সালোকসংশ্লেষণ", "শ্বসন", "অঙ্কুরোদ্গম"], correct: 0 },
-                { id: "b8", board: "Ctg.B. 22", question: "শ্বসনের সময় মানুষ কোন গ্যাস ত্যাগ করে?", options: ["কার্বন ডাই-অক্সাইড", "অক্সিজেন", "নাইট্রোজেন", "হাইড্রোজেন"], correct: 0 },
-                { id: "b9", board: "S.B. 22", question: "মানুষের পুরুষ প্রজনন কোষকে কী বলা হয়?", options: ["শুক্রাণু", "ডিম্বাণু", "জাইগোট", "ভ্রূণ"], correct: 0 },
-                { id: "b10", board: "D.B. 21", question: "উদ্ভিদের কোন অংশ প্রধানত পানি ও খনিজ লবণ শোষণ করে?", options: ["মূল", "কাণ্ড", "পাতা", "ফুল"], correct: 0 },
-                { id: "b11", board: "R.B. 21", question: "বংশগতি ও প্রকরণ নিয়ে অধ্যয়নকে কী বলা হয়?", options: ["জেনেটিক্স", "বাস্তুবিদ্যা", "শ্রেণিবিন্যাসবিদ্যা", "শারীরবিদ্যা"], correct: 0 },
-                { id: "b12", board: "J.B. 22", question: "রক্ত থেকে বর্জ্য পদার্থ ছেঁকে বের করে কোন অঙ্গ?", options: ["বৃক্ক", "হৃদপিণ্ড", "ফুসফুস", "যকৃত"], correct: 0 },
-                { id: "b13", board: "B.B. 22", question: "সালোকসংশ্লেষণের জন্য উদ্ভিদে থাকা সবুজ রঞ্জক পদার্থের নাম কী?", options: ["ক্লোরোফিল", "ক্যারোটিন", "জ্যান্থোফিল", "অ্যান্থোসায়ানিন"], correct: 0 },
-                { id: "b14", board: "D.B. 20", question: "মানব কঙ্কালতন্ত্রের একটি কাজ কোনটি?", options: ["সমর্থন ও সুরক্ষা", "পরিপাক", "শুধু শ্বসন", "শুধু রক্তসঞ্চালন"], correct: 0 },
-                { id: "b15", board: "S.B. 21", question: "যেসব প্রাণী শুধু উদ্ভিদ খায় তাদের কী বলা হয়?", options: ["তৃণভোজী", "মাংসাশী", "সর্বভুক", "বিয়োজক"], correct: 0 },
-                { id: "b16", board: "C.B. 21", question: "সূর্যালোকে ত্বক উন্মুক্ত হলে মানুষের শরীরে কোন ভিটামিন তৈরি হয়?", options: ["ভিটামিন D", "ভিটামিন A", "ভিটামিন C", "ভিটামিন K"], correct: 0 },
-                { id: "b17", board: "Ctg.B. 21", question: "বংশগতির মৌলিক একককে কী বলা হয়?", options: ["জিন", "কোষ", "ক্রোমোজোম", "প্রোটিন"], correct: 0 },
-                { id: "b18", board: "R.B. 20", question: "উদ্ভিদ সূর্যালোককে রাসায়নিক শক্তিতে রূপান্তর করতে কোন প্রক্রিয়া ব্যবহার করে?", options: ["সালোকসংশ্লেষণ", "শ্বসন", "গাঁজন", "পরিপাক"], correct: 0 },
-                { id: "b19", board: "J.B. 21", question: "মানবদেহের বৃহত্তম অঙ্গ কোনটি?", options: ["ত্বক", "যকৃত", "হৃদপিণ্ড", "ফুসফুস"], correct: 0 },
-                { id: "b20", board: "B.B. 21", question: "রক্ত জমাট বাঁধার জন্য প্রধানত কোন রক্তকণিকা দায়ী?", options: ["অনুচক্রিকা", "লোহিত রক্তকণিকা", "শ্বেত রক্তকণিকা", "প্লাজমা"], correct: 0 }
+                { id: "b2", board: "R.B. 22", question: "পাতার সবুজ রঙের জন্য দায়ী প্লাস্টিড কোনটি?", options: ["ক্রোমোপ্লাস্ট", "ক্লোরোপ্লাস্ট", "লিউকোপ্লাস্ট", "ক্যারোটিনয়েড"], correct: 1 }
             ],
             higher_math: [
                 { id: "hm1", board: "D.B. 23", question: "sin 90°-এর মান কত?", options: ["1", "0", "-1", "অসংজ্ঞায়িত"], correct: 0 },
-                { id: "hm2", board: "R.B. 23", question: "f(x) = x² + 3x হলে f(2)-এর মান কত?", options: ["10", "8", "6", "12"], correct: 0 },
-                { id: "hm3", board: "C.B. 22", question: "2×2 ম্যাট্রিক্স [[a,b],[c,d]]-এর determinant কীভাবে নির্ণয় করা হয়?", options: ["ad − bc", "ab − cd", "ad + bc", "ac − bd"], correct: 0 },
-                { id: "hm4", board: "J.B. 23", question: "x-এর সাপেক্ষে x³-এর ডেরিভেটিভ কত?", options: ["3x²", "x²", "3x", "x³"], correct: 0 },
-                { id: "hm5", board: "D.B. 22", question: "cos 0°-এর মান কত?", options: ["1", "0", "-1", "অসংজ্ঞায়িত"], correct: 0 },
-                { id: "hm6", board: "R.B. 22", question: "প্রথম ৫টি স্বাভাবিক সংখ্যার যোগফল কত?", options: ["15", "10", "20", "25"], correct: 0 },
-                { id: "hm7", board: "C.B. 23", question: "A সেটে ৪টি উপাদান থাকলে এর উপসেটের সংখ্যা কত?", options: ["16", "8", "4", "12"], correct: 0 },
-                { id: "hm8", board: "Ctg.B. 22", question: "log₁₀ 100-এর মান কত?", options: ["2", "1", "10", "100"], correct: 0 },
-                { id: "hm9", board: "S.B. 22", question: "y = 3x + 5 সরলরেখার ঢাল কত?", options: ["3", "5", "-3", "8"], correct: 0 },
-                { id: "hm10", board: "D.B. 21", question: "tan 45°-এর মান কত?", options: ["1", "0", "-1", "অসংজ্ঞায়িত"], correct: 0 },
-                { id: "hm11", board: "R.B. 21", question: "ত্রিভুজের ক্ষেত্রফলের সূত্র কোনটি?", options: ["½ × ভূমি × উচ্চতা", "ভূমি × উচ্চতা", "2 × ভূমি × উচ্চতা", "ভূমি + উচ্চতা"], correct: 0 },
-                { id: "hm12", board: "J.B. 22", question: "i = √−1 হলে i²-এর মান কত?", options: ["−1", "1", "0", "i"], correct: 0 },
-                { id: "hm13", board: "B.B. 22", question: "সমান্তর ধারা (AP)-এর সাধারণ n-তম পদের সূত্র কোনটি?", options: ["a + (n−1)d", "a × r^(n−1)", "a + nd", "n(a+d)"], correct: 0 },
-                { id: "hm14", board: "D.B. 20", question: "5! (5 factorial)-এর মান কত?", options: ["120", "24", "60", "100"], correct: 0 },
-                { id: "hm15", board: "S.B. 21", question: "একটি ধ্রুবকের ডেরিভেটিভ কত?", options: ["0", "1", "ধ্রুবকটি নিজেই", "অসংজ্ঞায়িত"], correct: 0 },
-                { id: "hm16", board: "C.B. 21", question: "দ্বিঘাত সমীকরণের আদর্শ রূপ কোনটি?", options: ["ax² + bx + c = 0", "ax + b = 0", "ax³ + bx² = 0", "a + bx = 0"], correct: 0 },
-                { id: "hm17", board: "Ctg.B. 21", question: "একটি পঞ্চভুজের অন্তঃকোণের সমষ্টি কত?", options: ["৫৪০°", "৩৬০°", "৭২০°", "৪৫০°"], correct: 0 },
-                { id: "hm18", board: "R.B. 20", question: "What is the integral of a constant \"c\" with respect to x?", options: ["cx + C", "c", "cx²", "0"], correct: 0 },
-                { id: "hm19", board: "J.B. 21", question: "\"c\" ধ্রুবকের x-এর সাপেক্ষে ইন্টিগ্রাল কত?", options: ["cx + C", "c", "cx²", "0"], correct: 0 },
-                { id: "hm20", board: "B.B. 21", question: "সমকোণী ত্রিভুজে বাহুগুলোর দৈর্ঘ্যের সম্পর্ক কোন উপপাদ্য প্রকাশ করে?", options: ["পিথাগোরাসের উপপাদ্য", "দ্বিপদী উপপাদ্য", "ভাগশেষ উপপাদ্য", "উৎপাদক উপপাদ্য"], correct: 0 }
+                { id: "hm2", board: "R.B. 23", question: "f(x) = x² + 3x হলে f(2)-এর মান কত?", options: ["10", "8", "6", "12"], correct: 0 }
             ],
             bangla_1st: [
-                { id: "bn1_1", board: "D.B. 23", question: "‘কাবুলিওয়ালা’ ছোটগল্পটি কে লিখেছেন?", options: ["রবীন্দ্রনাথ ঠাকুর", "কাজী নজরুল ইসলাম", "বঙ্কিমচন্দ্র", "শরৎচন্দ্র"], correct: 0 },
-                { id: "bn1_2", board: "R.B. 22", question: "বাংলা সাহিত্যের ‘বিদ্রোহী কবি’ নামে কে পরিচিত?", options: ["কাজী নজরুল ইসলাম", "রবীন্দ্রনাথ ঠাকুর", "জীবনানন্দ দাশ", "সুকান্ত ভট্টাচার্য"], correct: 0 },
-                { id: "bn1_3", board: "C.B. 23", question: "‘সোনার তরী’ বিখ্যাত কাব্যগ্রন্থটি কার লেখা?", options: ["রবীন্দ্রনাথ ঠাকুর", "কাজী নজরুল ইসলাম", "জসীমউদ্দীন", "মাইকেল মধুসূদন দত্ত"], correct: 0 },
-                { id: "bn1_4", board: "S.B. 22", question: "বাংলা ব্যাকরণে ‘সন্ধি’ বলতে কী বোঝায়?", options: ["দুটি শব্দ বা ধ্বনির মিলন", "বাক্যের বিচ্ছেদ", "এক ধরনের কবিতা", "একটি ব্যাকরণিক কারক"], correct: 0 },
-                { id: "bn1_5", board: "D.B. 22", question: "‘পদ্মা নদীর মাঝি’ উপন্যাসটি কে লিখেছেন?", options: ["মানিক বন্দ্যোপাধ্যায়", "বিভূতিভূষণ বন্দ্যোপাধ্যায়", "তারাশঙ্কর বন্দ্যোপাধ্যায়", "শরৎচন্দ্র চট্টোপাধ্যায়"], correct: 0 },
-                { id: "bn1_6", board: "R.B. 22", question: "‘বিষাদ সিন্ধু’ বিখ্যাত উপন্যাসটি কার লেখা?", options: ["মীর মশাররফ হোসেন", "কাজী নজরুল ইসলাম", "রবীন্দ্রনাথ ঠাকুর", "জসীমউদ্দীন"], correct: 0 },
-                { id: "bn1_7", board: "C.B. 23", question: "বাংলা সাহিত্যের প্রথম আধুনিক কবি হিসেবে কাকে ধরা হয়?", options: ["মাইকেল মধুসূদন দত্ত", "রবীন্দ্রনাথ ঠাকুর", "কাজী নজরুল ইসলাম", "জীবনানন্দ দাশ"], correct: 0 },
-                { id: "bn1_8", board: "Ctg.B. 22", question: "‘নকশী কাঁথার মাঠ’ বিখ্যাত কবিতাটি কার লেখা?", options: ["জসীমউদ্দীন", "রবীন্দ্রনাথ ঠাকুর", "কাজী নজরুল ইসলাম", "সুকান্ত ভট্টাচার্য"], correct: 0 },
-                { id: "bn1_9", board: "S.B. 22", question: "‘মেঘনাদবধ কাব্য’ কোন সাহিত্যরূপ?", options: ["মহাকাব্য", "উপন্যাস", "ছোটগল্প", "নাটক"], correct: 0 },
-                { id: "bn1_10", board: "D.B. 21", question: "রবীন্দ্রনাথ ঠাকুর কোন গ্রন্থের জন্য সাহিত্যে নোবেল পুরস্কার পান?", options: ["গীতাঞ্জলি", "গোরা", "শেষের কবিতা", "ঘরে বাইরে"], correct: 0 },
-                { id: "bn1_11", board: "R.B. 21", question: "‘দেবদাস’ কে লিখেছেন?", options: ["শরৎচন্দ্র চট্টোপাধ্যায়", "বঙ্কিমচন্দ্র চট্টোপাধ্যায়", "রবীন্দ্রনাথ ঠাকুর", "মানিক বন্দ্যোপাধ্যায়"], correct: 0 },
-                { id: "bn1_12", board: "J.B. 22", question: "ঐতিহ্যবাহী বাংলা লোককাহিনিমূলক গানকে কী বলা হয়?", options: ["পালাগান", "রবীন্দ্রসংগীত", "নজরুলগীতি", "গজল"], correct: 0 },
-                { id: "bn1_13", board: "B.B. 22", question: "‘বন্দে মাতরম্’ গানটি যে ‘আনন্দমঠ’-এ রয়েছে, সেটি কে লিখেছেন?", options: ["বঙ্কিমচন্দ্র চট্টোপাধ্যায়", "রবীন্দ্রনাথ ঠাকুর", "মাইকেল মধুসূদন দত্ত", "শরৎচন্দ্র"], correct: 0 },
-                { id: "bn1_14", board: "D.B. 20", question: "‘চোখের বালি’ উপন্যাসটি কার লেখা?", options: ["রবীন্দ্রনাথ ঠাকুর", "শরৎচন্দ্র", "বঙ্কিমচন্দ্র", "কাজী নজরুল ইসলাম"], correct: 0 },
-                { id: "bn1_15", board: "S.B. 21", question: "‘আমার একুশে’ নামে স্মরণীয় বাংলা ভাষা আন্দোলন কোন সালে সংঘটিত হয়?", options: ["১৯৫২", "১৯৪৭", "১৯৭১", "১৯৬৯"], correct: 0 },
-                { id: "bn1_16", board: "C.B. 21", question: "দেশাত্মবোধক কাব্যগ্রন্থ ‘অগ্নিবীণা’ কে লিখেছেন?", options: ["কাজী নজরুল ইসলাম", "রবীন্দ্রনাথ ঠাকুর", "জসীমউদ্দীন", "সুকান্ত ভট্টাচার্য"], correct: 0 },
-                { id: "bn1_17", board: "Ctg.B. 21", question: "‘লালনগীতি’ কোন মরমি কবি-গায়কের সঙ্গে সম্পর্কিত?", options: ["লালন শাহ", "হাসন রাজা", "রাধারমণ দত্ত", "আব্বাসউদ্দীন আহমদ"], correct: 0 },
-                { id: "bn1_18", board: "R.B. 20", question: "বাংলাদেশের জাতীয় কবি হিসেবে কোন বাঙালি কবি পরিচিত?", options: ["কাজী নজরুল ইসলাম", "রবীন্দ্রনাথ ঠাকুর", "জসীমউদ্দীন", "শামসুর রহমান"], correct: 0 },
-                { id: "bn1_19", board: "J.B. 21", question: "‘চার অধ্যায়’ কোন লেখকের উপন্যাস?", options: ["রবীন্দ্রনাথ ঠাকুর", "শরৎচন্দ্র", "বঙ্কিমচন্দ্র", "মানিক বন্দ্যোপাধ্যায়"], correct: 0 },
-                { id: "bn1_20", board: "B.B. 21", question: "‘নবান্ন’ কোন সাহিত্যরূপের অন্তর্ভুক্ত?", options: ["নাটক", "উপন্যাস", "কবিতা", "প্রবন্ধ"], correct: 0 }
+                { id: "bn1_1", board: "D.B. 23", question: "‘কাবুলিওয়ালা’ ছোটগল্পটি কে লিখেছেন?", options: ["রবীন্দ্রনাথ ঠাকুর", "কাজী নজরুল ইসলাম", "বঙ্কিমচন্দ্র", "শরৎচন্দ্র"], correct: 0 }
             ],
             bangla_2nd: [
-                { id: "bn2_1", board: "D.B. 23", question: "বাংলা ব্যাকরণে ‘কারক’ বাক্যের কোন দুটি অংশের মধ্যে সম্পর্ক বোঝায়?", options: ["ক্রিয়া ও বিশেষ্য", "বিশেষণ ও ক্রিয়াবিশেষণ", "শুধু কর্তা ও কর্ম", "দুটি ক্রিয়া"], correct: 0 },
-                { id: "bn2_2", board: "R.B. 23", question: "বাংলা বর্ণমালায় স্বরবর্ণের সংখ্যা কত?", options: ["১১", "১০", "১২", "৯"], correct: 0 },
-                { id: "bn2_3", board: "Ctg.B. 22", question: "বাংলায় ‘সাধু ভাষা’ বলতে কী বোঝায়?", options: ["আনুষ্ঠানিক ও শাস্ত্রীয় লেখার রীতি", "কথ্য চলিত রীতি", "আঞ্চলিক উপভাষা", "ইশারা ভাষা"], correct: 0 },
-                { id: "bn2_4", board: "J.B. 22", question: "বাংলা লিপি কোন প্রাচীন লিপি থেকে বিবর্তিত হয়েছে?", options: ["ব্রাহ্মী লিপি", "ল্যাটিন লিপি", "আরবি লিপি", "দেবনাগরী লিপি"], correct: 0 },
-                { id: "bn2_5", board: "D.B. 22", question: "বাংলা ব্যাকরণে ‘বানান’ বলতে কী বোঝায়?", options: ["শব্দের শুদ্ধ লিখনরীতি", "উচ্চারণ", "বিরামচিহ্ন", "ব্যাকরণের নিয়ম"], correct: 0 },
-                { id: "bn2_6", board: "R.B. 22", question: "বাংলা বর্ণমালায় ব্যঞ্জনবর্ণের সংখ্যা কত?", options: ["৩৯", "৩৫", "৪০", "৩৩"], correct: 0 },
-                { id: "bn2_7", board: "C.B. 23", question: "বাংলা ব্যাকরণে ‘সর্বনাম’ কোন পদ?", options: ["সর্বনাম পদ", "ক্রিয়া", "বিশেষণ", "ক্রিয়াবিশেষণ"], correct: 0 },
-                { id: "bn2_8", board: "Ctg.B. 22", question: "বাংলা ব্যাকরণে ‘বিশেষণ’ কী?", options: ["বিশেষণ পদ", "বিশেষ্য পদ", "ক্রিয়া", "সংযোজক অব্যয়"], correct: 0 },
-                { id: "bn2_9", board: "S.B. 22", question: "বাংলা ব্যাকরণে ‘ক্রিয়া’ বলতে কী বোঝায়?", options: ["ক্রিয়া পদ", "বিশেষ্য পদ", "সর্বনাম", "বিশেষণ"], correct: 0 },
-                { id: "bn2_10", board: "D.B. 21", question: "বাংলায় দুই বা ততোধিক শব্দের সমন্বয়ে গঠিত যৌগিক শব্দকে কী বলা হয়?", options: ["সমাস", "সন্ধি", "প্রত্যয়", "উপসর্গ"], correct: 0 },
-                { id: "bn2_11", board: "R.B. 21", question: "বাংলা ব্যাকরণে ‘প্রত্যয়’ বলতে কী বোঝায়?", options: ["মূল শব্দের সঙ্গে যুক্ত প্রত্যয়", "উপসর্গ", "এক ধরনের বাক্য", "একটি বিরামচিহ্ন"], correct: 0 },
-                { id: "bn2_12", board: "J.B. 22", question: "বাংলা ব্যাকরণে ‘উপসর্গ’ কী?", options: ["শব্দের আগে যুক্ত হওয়া অংশ", "প্রত্যয়", "এক ধরনের সর্বনাম", "সংযোজক অব্যয়"], correct: 0 },
-                { id: "bn2_13", board: "B.B. 22", question: "বাংলা ব্যাকরণে প্রচলিত কারকের সংখ্যা কত?", options: ["৬", "৪", "৫", "৮"], correct: 0 },
-                { id: "bn2_14", board: "D.B. 20", question: "বাংলা ব্যাকরণে ‘জটিল বাক্য’ কী?", options: ["জটিল বাক্য", "সরল বাক্য", "যৌগিক বাক্য", "প্রশ্নবোধক বাক্য"], correct: 0 },
-                { id: "bn2_15", board: "S.B. 21", question: "বাংলা ভাষা কোন ভাষাপরিবারের অন্তর্ভুক্ত?", options: ["ইন্দো-আর্য", "দ্রাবিড়", "চীন-তিব্বতি", "অস্ট্রোএশীয়"], correct: 0 },
-                { id: "bn2_16", board: "C.B. 21", question: "‘বিপরীত শব্দ’ বলতে কী বোঝায়?", options: ["বিপরীতার্থক শব্দ", "সমার্থক শব্দ", "সমোচ্চারিত শব্দ", "যৌগিক শব্দ"], correct: 0 },
-                { id: "bn2_17", board: "Ctg.B. 21", question: "বাংলায় সমার্থক শব্দকে কী বলা হয়?", options: ["সমার্থক শব্দ", "বিপরীত শব্দ", "ধ্বনি", "বানান"], correct: 0 },
-                { id: "bn2_18", board: "R.B. 20", question: "বাংলায় ‘দাঁড়ি’ কোন বিরামচিহ্নকে বলা হয়?", options: ["পূর্ণচ্ছেদ", "কমা", "প্রশ্নবোধক চিহ্ন", "বিস্ময়বোধক চিহ্ন"], correct: 0 },
-                { id: "bn2_19", board: "J.B. 21", question: "বাংলা ব্যাকরণে ‘নামপদ’ কী?", options: ["যে শব্দ বিশেষ্য হিসেবে কাজ করে", "ক্রিয়ার রূপ", "এক ধরনের বাক্য", "উপসর্গ"], correct: 0 },
-                { id: "bn2_20", board: "B.B. 21", question: "বাংলা ভাষাবিজ্ঞানে ‘ধ্বনি’ বলতে কী বোঝায়?", options: ["শব্দধ্বনি/ধ্বনিবিজ্ঞান", "অর্থ", "ব্যাকরণগত কাঠামো", "শব্দভাণ্ডার"], correct: 0 }
+                { id: "bn2_1", board: "D.B. 23", question: "বাংলা ব্যাকরণে ‘কারক’ বাক্যের কোন দুটি অংশের মধ্যে সম্পর্ক বোঝায়?", options: ["ক্রিয়া ও বিশেষ্য", "বিশেষণ ও ক্রিয়াবিশেষণ", "শুধু কর্তা ও কর্ম", "দুটি ক্রিয়া"], correct: 0 }
             ],
             english_1st: [
-                { id: "e1_1", board: "D.B. 23", question: "Which part of speech describes an action?", options: ["Verb", "Noun", "Adjective", "Preposition"], correct: 0 },
-                { id: "e1_2", board: "R.B. 22", question: "A Subject + Verb + Object sentence pattern is called:", options: ["SVO structure", "VSO structure", "OVS structure", "SOV structure"], correct: 0 },
-                { id: "e1_3", board: "C.B. 23", question: "A word that joins two clauses is called a:", options: ["Conjunction", "Preposition", "Interjection", "Pronoun"], correct: 0 },
-                { id: "e1_4", board: "S.B. 23", question: "What is a synonym for \"Enormous\"?", options: ["Huge", "Tiny", "Narrow", "Weak"], correct: 0 },
-                { id: "e1_5", board: "D.B. 22", question: "Which word is a noun in \"The dog barked loudly.\"?", options: ["Dog", "Barked", "Loudly", "The"], correct: 0 },
-                { id: "e1_6", board: "R.B. 22", question: "What is the antonym of \"Difficult\"?", options: ["Easy", "Hard", "Complex", "Tough"], correct: 0 },
-                { id: "e1_7", board: "C.B. 23", question: "Identify the adjective in: \"She wore a beautiful dress.\"", options: ["Beautiful", "Wore", "Dress", "She"], correct: 0 },
-                { id: "e1_8", board: "Ctg.B. 22", question: "What type of sentence is \"Please close the door.\"?", options: ["Imperative", "Declarative", "Interrogative", "Exclamatory"], correct: 0 },
-                { id: "e1_9", board: "S.B. 22", question: "Choose the correct plural form of \"child\":", options: ["Children", "Childs", "Childes", "Childrens"], correct: 0 },
-                { id: "e1_10", board: "D.B. 21", question: "The main idea of a paragraph is usually called the:", options: ["Topic sentence", "Conclusion", "Introduction", "Body"], correct: 0 },
-                { id: "e1_11", board: "R.B. 21", question: "Which of these is a compound word?", options: ["Sunflower", "Beautiful", "Running", "Quickly"], correct: 0 },
-                { id: "e1_12", board: "J.B. 22", question: "A group of words without a finite verb is called a:", options: ["Phrase", "Clause", "Sentence", "Paragraph"], correct: 0 },
-                { id: "e1_13", board: "B.B. 22", question: "Choose the correct spelling:", options: ["Necessary", "Neccessary", "Necessery", "Neccesary"], correct: 0 },
-                { id: "e1_14", board: "D.B. 20", question: "What is the synonym of \"Happy\"?", options: ["Joyful", "Sad", "Angry", "Tired"], correct: 0 },
-                { id: "e1_15", board: "S.B. 21", question: "Identify the pronoun: \"She went to the market.\"", options: ["She", "Went", "To", "Market"], correct: 0 },
-                { id: "e1_16", board: "C.B. 21", question: "What is the term for a word that sounds like what it represents?", options: ["Onomatopoeia", "Metaphor", "Simile", "Alliteration"], correct: 0 },
-                { id: "e1_17", board: "Ctg.B. 21", question: "Which sentence is in the interrogative form?", options: ["Are you coming?", "You are coming.", "Come here.", "What a day!"], correct: 0 },
-                { id: "e1_18", board: "R.B. 20", question: "Choose the correct article: \"___ university is located near my house.\"", options: ["A", "An", "The", "No article"], correct: 0 },
-                { id: "e1_19", board: "J.B. 21", question: "What is the past participle of \"write\"?", options: ["Written", "Wrote", "Writing", "Writes"], correct: 0 },
-                { id: "e1_20", board: "B.B. 21", question: "Identify the correct sentence:", options: ["He goes to school every day.", "He go to school every day.", "He going to school every day.", "He gone to school every day."], correct: 0 }
+                { id: "e1_1", board: "D.B. 23", question: "Which part of speech describes an action?", options: ["Verb", "Noun", "Adjective", "Preposition"], correct: 0 }
             ],
             english_2nd: [
-                { id: "e2_1", board: "D.B. 23", question: "Choose the correct passive voice of \"She writes a letter.\"", options: ["A letter is written by her.", "A letter was written by her.", "A letter is being written.", "A letter written by her."], correct: 0 },
-                { id: "e2_2", board: "R.B. 23", question: "Choose the correct preposition: \"He is good ___ Mathematics.\"", options: ["at", "in", "on", "for"], correct: 0 },
-                { id: "e2_3", board: "Ctg.B. 22", question: "Choose the correct form: \"If it rains, I ___ stay home.\"", options: ["will", "would", "shall", "was"], correct: 0 },
-                { id: "e2_4", board: "J.B. 23", question: "What is the comparative form of \"good\"?", options: ["better", "gooder", "best", "more good"], correct: 0 },
-                { id: "e2_5", board: "D.B. 22", question: "Choose the correct question tag: \"She is coming, ___?\"", options: ["isn't she", "is she", "doesn't she", "isn't it"], correct: 0 },
-                { id: "e2_6", board: "R.B. 22", question: "Fill in the blank: \"I have been living here ___ 2015.\"", options: ["since", "for", "from", "at"], correct: 0 },
-                { id: "e2_7", board: "C.B. 23", question: "Choose the correct indirect speech: He said, \"I am tired.\" → He said that he ___ tired.", options: ["was", "is", "has been", "were"], correct: 0 },
-                { id: "e2_8", board: "Ctg.B. 22", question: "What is the correct plural of \"mouse\" (the animal)?", options: ["Mice", "Mouses", "Mices", "Mouse"], correct: 0 },
-                { id: "e2_9", board: "S.B. 22", question: "Choose the correct conditional form: \"If I ___ rich, I would travel the world.\"", options: ["were", "was", "am", "be"], correct: 0 },
-                { id: "e2_10", board: "D.B. 21", question: "Which word correctly completes: \"He is interested ___ music.\"?", options: ["in", "on", "at", "for"], correct: 0 },
-                { id: "e2_11", board: "R.B. 21", question: "Choose the correct sentence:", options: ["Neither of them is right.", "Neither of them are right.", "Neither of them were right.", "Neither of them right."], correct: 0 },
-                { id: "e2_12", board: "J.B. 22", question: "What is the superlative form of \"beautiful\"?", options: ["Most beautiful", "Beautifullest", "More beautiful", "Beautifuller"], correct: 0 },
-                { id: "e2_13", board: "B.B. 22", question: "Choose the correctly punctuated sentence:", options: ["Where are you going?", "Where are you going,", "where are you going?", "where are you going"], correct: 0 },
-                { id: "e2_14", board: "D.B. 20", question: "Fill in the blank: \"She has ___ finished her homework.\"", options: ["already", "yet", "still", "since"], correct: 0 },
-                { id: "e2_15", board: "S.B. 21", question: "Choose the correct verb form: \"By next year, I ___ graduated.\"", options: ["will have", "will", "would have", "have"], correct: 0 },
-                { id: "e2_16", board: "C.B. 21", question: "Identify the correctly formed negative sentence:", options: ["I do not like coffee.", "I not like coffee.", "I don't liking coffee.", "I doesn't like coffee."], correct: 0 },
-                { id: "e2_17", board: "Ctg.B. 21", question: "Choose the correct word order: \"always / She / on time / arrives\"", options: ["She always arrives on time.", "Always she arrives on time.", "She arrives always on time.", "On time she always arrives."], correct: 0 },
-                { id: "e2_18", board: "R.B. 20", question: "Choose the correct modal verb: \"You ___ see a doctor if the pain continues.\"", options: ["should", "will", "do", "is"], correct: 0 },
-                { id: "e2_19", board: "J.B. 21", question: "Fill in the blank: \"This is the book ___ I told you about.\"", options: ["that", "who", "whom", "whose"], correct: 0 },
-                { id: "e2_20", board: "B.B. 21", question: "Choose the correct spelling:", options: ["Environment", "Enviroment", "Environmnet", "Envirnoment"], correct: 0 }
+                { id: "e2_1", board: "D.B. 23", question: "Identify the correct passive voice: 'He reads a book.'", options: ["A book is read by him.", "A book was read by him.", "A book has been read.", "He was reading a book."], correct: 0 }
             ],
             bgs: [
-                { id: "bgs1", board: "D.B. 23", question: "Bangladesh's parliament is officially known as the:", options: ["Jatiya Sangsad", "Lok Sabha", "National Assembly", "Majlis"], correct: 0 },
-                { id: "bgs2", board: "R.B. 22", question: "Which organization is the primary global body focused on international trade rules?", options: ["World Trade Organization", "World Health Organization", "UNESCO", "IMF"], correct: 0 },
-                { id: "bgs3", board: "C.B. 23", question: "The Liberation War Museum is located in which city?", options: ["Dhaka", "Chittagong", "Sylhet", "Khulna"], correct: 0 },
-                { id: "bgs4", board: "S.B. 22", question: "Which continent has the largest number of countries?", options: ["Africa", "Asia", "Europe", "South America"], correct: 0 }
+                { id: "bgs1", board: "D.B. 23", question: "বাংলাদেশের ঐতিহাসিক মুক্তিযুদ্ধ কোন সালে সংঘটিত হয়?", options: ["১৯৭১", "১৯৫২", "১৯৬৯", "১৯৪৭"], correct: 0 }
             ],
             islam: [
-                { id: "isl1", board: "D.B. 23", question: "How many pillars of Islam are there?", options: ["5", "4", "6", "7"], correct: 0 },
-                { id: "isl2", board: "R.B. 23", question: "The holy book of Islam is called:", options: ["Al-Quran", "Torah", "Bible", "Vedas"], correct: 0 },
-                { id: "isl3", board: "Ctg.B. 22", question: "What is the Arabic term for the Islamic declaration of faith?", options: ["Shahada", "Salah", "Zakat", "Hajj"], correct: 0 },
-                { id: "isl4", board: "J.B. 22", question: "Ramadan is which month of the Islamic lunar calendar?", options: ["9th", "8th", "10th", "12th"], correct: 0 }
+                { id: "isl1", board: "D.B. 23", question: "ইসলামের প্রথম স্তম্ভ কোনটি?", options: ["ঈমান / কালেমা", "সালাত", "সাওম", "হজ"], correct: 0 }
             ]
         };
 
-        let database = {};
-        let activeExamQuestions = [];
-        let currentSubjectId = null;
-        let userAnswers = {};
-        let lockedQuestions = {};
-        let examTimer = null;
-        let secondsRemaining = 0;
-        let totalExamDurationSeconds = 0;
-        let currentUserName = localStorage.getItem('ssc_username') || null;
+        // Initialize user store
+        let localQuestions = JSON.parse(localStorage.getItem("studify_custom_questions") || "{}");
+        let userProfile = JSON.parse(localStorage.getItem("studify_user_profile") || '{"name": "Candidate"}');
+        let examHistory = JSON.parse(localStorage.getItem("studify_history") || "[]");
 
-        window.addEventListener('DOMContentLoaded', async () => {
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => splash.style.visibility = 'hidden', 800);
-            }, 2500);
+        function saveProfile() {
+            localStorage.setItem("studify_user_profile", JSON.stringify(userProfile));
+            updateUserUI();
+        }
 
-            await loadQuestions();
-            renderDashboard();
-
-            if (!currentUserName) {
-                const name = prompt("Enter your name/callsign for the leaderboard:");
-                currentUserName = (name && name.trim()) ? name.trim() : "Anonymous Candidate";
-                localStorage.setItem('ssc_username', currentUserName);
+        function promptUserName() {
+            const name = prompt("Enter your display name:", userProfile.name);
+            if (name && name.trim()) {
+                userProfile.name = name.trim();
+                saveProfile();
             }
-            document.getElementById('welcome-user-text').innerText = `Welcome, ${currentUserName}`;
+        }
 
-            initAuth();
+        function updateUserUI() {
+            document.getElementById("welcome-user-text").textContent = `Welcome, ${userProfile.name} 👋`;
+        }
 
-            // Hidden admin entry: only visiting ?key=ILMW ever offers the PIN prompt.
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('key') === ADMIN_URL_SECRET) {
-                setTimeout(toggleAdminView, 2900);
-            }
-        });
+        function getAllQuestionsForSubject(subId) {
+            const base = realBoardQuestions[subId] || [];
+            const custom = localQuestions[subId] || [];
+            return [...base, ...custom];
+        }
 
-        async function initAuth() {
-            if (!supabaseClient) return;
-            const { data } = await supabaseClient.auth.getSession();
-            currentSession = data.session || null;
-            updateAuthButton();
-
-            supabaseClient.auth.onAuthStateChange((_event, session) => {
-                currentSession = session;
-                updateAuthButton();
+        function getTotalQuestionCount() {
+            let total = 0;
+            sscSubjects.forEach(s => {
+                total += getAllQuestionsForSubject(s.id).length;
             });
+            return total;
         }
 
-        function updateAuthButton() {
-            const btn = document.getElementById('google-auth-btn');
-            if (!btn) return;
-            if (currentSession && currentSession.user) {
-                const label = currentSession.user.user_metadata?.full_name || currentSession.user.email || 'Signed in';
-                btn.innerText = `✅ ${label}`;
-            } else {
-                btn.innerText = 'Sign in with Google';
-            }
-        }
+        function showView(viewId) {
+            document.querySelectorAll(".view-section").forEach(el => el.classList.remove("active"));
+            const target = document.getElementById(viewId);
+            if (target) target.classList.add("active");
 
-        function handleAuthButtonClick() {
-            if (!supabaseClient) {
-                alert('Leaderboard is not connected yet.');
-                return;
-            }
-            if (currentSession) {
-                supabaseClient.auth.signOut();
-            } else {
-                supabaseClient.auth.signInWithOAuth({
-                    provider: 'google',
-                    options: { redirectTo: window.location.href.split('?')[0] }
-                });
-            }
-        }
-
-        // Questions now live in the shared Supabase 'questions' table, so an
-        // admin edit shows up for every visitor — not just the admin's own
-        // browser. Falls back to the built-in bank if Supabase isn't reachable.
-        async function loadQuestions() {
-            database = {};
-            sscSubjects.forEach(s => { database[s.id] = []; });
-
-            if (!supabaseClient) {
-                database = JSON.parse(JSON.stringify(realBoardQuestions));
-                sscSubjects.forEach(s => { if (!database[s.id]) database[s.id] = []; });
-                return;
-            }
-
-            const { data, error } = await supabaseClient.from('questions').select('*');
-
-            if (error) {
-                console.error('Failed to load questions from Supabase:', error);
-                database = JSON.parse(JSON.stringify(realBoardQuestions));
-                sscSubjects.forEach(s => { if (!database[s.id]) database[s.id] = []; });
-                return;
-            }
-
-            if (!data || data.length === 0) {
-                // First-ever load: seed Supabase with the built-in question bank.
-                const seedRows = [];
-                sscSubjects.forEach(s => {
-                    (realBoardQuestions[s.id] || []).forEach(q => {
-                        seedRows.push({
-                            subject_id: s.id,
-                            board: q.board,
-                            question: q.question,
-                            options: q.options,
-                            correct: q.correct
-                        });
-                    });
-                });
-                if (seedRows.length > 0) {
-                    const { error: seedError } = await supabaseClient.from('questions').insert(seedRows);
-                    if (seedError) console.error('Seeding questions failed:', seedError);
-                }
-                database = JSON.parse(JSON.stringify(realBoardQuestions));
-                sscSubjects.forEach(s => { if (!database[s.id]) database[s.id] = []; });
-                return;
-            }
-
-            data.forEach(row => {
-                if (!database[row.subject_id]) database[row.subject_id] = [];
-                database[row.subject_id].push({
-                    id: row.id,
-                    board: row.board,
-                    question: row.question,
-                    options: row.options,
-                    correct: row.correct
-                });
-            });
+            document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active-nav"));
+            if (viewId === 'dashboard') document.querySelectorAll(".nav-btn")[0]?.classList.add("active-nav");
+            if (viewId === 'stats') document.querySelectorAll(".nav-btn")[1]?.classList.add("active-nav");
+            if (viewId === 'leaderboard') document.querySelectorAll(".nav-btn")[2]?.classList.add("active-nav");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function renderDashboard() {
-            const container = document.getElementById('subject-cards');
-            container.innerHTML = '';
+            updateUserUI();
+            document.getElementById("dash-question-count").textContent = getTotalQuestionCount();
             
-            sscSubjects.forEach(subj => {
-                const count = database[subj.id] ? database[subj.id].length : 0;
-                const card = document.createElement('div');
-                card.className = 'subject-card';
-                card.style.setProperty('--subject-color', subj.color);
-                card.onclick = () => openExamConfig(subj.id);
-                const icons = {physics:"⚡", chemistry:"🧪", higher_math:"∑", general_math:"📐", biology:"🧬", ict:"💻", bangla_1st:"ক", bangla_2nd:"ক", english_1st:"A", english_2nd:"A", bgs:"🌏", islam:"☪"};
-                card.innerHTML = `
-                    <span class="subject-tag">${icons[subj.id] || "📚"} &nbsp; ${subj.name.toUpperCase()}</span>
-                    <h3>${subj.name}</h3>
-                    <p>${count} questions available</p>
-                `;
-                container.appendChild(card);
+            let totalAns = 0, totalCorrect = 0;
+            examHistory.forEach(h => {
+                totalAns += h.total;
+                totalCorrect += h.score;
             });
+            const acc = totalAns > 0 ? Math.round((totalCorrect / totalAns) * 100) : 0;
+            document.getElementById("dash-accuracy").textContent = `${acc}%`;
+            document.getElementById("dash-streak").textContent = examHistory.length;
+
+            const grid = document.getElementById("subject-cards");
+            grid.innerHTML = sscSubjects.map(sub => {
+                const count = getAllQuestionsForSubject(sub.id).length;
+                return `
+                    <div class="subject-card" style="--subject-color: ${sub.color}" onclick="openExamConfig('${sub.id}')">
+                        <span class="subject-tag">${count} QUESTIONS</span>
+                        <h3>${escapeHtml(sub.name)}</h3>
+                        <p>Board-style practice sessions & full accuracy analytics.</p>
+                    </div>
+                `;
+            }).join('');
         }
 
-        function openExamConfig(subjectId) {
-            currentSubjectId = subjectId;
-            const subjObj = sscSubjects.find(s => s.id === subjectId);
-            document.getElementById('config-subject-title').innerText = `${subjObj.name} Exam Setup`;
+        let selectedSubjectForConfig = null;
+        function openExamConfig(subId) {
+            selectedSubjectForConfig = sscSubjects.find(s => s.id === subId);
+            if (!selectedSubjectForConfig) return;
+            document.getElementById("config-subject-title").textContent = `${selectedSubjectForConfig.name} Setup`;
             showView('exam-config');
         }
 
         function launchConfiguredExam() {
-            const allQuestions = database[currentSubjectId] || [];
-            if (allQuestions.length === 0) {
-                alert('No questions loaded for this subject yet. Add them in Admin mode or directly in code!');
+            if (!selectedSubjectForConfig) return;
+            const qCountVal = document.getElementById("config-q-count").value;
+            const timePerQVal = parseInt(document.getElementById("config-time-per-q").value, 10);
+            
+            const allQ = getAllQuestionsForSubject(selectedSubjectForConfig.id);
+            if (allQ.length === 0) {
+                alert("No questions available for this subject yet!");
                 return;
             }
 
-            const qCountChoice = document.getElementById('config-q-count').value;
-            const timePerQ = parseInt(document.getElementById('config-time-per-q').value);
+            let shuffled = [...allQ].sort(() => 0.5 - Math.random());
+            let selectedQ = qCountVal === "all" ? shuffled : shuffled.slice(0, parseInt(qCountVal, 10));
 
-            let selectedCount = qCountChoice === 'all' ? allQuestions.length : parseInt(qCountChoice);
-            selectedCount = Math.min(selectedCount, allQuestions.length);
+            activeExamState = {
+                subjectId: selectedSubjectForConfig.id,
+                subjectName: selectedSubjectForConfig.name,
+                questions: selectedQ,
+                userAnswers: {},
+                timeTotal: selectedQ.length * timePerQVal,
+                timeRemaining: selectedQ.length * timePerQVal,
+                startTime: Date.now()
+            };
 
-            activeExamQuestions = [...allQuestions].sort(() => 0.5 - Math.random()).slice(0, selectedCount);
-            userAnswers = {};
-            lockedQuestions = {};
-            secondsRemaining = activeExamQuestions.length * timePerQ;
-            totalExamDurationSeconds = secondsRemaining;
-
-            startTimer();
-            renderExamUI();
+            renderExamScreen();
             showView('exam');
+            startExamTimer();
         }
 
-        function startTimer() {
-            clearInterval(examTimer);
+        function renderExamScreen() {
+            document.getElementById("quiz-title").textContent = activeExamState.subjectName;
+            document.getElementById("quiz-count-label").textContent = `${activeExamState.questions.length} Questions Loaded`;
             updateTimerDisplay();
-            examTimer = setInterval(() => {
-                secondsRemaining--;
+
+            const container = document.getElementById("questions-container");
+            container.innerHTML = activeExamState.questions.map((q, idx) => `
+                <div class="glass-card">
+                    <span class="subject-tag">${escapeHtml(q.board || 'BOARD')}</span>
+                    <h3>Q${idx + 1}. ${escapeHtml(q.question)}</h3>
+                    <div class="options-list">
+                        ${q.options.map((opt, oIdx) => `
+                            <div class="option-item" id="opt-${idx}-${oIdx}" onclick="selectExamOption(${idx}, ${oIdx})">
+                                <strong>${String.fromCharCode(65 + oIdx)}.</strong>
+                                <span>${escapeHtml(opt)}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+            updateProgressBar();
+        }
+
+        function selectExamOption(qIdx, oIdx) {
+            activeExamState.userAnswers[qIdx] = oIdx;
+            const parent = document.getElementById(`opt-${qIdx}-0`).parentElement;
+            Array.from(parent.children).forEach((child, i) => {
+                if (i === oIdx) {
+                    child.style.borderColor = "#5b8cff";
+                    child.style.background = "#12223a";
+                } else {
+                    child.style.borderColor = "var(--line)";
+                    child.style.background = "#080e17";
+                }
+            });
+            updateProgressBar();
+        }
+
+        function updateProgressBar() {
+            const answeredCount = Object.keys(activeExamState.userAnswers).length;
+            const pct = Math.round((answeredCount / activeExamState.questions.length) * 100);
+            document.getElementById("exam-progress-fill").style.width = `${pct}%`;
+        }
+
+        function startExamTimer() {
+            clearInterval(examTimerInterval);
+            examTimerInterval = setInterval(() => {
+                activeExamState.timeRemaining--;
                 updateTimerDisplay();
-                if (secondsRemaining <= 0) {
-                    clearInterval(examTimer);
-                    alert("Time's up! Submitting exam automatically.");
+                if (activeExamState.timeRemaining <= 0) {
+                    clearInterval(examTimerInterval);
+                    alert("Time is up! Submitting exam automatically.");
                     submitExam();
                 }
             }, 1000);
         }
 
         function updateTimerDisplay() {
-            const m = Math.floor(secondsRemaining / 60);
-            const s = secondsRemaining % 60;
-            document.getElementById('exam-timer').innerText = `⏱️ ${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-        }
-
-        function renderExamUI() {
-            const subjObj = sscSubjects.find(s => s.id === currentSubjectId);
-            document.getElementById('quiz-title').innerText = `${subjObj.name} Exam`;
-            document.getElementById('quiz-count-label').innerText = `${activeExamQuestions.length} Questions Selected`;
-            const progressBar = document.getElementById('exam-progress-fill'); if (progressBar) progressBar.style.width = '0%';
-
-            const container = document.getElementById('questions-container');
-            container.innerHTML = '';
-
-            activeExamQuestions.forEach((q, qIndex) => {
-                const qCard = document.createElement('div');
-                qCard.className = 'glass-card';
-                qCard.innerHTML = `
-                    <span class="board-tag">${q.board}</span>
-                    <h3 style="font-size: 1rem;">Q${qIndex + 1}. ${q.question}</h3>
-                    <div class="options-list">
-                        ${q.options.map((opt, oIndex) => `
-                            <div class="option-item" id="opt_${qIndex}_${oIndex}" onclick="selectOption(${qIndex}, ${oIndex}, ${q.correct})">
-                                <strong>${String.fromCharCode(65 + oIndex)}.</strong> ${opt}
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                container.appendChild(qCard);
-            });
-        }
-
-        function selectOption(qIndex, optIndex, correctOptIndex) {
-            if (lockedQuestions[qIndex]) return;
-
-            lockedQuestions[qIndex] = true;
-            userAnswers[qIndex] = optIndex;
-            const progressBar = document.getElementById('exam-progress-fill'); if (progressBar) progressBar.style.width = `${(Object.keys(userAnswers).length / activeExamQuestions.length) * 100}%`;
-
-            const isCorrect = (optIndex === correctOptIndex);
-            const targetEl = document.getElementById(`opt_${qIndex}_${optIndex}`);
-
-            if (isCorrect) {
-                targetEl.classList.add('selected-correct');
-            } else {
-                targetEl.classList.add('selected-wrong');
-                document.getElementById(`opt_${qIndex}_${correctOptIndex}`).classList.add('selected-correct');
-            }
-
-            const options = document.querySelectorAll(`[id^="opt_${qIndex}_"]`);
-            options.forEach(el => el.classList.add('locked'));
+            const m = Math.floor(activeExamState.timeRemaining / 60);
+            const s = activeExamState.timeRemaining % 60;
+            document.getElementById("exam-timer").textContent = `⏱️ ${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
         }
 
         function submitExam() {
-            clearInterval(examTimer);
+            clearInterval(examTimerInterval);
             let score = 0;
+            const total = activeExamState.questions.length;
+            const timeTaken = Math.round((Date.now() - activeExamState.startTime) / 1000);
 
-            const reviewContainer = document.getElementById('review-container');
-            reviewContainer.innerHTML = '';
+            activeExamState.questions.forEach((q, idx) => {
+                if (activeExamState.userAnswers[idx] === q.correct) score++;
+            });
 
-            activeExamQuestions.forEach((q, qIndex) => {
-                const userChoice = userAnswers[qIndex];
-                const isCorrect = (userChoice === q.correct);
-                if (isCorrect) score++;
+            const accuracy = Math.round((score / total) * 100);
 
-                const reviewCard = document.createElement('div');
-                reviewCard.className = 'glass-card';
-                reviewCard.innerHTML = `
-                    <span class="board-tag">${q.board}</span>
-                    <h4>Q${qIndex + 1}. ${q.question}</h4>
-                    <div class="options-list">
-                        ${q.options.map((opt, oIndex) => {
-                            let className = 'option-item locked';
-                            if (oIndex === q.correct) className += ' selected-correct';
-                            else if (userChoice === oIndex && !isCorrect) className += ' selected-wrong';
-                            return `<div class="${className}"><strong>${String.fromCharCode(65 + oIndex)}.</strong> ${opt}</div>`;
-                        }).join('')}
+            // Save session to history
+            const sessionData = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                subject: activeExamState.subjectName,
+                subjectId: activeExamState.subjectId,
+                score,
+                total,
+                accuracy,
+                timeSpent: timeTaken
+            };
+            examHistory.unshift(sessionData);
+            localStorage.setItem("studify_history", JSON.stringify(examHistory));
+
+            // Render Results
+            document.getElementById("final-score").textContent = `${score} / ${total}`;
+            document.getElementById("score-percentage").textContent = `${accuracy}% Accuracy`;
+            document.getElementById("time-spent-summary").textContent = `Time Spent: ${Math.floor(timeTaken/60)}m ${timeTaken%60}s`;
+
+            // Submit score to Supabase global leaderboard if configured
+            submitToGlobalLeaderboard(sessionData);
+
+            // Render Review
+            const reviewContainer = document.getElementById("review-container");
+            reviewContainer.innerHTML = activeExamState.questions.map((q, idx) => {
+                const userAns = activeExamState.userAnswers[idx];
+                const isCorrect = userAns === q.correct;
+                return `
+                    <div class="glass-card" style="border-left: 4px solid ${isCorrect ? 'var(--green)' : 'var(--danger)'}">
+                        <span class="subject-tag">${escapeHtml(q.board || 'BOARD')}</span>
+                        <h3>Q${idx + 1}. ${escapeHtml(q.question)}</h3>
+                        <div class="options-list">
+                            ${q.options.map((opt, oIdx) => {
+                                let cls = "";
+                                if (oIdx === q.correct) cls = "selected-correct";
+                                else if (userAns === oIdx && !isCorrect) cls = "selected-wrong";
+                                return `
+                                    <div class="option-item locked ${cls}">
+                                        <strong>${String.fromCharCode(65 + oIdx)}.</strong>
+                                        <span>${escapeHtml(opt)}</span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
                     </div>
                 `;
-                reviewContainer.appendChild(reviewCard);
-            });
-
-            const timeSpentSec = totalExamDurationSeconds - secondsRemaining;
-            const spentM = Math.floor(timeSpentSec / 60);
-            const spentS = timeSpentSec % 60;
-            const timeSpentStr = `${spentM}m ${spentS}s`;
-
-            const pct = ((score / activeExamQuestions.length) * 100).toFixed(1);
-            const subjectName = sscSubjects.find(s => s.id === currentSubjectId).name;
-
-            document.getElementById('final-score').innerText = `${score} / ${activeExamQuestions.length}`;
-            document.getElementById('score-percentage').innerText = `${pct}% Accuracy`;
-            document.getElementById('time-spent-summary').innerText = `Time Spent: ${timeSpentStr}`;
-
-            saveExamToAnalytics({
-                date: new Date().toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                subject: subjectName,
-                score: `${score} / ${activeExamQuestions.length}`,
-                accuracy: `${pct}%`,
-                timeSpent: timeSpentStr
-            });
-
-            submitScoreToLeaderboard(subjectName, score, activeExamQuestions.length, parseFloat(pct));
+            }).join('');
 
             showView('results');
+            renderDashboard();
         }
 
-        function saveExamToAnalytics(record) {
-            const history = JSON.parse(localStorage.getItem('ssc_analytics_history') || '[]');
-            history.unshift(record);
-            localStorage.setItem('ssc_analytics_history', JSON.stringify(history));
+        async function submitToGlobalLeaderboard(session) {
+            const statusEl = document.getElementById("lb-submit-status");
+            if (!supabaseClient) {
+                statusEl.textContent = "Leaderboard: local mode (Supabase credentials not configured).";
+                return;
+            }
+            statusEl.textContent = "Syncing score to global leaderboard...";
+            try {
+                const { error } = await supabaseClient.from("leaderboard").insert([
+                    {
+                        user_name: userProfile.name,
+                        subject_id: session.subjectId,
+                        subject_name: session.subject,
+                        score: session.score,
+                        total_questions: session.total,
+                        accuracy: session.accuracy,
+                        time_spent: session.timeSpent
+                    }
+                ]);
+                if (error) throw error;
+                statusEl.textContent = "✓ Score synced to global leaderboard!";
+            } catch (err) {
+                console.error(err);
+                statusEl.textContent = "Failed to sync to global leaderboard.";
+            }
         }
 
         function renderStatsView() {
-            const history = JSON.parse(localStorage.getItem('ssc_analytics_history') || '[]');
-            const tbody = document.getElementById('history-table-body');
-            tbody.innerHTML = '';
-
-            if (history.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-sub);">No exam history recorded yet. Complete a quiz!</td></tr>`;
-            } else {
-                history.forEach(item => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${item.date}</td>
-                        <td><strong>${item.subject}</strong></td>
-                        <td>${item.score}</td>
-                        <td><span style="color: var(--accent-green); font-weight:700;">${item.accuracy}</span></td>
-                        <td>${item.timeSpent}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+            const tbody = document.getElementById("history-table-body");
+            if (examHistory.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--muted);">No practice sessions recorded yet.</td></tr>`;
+                showView('stats');
+                return;
             }
+
+            tbody.innerHTML = examHistory.map(h => `
+                <tr>
+                    <td>${escapeHtml(h.date)}</td>
+                    <td><strong>${escapeHtml(h.subject)}</strong></td>
+                    <td>${h.score} / ${h.total}</td>
+                    <td><strong style="color:var(--cyan)">${h.accuracy}%</strong></td>
+                    <td>${Math.floor(h.timeSpent/60)}m ${h.timeSpent%60}s</td>
+                </tr>
+            `).join('');
             showView('stats');
         }
 
         function clearAnalyticsHistory() {
-            if (confirm("Clear all session history?")) {
-                localStorage.removeItem('ssc_analytics_history');
+            if (confirm("Are you sure you want to clear your local session history?")) {
+                examHistory = [];
+                localStorage.removeItem("studify_history");
                 renderStatsView();
+                renderDashboard();
             }
         }
 
-        /* ---------------------------------------------------------------------
-           LEADERBOARD — reads/writes the shared Supabase table so every visitor
-           sees the same live standings, not just their own browser's scores.
-        --------------------------------------------------------------------- */
-        async function submitScoreToLeaderboard(subjectName, score, total, accuracy) {
-            const statusEl = document.getElementById('lb-submit-status');
-            if (!supabaseClient) {
-                if (statusEl) statusEl.innerText = "Leaderboard not connected yet — ask the admin to finish setup.";
-                return;
-            }
-            if (!currentSession) {
-                if (statusEl) statusEl.innerText = "Sign in with Google (top right) to post your score to the public leaderboard.";
-                return;
-            }
-            try {
-                const { error } = await supabaseClient.from('leaderboard').insert([{
-                    name: currentUserName || 'Anonymous Candidate',
-                    subject: subjectName,
-                    score: score,
-                    total: total,
-                    accuracy: accuracy
-                }]);
-                if (error) throw error;
-                if (statusEl) statusEl.innerText = "Score posted to the leaderboard ✅";
-            } catch (e) {
-                console.error('Leaderboard submit failed:', e);
-                const detail = (e && e.message) ? e.message : JSON.stringify(e);
-                if (statusEl) statusEl.innerText = "Leaderboard error: " + detail;
-            }
-        }
-
+        /* =========================================================================
+           LEADERBOARD RENDERER & SUPABASE FETCHING
+        ========================================================================= */
         function populateLeaderboardFilter() {
-            const sel = document.getElementById('lb-subject-filter');
-            const current = sel.value || 'all';
-            sel.innerHTML = '<option value="all">All Subjects</option>' +
-                sscSubjects.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
-            sel.value = current;
+            const select = document.getElementById("lb-subject-filter");
+            select.innerHTML = `<option value="all">All Subjects</option>` + 
+                sscSubjects.map(s => `<option value="${s.id}">${escapeHtml(s.name)}</option>`).join('');
         }
 
         async function loadLeaderboardData() {
-            const tbody = document.getElementById('leaderboard-table-body');
-            const statusEl = document.getElementById('lb-status-text');
+            showView('leaderboard');
+            const listBody = document.getElementById("leaderboard-list-body");
+            const podiumContainer = document.getElementById("lb-podium-container");
+            const filterVal = document.getElementById("lb-subject-filter").value;
+
+            listBody.innerHTML = `<div class="lb-loading">Loading top candidates...</div>`;
+            podiumContainer.innerHTML = "";
 
             if (!supabaseClient) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-sub);">
-                    Leaderboard isn't connected yet. Add your Supabase URL + key in the script to turn this on.
-                </td></tr>`;
-                statusEl.innerText = '';
+                listBody.innerHTML = `<div class="lb-empty">Supabase is not configured yet. Set SUPABASE_URL and SUPABASE_ANON_KEY to enable live global rankings.</div>`;
                 return;
             }
 
-            const subjectFilter = document.getElementById('lb-subject-filter').value;
-            let query = supabaseClient
-                .from('leaderboard')
-                .select('*')
-                .order('score', { ascending: false })
-                .order('created_at', { ascending: true })
-                .limit(50);
+            try {
+                let query = supabaseClient.from("leaderboard").select("*").order("score", { ascending: false }).order("accuracy", { ascending: false }).limit(50);
+                if (filterVal !== "all") {
+                    query = query.eq("subject_id", filterVal);
+                }
+                const { data, error } = await query;
+                if (error) throw error;
 
-            if (subjectFilter !== 'all') query = query.eq('subject', subjectFilter);
+                if (!data || data.length === 0) {
+                    listBody.innerHTML = `<div class="lb-empty">No leaderboard entries found for this selection yet!</div>`;
+                    return;
+                }
 
-            const { data, error } = await query;
+                // Render Top 3 Podium
+                const top3 = data.slice(0, 3);
+                if (top3.length > 0) {
+                    const first = top3[0];
+                    const second = top3[1];
+                    const third = top3[2];
 
-            if (error) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--accent-red);">Couldn't load the leaderboard right now.</td></tr>`;
-                console.error(error);
-                return;
+                    podiumContainer.innerHTML = `
+                        <div class="lb-podium-card">
+                            <div class="lb-medal">🥈</div>
+                            <div class="lb-avatar">${second ? second.user_name.charAt(0).toUpperCase() : '?'}</div>
+                            <div class="lb-name">${second ? escapeHtml(second.user_name) : '—'}</div>
+                            <div class="lb-podium-subject">${second ? escapeHtml(second.subject_name) : ''}</div>
+                            <div class="lb-podium-score">${second ? second.score + '/' + second.total_questions : ''}</div>
+                            <div class="lb-podium-accuracy">${second ? second.accuracy + '%' : ''}</div>
+                        </div>
+                        <div class="lb-podium-card first">
+                            <div class="lb-medal">👑</div>
+                            <div class="lb-avatar">${first ? first.user_name.charAt(0).toUpperCase() : '?'}</div>
+                            <div class="lb-name">${first ? escapeHtml(first.user_name) : '—'}</div>
+                            <div class="lb-podium-subject">${first ? escapeHtml(first.subject_name) : ''}</div>
+                            <div class="lb-podium-score">${first ? first.score + '/' + first.total_questions : ''}</div>
+                            <div class="lb-podium-accuracy">${first ? first.accuracy + '%' : ''}</div>
+                        </div>
+                        <div class="lb-podium-card">
+                            <div class="lb-medal">🥉</div>
+                            <div class="lb-avatar">${third ? third.user_name.charAt(0).toUpperCase() : '?'}</div>
+                            <div class="lb-name">${third ? escapeHtml(third.user_name) : '—'}</div>
+                            <div class="lb-podium-subject">${third ? escapeHtml(third.subject_name) : ''}</div>
+                            <div class="lb-podium-score">${third ? third.score + '/' + third.total_questions : ''}</div>
+                            <div class="lb-podium-accuracy">${third ? third.accuracy + '%' : ''}</div>
+                        </div>
+                    `;
+                }
+
+                // Render full list
+                listBody.innerHTML = data.map((item, idx) => `
+                    <div class="lb-row">
+                        <div class="lb-rank-num">#${idx + 1}</div>
+                        <div class="lb-user">
+                            <div class="lb-row-avatar">${item.user_name.charAt(0).toUpperCase()}</div>
+                            <div style="min-width:0;">
+                                <div class="lb-user-name">${escapeHtml(item.user_name)}</div>
+                                <div class="lb-user-sub">${escapeHtml(item.subject_name)}</div>
+                            </div>
+                        </div>
+                        <div class="lb-subject-name">${escapeHtml(item.subject_name)}</div>
+                        <div class="lb-score-val">${item.score}/${item.total_questions}</div>
+                        <div class="lb-accuracy-val">${item.accuracy}%</div>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                console.error(err);
+                listBody.innerHTML = `<div class="lb-empty">Error loading leaderboard data. Please check your network or Supabase connection.</div>`;
             }
-
-            if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-sub);">No scores yet — be the first!</td></tr>`;
-            } else {
-                tbody.innerHTML = data.map((row, i) => {
-                    const rankClass = i === 0 ? 'lb-rank-1' : i === 1 ? 'lb-rank-2' : i === 2 ? 'lb-rank-3' : '';
-                    const rowClass = i < 3 ? 'lb-row-top' : '';
-                    const when = new Date(row.created_at).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-                    return `<tr class="${rowClass}">
-                        <td><span class="lb-rank ${rankClass}">${i + 1}</span></td>
-                        <td>${escapeHtml(row.name)}</td>
-                        <td>${escapeHtml(row.subject)}</td>
-                        <td>${escapeHtml(row.score)} / ${escapeHtml(row.total)}</td>
-                        <td>${escapeHtml(row.accuracy)}%</td>
-                        <td>${when}</td>
-                    </tr>`;
-                }).join('');
-            }
-
-            statusEl.innerHTML = `<span class="lb-live-dot"></span>Live — updates automatically every few seconds`;
         }
 
         function renderLeaderboardView() {
-            populateLeaderboardFilter();
             loadLeaderboardData();
-            clearInterval(leaderboardPollId);
-            leaderboardPollId = setInterval(loadLeaderboardData, 4000);
-            showView('leaderboard');
         }
 
-        function showView(viewId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            if (viewId !== 'leaderboard' && leaderboardPollId) {
-                clearInterval(leaderboardPollId);
-                leaderboardPollId = null;
-            }
-            window.scrollTo(0, 0);
+        /* =========================================================================
+           AEGIS AI ASSISTANT DRAWER
+        ========================================================================= */
+        function toggleAegisPanel() {
+            const panel = document.getElementById("aegis-panel");
+            panel.classList.toggle("open");
         }
 
-        function toggleAdminView() {
-            const pin = prompt("Enter Admin PIN:");
-            if (pin === "2027") {
-                populateAdminDropdowns();
-                showView('admin');
-            } else {
-                alert("Incorrect PIN!");
-            }
+        function quickAskAegis(text) {
+            document.getElementById("aegis-input-text").value = text;
+            sendAegisMessage();
         }
 
-        function lockAdmin() { showView('dashboard'); }
+        function sendAegisMessage() {
+            const input = document.getElementById("aegis-input-text");
+            const text = input.value.trim();
+            if (!text) return;
 
-        function populateAdminDropdowns() {
-            const addSel = document.getElementById('admin-subject-select');
-            addSel.innerHTML = '';
-            sscSubjects.forEach(s => addSel.innerHTML += `<option value="${s.id}">${s.name}</option>`);
+            const msgContainer = document.getElementById("aegis-messages");
+            msgContainer.innerHTML += `<div class="aegis-msg user">${escapeHtml(text)}</div>`;
+            input.value = "";
+            msgContainer.scrollTop = msgContainer.scrollHeight;
+
+            // Generate AI dynamic reply based on context
+            setTimeout(() => {
+                let aiReply = "That's a great question! For SSC 2027 preparation, consistency in solving board questions from 2018–2023 is key. Focus on understanding concepts step-by-step rather than memorizing!";
+                if (text.toLowerCase().includes("physics")) {
+                    aiReply = "In Physics mechanics, pay extra attention to units (SI) and formulas like V = S/t, F = ma, and W = FS. Practice vector diagrams for high scores!";
+                } else if (text.toLowerCase().includes("chemistry")) {
+                    aiReply = "For Chemistry, remember to memorize the first 30 elements of the periodic table, their atomic numbers, and common valencies. Balancing chemical equations earns full board marks!";
+                } else if (text.toLowerCase().includes("math")) {
+                    aiReply = "In Mathematics, master formulas for Algebra (a+b)^2 and Trigonometry ratios (sin, cos, tan). Always double check calculation steps with your scientific calculator!";
+                }
+                msgContainer.innerHTML += `<div class="aegis-msg ai">${escapeHtml(aiReply)}</div>`;
+                msgContainer.scrollTop = msgContainer.scrollHeight;
+            }, 600);
         }
 
-        async function handleSaveQuestion(e) {
+        /* =========================================================================
+           ADMIN & AUTH HANDLERS
+        ========================================================================= */
+        function handleAuthButtonClick() {
+            promptUserName();
+        }
+
+        function populateAdminSubjects() {
+            const select = document.getElementById("admin-subject-select");
+            select.innerHTML = sscSubjects.map(s => `<option value="${s.id}">${escapeHtml(s.name)}</option>`).join('');
+        }
+
+        function handleSaveQuestion(e) {
             e.preventDefault();
+            const subId = document.getElementById("admin-subject-select").value;
+            const board = document.getElementById("admin-board").value;
+            const text = document.getElementById("admin-q-text").value;
+            const opts = [
+                document.getElementById("admin-opt-a").value,
+                document.getElementById("admin-opt-b").value,
+                document.getElementById("admin-opt-c").value,
+                document.getElementById("admin-opt-d").value
+            ];
+            const correct = parseInt(document.getElementById("admin-correct-opt").value, 10);
 
-            if (!supabaseClient) {
-                alert('Leaderboard/questions storage is not connected yet.');
-                return;
-            }
-            if (!currentSession) {
-                alert('Please sign in with Google (top right) first — question saves require a signed-in admin session.');
-                return;
-            }
-
-            const subjectId = document.getElementById('admin-subject-select').value;
-            const newQ = {
-                subject_id: subjectId,
-                board: document.getElementById('admin-board').value,
-                question: document.getElementById('admin-q-text').value,
-                options: [
-                    document.getElementById('admin-opt-a').value,
-                    document.getElementById('admin-opt-b').value,
-                    document.getElementById('admin-opt-c').value,
-                    document.getElementById('admin-opt-d').value
-                ],
-                correct: parseInt(document.getElementById('admin-correct-opt').value)
-            };
-
-            const { data, error } = await supabaseClient.from('questions').insert([newQ]).select();
-
-            if (error) {
-                console.error('Failed to save question:', error);
-                alert('Could not save this question: ' + error.message);
-                return;
-            }
-
-            if (!database[subjectId]) database[subjectId] = [];
-            const saved = data[0];
-            database[subjectId].push({
-                id: saved.id,
-                board: saved.board,
-                question: saved.question,
-                options: saved.options,
-                correct: saved.correct
+            if (!localQuestions[subId]) localQuestions[subId] = [];
+            localQuestions[subId].push({
+                id: 'custom_' + Date.now(),
+                board,
+                question: text,
+                options: opts,
+                correct
             });
 
-            alert('Board question saved — this is now live for every visitor!');
-            document.getElementById('add-q-form').reset();
+            localStorage.setItem("studify_custom_questions", JSON.stringify(localQuestions));
+            alert("Question saved successfully!");
+            document.getElementById("add-q-form").reset();
             renderDashboard();
         }
 
-        function promptUserName() {
-            const name = prompt("Enter your custom name/callsign:");
-            if (name && name.trim()) {
-                currentUserName = name.trim();
-                localStorage.setItem('ssc_username', currentUserName);
-                document.getElementById('welcome-user-text').innerText = `Welcome, ${currentUserName}`;
+        function lockAdmin() {
+            showView('dashboard');
+        }
+
+        // Secret Admin URL activation trigger (?key=ILMW)
+        function checkUrlSecretAdmin() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get("key") === ADMIN_URL_SECRET) {
+                const pin = prompt("Enter Admin PIN:");
+                if (pin === "2027") {
+                    populateAdminSubjects();
+                    showView('admin');
+                } else {
+                    alert("Invalid PIN!");
+                }
             }
         }
+
+        /* =========================================================================
+           INITIALIZATION
+        ========================================================================= */
+        window.addEventListener("DOMContentLoaded", () => {
+            // Hide splash screen smoothly
+            setTimeout(() => {
+                const splash = document.getElementById("splash-screen");
+                if (splash) {
+                    splash.style.opacity = "0";
+                    setTimeout(() => splash.style.display = "none", 800);
+                }
+            }, 1000);
+
+            renderDashboard();
+            populateLeaderboardFilter();
+            checkUrlSecretAdmin();
+        });
     </script>
-<button class="aegis-fab" onclick="toggleAegis()" aria-label="Open Aegis">🛡️</button><div id="aegis-panel" class="aegis-panel"><div class="aegis-head"><div><strong>🛡️ Aegis</strong><small>Your AI study companion</small></div><button class="aegis-close" onclick="toggleAegis()">×</button></div><div id="aegis-messages" class="aegis-messages"><div class="aegis-msg ai">Hi! I’m Aegis. Ask me about a concept, question, or problem. I can give a hint, explain it, or solve it step by step.</div></div><div class="aegis-chips"><button class="aegis-chip" onclick="aegisQuick('Give me a hint, not the answer.')">💡 Hint</button><button class="aegis-chip" onclick="aegisQuick('Explain this simply.')">🧠 Explain</button><button class="aegis-chip" onclick="aegisQuick('Solve this step by step.')">✏️ Solve</button></div><div class="aegis-input"><textarea id="aegis-input" placeholder="Ask Aegis…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAegis()}"></textarea><button class="aegis-send" onclick="sendAegis()">➤</button></div></div>
-<script id="studify-fire-js">
-(function(){
-const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const ini=n=>String(n||'AI').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();
-window.__lbSort='score';
-window.setLeaderboardSort=(s,b)=>{window.__lbSort=s;document.querySelectorAll('.lb-tab').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active');window.loadLeaderboardData&&window.loadLeaderboardData()};
-window.renderLeaderboardPodium=rows=>{const p=document.getElementById('lb-podium');if(!p)return;const a=[rows[1],rows[0],rows[2]],c=['second','first','third'],m=['🥈','🥇','🥉'];p.innerHTML=a.map((r,i)=>r?`<div class="lb-podium-card ${c[i]}"><div class="lb-medal">${m[i]}</div><div class="lb-avatar">${ini(r.name)}</div><div class="lb-name">${esc(r.name||'Anonymous')}</div><div class="lb-podium-subject">${esc(r.subject||'All Subjects')}</div><div class="lb-podium-score">${esc(r.score)} / ${esc(r.total)}</div><div class="lb-podium-accuracy">${esc(r.accuracy)}% accuracy</div></div>`:'<div></div>').join('')};
-window.loadLeaderboardData=async()=>{const l=document.getElementById('leaderboard-table-body'),c=document.getElementById('lb-result-count');if(typeof supabaseClient === 'undefined' || !supabaseClient){if(l)l.innerHTML='<div class="lb-empty">Leaderboard isn’t connected yet.</div>';return}let q=supabaseClient.from('leaderboard').select('*').limit(50),f=document.getElementById('lb-subject-filter')?.value||'all';if(f!=='all')q=q.eq('subject',f);const {data,error}=await q;if(error){l.innerHTML='<div class="lb-empty">Couldn’t load rankings right now.</div>';return}const rows=(data||[]).sort((a,b)=>window.__lbSort==='accuracy'?(+b.accuracy||0)-(+a.accuracy||0):(+b.score||0)-(+a.score||0));renderLeaderboardPodium(rows.slice(0,3));if(c)c.textContent=`${rows.length} candidates`;l.innerHTML=rows.length?rows.map((r,i)=>`<div class="lb-row"><div class="lb-rank-num">#${i+1}</div><div class="lb-user"><div class="lb-row-avatar">${ini(r.name)}</div><div><div class="lb-user-name">${esc(r.name||'Anonymous')}</div><div class="lb-user-sub">${r.created_at?new Date(r.created_at).toLocaleDateString([], {month:'short',day:'numeric'}):''}</div></div></div><div class="lb-subject-name">${esc(r.subject||'—')}</div><div class="lb-score-val">${esc(r.score)} / ${esc(r.total)}</div><div class="lb-accuracy-val">${esc(r.accuracy)}%</div></div>`).join(''):'<div class="lb-empty">No scores yet — be the first! 🚀</div>'};
-
-window.toggleAegis=()=>document.getElementById('aegis-panel')?.classList.toggle('open');
-window.aegisQuick=t=>{const i=document.getElementById('aegis-input');i.value=t;sendAegis()};
-window.sendAegis=async()=>{const i=document.getElementById('aegis-input'),b=document.getElementById('aegis-messages'),t=i.value.trim();if(!t)return;b.insertAdjacentHTML('beforeend',`<div class="aegis-msg user">${esc(t)}</div>`);i.value='';const p=document.createElement('div');p.className='aegis-msg ai';p.textContent='Aegis is thinking…';b.appendChild(p);try{const r=await fetch('/api/aegis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:t,subject:window.currentSubjectId||null})});if(!r.ok)throw 0;const d=await r.json();p.textContent=d.reply||'No response.'}catch(e){p.textContent='Aegis UI is ready. Connect the secure /api/aegis backend to activate live AI answers.'}b.scrollTop=b.scrollHeight};
-})();
-</script>
-
-<script id="studify-leaderboard-patch">
-(function(){
-  window.__studifyLeaderboardPatch = true;
-
-  // If the original app calls renderLeaderboardView(), refresh the upgraded
-  // leaderboard immediately as well.
-  const oldRender = window.renderLeaderboardView;
-  window.renderLeaderboardView = function(){
-    if (typeof oldRender === 'function') oldRender();
-    setTimeout(function(){
-      if (typeof window.loadLeaderboardData === 'function') window.loadLeaderboardData();
-    }, 50);
-  };
-})();
-</script>
 </body>
-                            </html>
+    </html>
