@@ -991,69 +991,6 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
             });
         }
 
-        /* ---------------------------------------------------------------------
-           DASHBOARD STATS — Questions available, Your accuracy, Practice streak.
-           These elements existed in the HTML but nothing ever populated them.
-        --------------------------------------------------------------------- */
-        function getStreakDisplay() {
-            const raw = localStorage.getItem('ssc_streak_data');
-            if (!raw) return 0;
-            try {
-                const data = JSON.parse(raw);
-                if (!data.lastDate) return 0;
-                const today = new Date(); today.setHours(0, 0, 0, 0);
-                const last = new Date(data.lastDate); last.setHours(0, 0, 0, 0);
-                const diffDays = Math.round((today - last) / 86400000);
-                // Still "current" if they practiced today or yesterday; otherwise the streak is broken.
-                return diffDays <= 1 ? (data.streak || 0) : 0;
-            } catch {
-                return 0;
-            }
-        }
-
-        function updateStreakOnPractice() {
-            const todayStr = new Date().toISOString().slice(0, 10);
-            const raw = localStorage.getItem('ssc_streak_data');
-            let data = { streak: 0, lastDate: null };
-            try { if (raw) data = JSON.parse(raw); } catch {}
-
-            if (data.lastDate === todayStr) {
-                // Already counted today — no change.
-            } else {
-                const today = new Date(); today.setHours(0, 0, 0, 0);
-                let diffDays = null;
-                if (data.lastDate) {
-                    const last = new Date(data.lastDate); last.setHours(0, 0, 0, 0);
-                    diffDays = Math.round((today - last) / 86400000);
-                }
-                data.streak = (diffDays === 1) ? (data.streak || 0) + 1 : 1;
-                data.lastDate = todayStr;
-            }
-            localStorage.setItem('ssc_streak_data', JSON.stringify(data));
-        }
-
-        function renderDashboardStats() {
-            const qCountEl = document.getElementById('dash-question-count');
-            if (qCountEl) {
-                const total = sscSubjects.reduce((sum, s) => sum + (database[s.id] ? database[s.id].length : 0), 0);
-                qCountEl.innerText = total > 0 ? total.toLocaleString() : '—';
-            }
-
-            const accEl = document.getElementById('dash-accuracy');
-            if (accEl) {
-                const history = JSON.parse(localStorage.getItem('ssc_analytics_history') || '[]');
-                if (history.length === 0) {
-                    accEl.innerText = '—';
-                } else {
-                    const avg = history.reduce((sum, item) => sum + (parseFloat(item.accuracy) || 0), 0) / history.length;
-                    accEl.innerText = avg.toFixed(0) + '%';
-                }
-            }
-
-            const streakEl = document.getElementById('dash-streak');
-            if (streakEl) streakEl.innerText = getStreakDisplay();
-        }
-
         function renderDashboard() {
             const container = document.getElementById('subject-cards');
             container.innerHTML = '';
@@ -1072,8 +1009,6 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
                 `;
                 container.appendChild(card);
             });
-
-            renderDashboardStats();
         }
 
         function openExamConfig(subjectId) {
@@ -1159,4 +1094,326 @@ table th{color:#8191a9;font-size:.67rem;text-transform:uppercase;letter-spacing:
 
             lockedQuestions[qIndex] = true;
             userAnswers[qIndex] = optIndex;
-            const progressBar = document.getElementById('exam-progress-fill'); if (progressBar) progr
+            const progressBar = document.getElementById('exam-progress-fill'); if (progressBar) progressBar.style.width = `${(Object.keys(userAnswers).length / activeExamQuestions.length) * 100}%`;
+
+            const isCorrect = (optIndex === correctOptIndex);
+            const targetEl = document.getElementById(`opt_${qIndex}_${optIndex}`);
+
+            if (isCorrect) {
+                targetEl.classList.add('selected-correct');
+            } else {
+                targetEl.classList.add('selected-wrong');
+                document.getElementById(`opt_${qIndex}_${correctOptIndex}`).classList.add('selected-correct');
+            }
+
+            const options = document.querySelectorAll(`[id^="opt_${qIndex}_"]`);
+            options.forEach(el => el.classList.add('locked'));
+        }
+
+        function submitExam() {
+            clearInterval(examTimer);
+            let score = 0;
+
+            const reviewContainer = document.getElementById('review-container');
+            reviewContainer.innerHTML = '';
+
+            activeExamQuestions.forEach((q, qIndex) => {
+                const userChoice = userAnswers[qIndex];
+                const isCorrect = (userChoice === q.correct);
+                if (isCorrect) score++;
+
+                const reviewCard = document.createElement('div');
+                reviewCard.className = 'glass-card';
+                reviewCard.innerHTML = `
+                    <span class="board-tag">${q.board}</span>
+                    <h4>Q${qIndex + 1}. ${q.question}</h4>
+                    <div class="options-list">
+                        ${q.options.map((opt, oIndex) => {
+                            let className = 'option-item locked';
+                            if (oIndex === q.correct) className += ' selected-correct';
+                            else if (userChoice === oIndex && !isCorrect) className += ' selected-wrong';
+                            return `<div class="${className}"><strong>${String.fromCharCode(65 + oIndex)}.</strong> ${opt}</div>`;
+                        }).join('')}
+                    </div>
+                `;
+                reviewContainer.appendChild(reviewCard);
+            });
+
+            const timeSpentSec = totalExamDurationSeconds - secondsRemaining;
+            const spentM = Math.floor(timeSpentSec / 60);
+            const spentS = timeSpentSec % 60;
+            const timeSpentStr = `${spentM}m ${spentS}s`;
+
+            const pct = ((score / activeExamQuestions.length) * 100).toFixed(1);
+            const subjectName = sscSubjects.find(s => s.id === currentSubjectId).name;
+
+            document.getElementById('final-score').innerText = `${score} / ${activeExamQuestions.length}`;
+            document.getElementById('score-percentage').innerText = `${pct}% Accuracy`;
+            document.getElementById('time-spent-summary').innerText = `Time Spent: ${timeSpentStr}`;
+
+            saveExamToAnalytics({
+                date: new Date().toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                subject: subjectName,
+                score: `${score} / ${activeExamQuestions.length}`,
+                accuracy: `${pct}%`,
+                timeSpent: timeSpentStr
+            });
+
+            submitScoreToLeaderboard(subjectName, score, activeExamQuestions.length, parseFloat(pct));
+
+            showView('results');
+        }
+
+        function saveExamToAnalytics(record) {
+            const history = JSON.parse(localStorage.getItem('ssc_analytics_history') || '[]');
+            history.unshift(record);
+            localStorage.setItem('ssc_analytics_history', JSON.stringify(history));
+        }
+
+        function renderStatsView() {
+            const history = JSON.parse(localStorage.getItem('ssc_analytics_history') || '[]');
+            const tbody = document.getElementById('history-table-body');
+            tbody.innerHTML = '';
+
+            if (history.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-sub);">No exam history recorded yet. Complete a quiz!</td></tr>`;
+            } else {
+                history.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${item.date}</td>
+                        <td><strong>${item.subject}</strong></td>
+                        <td>${item.score}</td>
+                        <td><span style="color: var(--accent-green); font-weight:700;">${item.accuracy}</span></td>
+                        <td>${item.timeSpent}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+            showView('stats');
+        }
+
+        function clearAnalyticsHistory() {
+            if (confirm("Clear all session history?")) {
+                localStorage.removeItem('ssc_analytics_history');
+                renderStatsView();
+            }
+        }
+
+        /* ---------------------------------------------------------------------
+           LEADERBOARD — reads/writes the shared Supabase table so every visitor
+           sees the same live standings, not just their own browser's scores.
+        --------------------------------------------------------------------- */
+        async function submitScoreToLeaderboard(subjectName, score, total, accuracy) {
+            const statusEl = document.getElementById('lb-submit-status');
+            if (!supabaseClient) {
+                if (statusEl) statusEl.innerText = "Leaderboard not connected yet — ask the admin to finish setup.";
+                return;
+            }
+            if (!currentSession) {
+                if (statusEl) statusEl.innerText = "Sign in with Google (top right) to post your score to the public leaderboard.";
+                return;
+            }
+            try {
+                const { error } = await supabaseClient.from('leaderboard').insert([{
+                    name: currentUserName || 'Anonymous Candidate',
+                    subject: subjectName,
+                    score: score,
+                    total: total,
+                    accuracy: accuracy
+                }]);
+                if (error) throw error;
+                if (statusEl) statusEl.innerText = "Score posted to the leaderboard ✅";
+            } catch (e) {
+                console.error('Leaderboard submit failed:', e);
+                const detail = (e && e.message) ? e.message : JSON.stringify(e);
+                if (statusEl) statusEl.innerText = "Leaderboard error: " + detail;
+            }
+        }
+
+        function populateLeaderboardFilter() {
+            const sel = document.getElementById('lb-subject-filter');
+            const current = sel.value || 'all';
+            sel.innerHTML = '<option value="all">All Subjects</option>' +
+                sscSubjects.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+            sel.value = current;
+        }
+
+        async function loadLeaderboardData() {
+            const tbody = document.getElementById('leaderboard-table-body');
+            const statusEl = document.getElementById('lb-status-text');
+
+            if (!supabaseClient) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-sub);">
+                    Leaderboard isn't connected yet. Add your Supabase URL + key in the script to turn this on.
+                </td></tr>`;
+                statusEl.innerText = '';
+                return;
+            }
+
+            const subjectFilter = document.getElementById('lb-subject-filter').value;
+            let query = supabaseClient
+                .from('leaderboard')
+                .select('*')
+                .order('score', { ascending: false })
+                .order('created_at', { ascending: true })
+                .limit(50);
+
+            if (subjectFilter !== 'all') query = query.eq('subject', subjectFilter);
+
+            const { data, error } = await query;
+
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--accent-red);">Couldn't load the leaderboard right now.</td></tr>`;
+                console.error(error);
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-sub);">No scores yet — be the first!</td></tr>`;
+            } else {
+                tbody.innerHTML = data.map((row, i) => {
+                    const rankClass = i === 0 ? 'lb-rank-1' : i === 1 ? 'lb-rank-2' : i === 2 ? 'lb-rank-3' : '';
+                    const rowClass = i < 3 ? 'lb-row-top' : '';
+                    const when = new Date(row.created_at).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    return `<tr class="${rowClass}">
+                        <td><span class="lb-rank ${rankClass}">${i + 1}</span></td>
+                        <td>${escapeHtml(row.name)}</td>
+                        <td>${escapeHtml(row.subject)}</td>
+                        <td>${escapeHtml(row.score)} / ${escapeHtml(row.total)}</td>
+                        <td>${escapeHtml(row.accuracy)}%</td>
+                        <td>${when}</td>
+                    </tr>`;
+                }).join('');
+            }
+
+            statusEl.innerHTML = `<span class="lb-live-dot"></span>Live — updates automatically every few seconds`;
+        }
+
+        function renderLeaderboardView() {
+            populateLeaderboardFilter();
+            loadLeaderboardData();
+            clearInterval(leaderboardPollId);
+            leaderboardPollId = setInterval(loadLeaderboardData, 4000);
+            showView('leaderboard');
+        }
+
+        function showView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            if (viewId !== 'leaderboard' && leaderboardPollId) {
+                clearInterval(leaderboardPollId);
+                leaderboardPollId = null;
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function toggleAdminView() {
+            const pin = prompt("Enter Admin PIN:");
+            if (pin === "2027") {
+                populateAdminDropdowns();
+                showView('admin');
+            } else {
+                alert("Incorrect PIN!");
+            }
+        }
+
+        function lockAdmin() { showView('dashboard'); }
+
+        function populateAdminDropdowns() {
+            const addSel = document.getElementById('admin-subject-select');
+            addSel.innerHTML = '';
+            sscSubjects.forEach(s => addSel.innerHTML += `<option value="${s.id}">${s.name}</option>`);
+        }
+
+        async function handleSaveQuestion(e) {
+            e.preventDefault();
+
+            if (!supabaseClient) {
+                alert('Leaderboard/questions storage is not connected yet.');
+                return;
+            }
+            if (!currentSession) {
+                alert('Please sign in with Google (top right) first — question saves require a signed-in admin session.');
+                return;
+            }
+
+            const subjectId = document.getElementById('admin-subject-select').value;
+            const newQ = {
+                subject_id: subjectId,
+                board: document.getElementById('admin-board').value,
+                question: document.getElementById('admin-q-text').value,
+                options: [
+                    document.getElementById('admin-opt-a').value,
+                    document.getElementById('admin-opt-b').value,
+                    document.getElementById('admin-opt-c').value,
+                    document.getElementById('admin-opt-d').value
+                ],
+                correct: parseInt(document.getElementById('admin-correct-opt').value)
+            };
+
+            const { data, error } = await supabaseClient.from('questions').insert([newQ]).select();
+
+            if (error) {
+                console.error('Failed to save question:', error);
+                alert('Could not save this question: ' + error.message);
+                return;
+            }
+
+            if (!database[subjectId]) database[subjectId] = [];
+            const saved = data[0];
+            database[subjectId].push({
+                id: saved.id,
+                board: saved.board,
+                question: saved.question,
+                options: saved.options,
+                correct: saved.correct
+            });
+
+            alert('Board question saved — this is now live for every visitor!');
+            document.getElementById('add-q-form').reset();
+            renderDashboard();
+        }
+
+        function promptUserName() {
+            const name = prompt("Enter your custom name/callsign:");
+            if (name && name.trim()) {
+                currentUserName = name.trim();
+                localStorage.setItem('ssc_username', currentUserName);
+                document.getElementById('welcome-user-text').innerText = `Welcome, ${currentUserName}`;
+            }
+        }
+    </script>
+<button class="aegis-fab" onclick="toggleAegis()" aria-label="Open Aegis">🛡️</button><div id="aegis-panel" class="aegis-panel"><div class="aegis-head"><div><strong>🛡️ Aegis</strong><small>Your AI study companion</small></div><button class="aegis-close" onclick="toggleAegis()">×</button></div><div id="aegis-messages" class="aegis-messages"><div class="aegis-msg ai">Hi! I’m Aegis. Ask me about a concept, question, or problem. I can give a hint, explain it, or solve it step by step.</div></div><div class="aegis-chips"><button class="aegis-chip" onclick="aegisQuick('Give me a hint, not the answer.')">💡 Hint</button><button class="aegis-chip" onclick="aegisQuick('Explain this simply.')">🧠 Explain</button><button class="aegis-chip" onclick="aegisQuick('Solve this step by step.')">✏️ Solve</button></div><div class="aegis-input"><textarea id="aegis-input" placeholder="Ask Aegis…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAegis()}"></textarea><button class="aegis-send" onclick="sendAegis()">➤</button></div></div>
+<script id="studify-fire-js">
+(function(){
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const ini=n=>String(n||'AI').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+window.__lbSort='score';
+window.setLeaderboardSort=(s,b)=>{window.__lbSort=s;document.querySelectorAll('.lb-tab').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active');window.loadLeaderboardData&&window.loadLeaderboardData()};
+window.renderLeaderboardPodium=rows=>{const p=document.getElementById('lb-podium');if(!p)return;const a=[rows[1],rows[0],rows[2]],c=['second','first','third'],m=['🥈','🥇','🥉'];p.innerHTML=a.map((r,i)=>r?`<div class="lb-podium-card ${c[i]}"><div class="lb-medal">${m[i]}</div><div class="lb-avatar">${ini(r.name)}</div><div class="lb-name">${esc(r.name||'Anonymous')}</div><div class="lb-podium-subject">${esc(r.subject||'All Subjects')}</div><div class="lb-podium-score">${esc(r.score)} / ${esc(r.total)}</div><div class="lb-podium-accuracy">${esc(r.accuracy)}% accuracy</div></div>`:'<div></div>').join('')};
+window.loadLeaderboardData=async()=>{const l=document.getElementById('leaderboard-table-body'),c=document.getElementById('lb-result-count');if(typeof supabaseClient === 'undefined' || !supabaseClient){if(l)l.innerHTML='<div class="lb-empty">Leaderboard isn’t connected yet.</div>';return}let q=supabaseClient.from('leaderboard').select('*').limit(50),f=document.getElementById('lb-subject-filter')?.value||'all';if(f!=='all')q=q.eq('subject',f);const {data,error}=await q;if(error){l.innerHTML='<div class="lb-empty">Couldn’t load rankings right now.</div>';return}const rows=(data||[]).sort((a,b)=>window.__lbSort==='accuracy'?(+b.accuracy||0)-(+a.accuracy||0):(+b.score||0)-(+a.score||0));renderLeaderboardPodium(rows.slice(0,3));if(c)c.textContent=`${rows.length} candidates`;l.innerHTML=rows.length?rows.map((r,i)=>`<div class="lb-row"><div class="lb-rank-num">#${i+1}</div><div class="lb-user"><div class="lb-row-avatar">${ini(r.name)}</div><div><div class="lb-user-name">${esc(r.name||'Anonymous')}</div><div class="lb-user-sub">${r.created_at?new Date(r.created_at).toLocaleDateString([], {month:'short',day:'numeric'}):''}</div></div></div><div class="lb-subject-name">${esc(r.subject||'—')}</div><div class="lb-score-val">${esc(r.score)} / ${esc(r.total)}</div><div class="lb-accuracy-val">${esc(r.accuracy)}%</div></div>`).join(''):'<div class="lb-empty">No scores yet — be the first! 🚀</div>'};
+
+window.toggleAegis=()=>document.getElementById('aegis-panel')?.classList.toggle('open');
+window.aegisQuick=t=>{const i=document.getElementById('aegis-input');i.value=t;sendAegis()};
+window.sendAegis=async()=>{const i=document.getElementById('aegis-input'),b=document.getElementById('aegis-messages'),t=i.value.trim();if(!t)return;b.insertAdjacentHTML('beforeend',`<div class="aegis-msg user">${esc(t)}</div>`);i.value='';const p=document.createElement('div');p.className='aegis-msg ai';p.textContent='Aegis is thinking…';b.appendChild(p);try{const r=await fetch('/api/aegis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:t,subject:window.currentSubjectId||null})});if(!r.ok)throw 0;const d=await r.json();p.textContent=d.reply||'No response.'}catch(e){p.textContent='Aegis UI is ready. Connect the secure /api/aegis backend to activate live AI answers.'}b.scrollTop=b.scrollHeight};
+})();
+</script>
+
+<script id="studify-leaderboard-patch">
+(function(){
+  window.__studifyLeaderboardPatch = true;
+
+  // If the original app calls renderLeaderboardView(), refresh the upgraded
+  // leaderboard immediately as well.
+  const oldRender = window.renderLeaderboardView;
+  window.renderLeaderboardView = function(){
+    if (typeof oldRender === 'function') oldRender();
+    setTimeout(function(){
+      if (typeof window.loadLeaderboardData === 'function') window.loadLeaderboardData();
+    }, 50);
+  };
+})();
+</script>
+</body>
+                            </html>
