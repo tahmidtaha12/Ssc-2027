@@ -294,7 +294,6 @@
         table th { color: #8191a9; font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.75rem; text-align: left; }
         table td { border-bottom: 1px solid var(--line); padding: 14px 10px; text-align: left; }
 
-        /* Leaderboard Fire Styling */
         .lb-hero { display: flex; justify-content: space-between; align-items: center; padding: 30px 34px; border-radius: 25px; border: 1px solid var(--line); background: linear-gradient(135deg, #111d30, #0a1019); box-shadow: var(--shadow); }
         .lb-hero h2 { font-size: clamp(2rem, 5vw, 3rem); margin: 8px 0; }
         .lb-hero p { color: var(--muted); margin: 0; }
@@ -599,7 +598,7 @@
     </div>
 
     <!-- AEGIS AI STUDY COMPANION FAB & PANEL -->
-    <button class="aegis-fab" onclick="toggleAegisPanel()" title="Ask Aegis AI">🤖</button>
+    <button class="aegis-fab" onclick="toggleAegisPanel()" title="Ask Aegis AI">🛡️</button>
     <div class="aegis-panel" id="aegis-panel">
         <div class="aegis-head">
             <div>
@@ -612,12 +611,12 @@
             <div class="aegis-msg ai">Hello! I am Aegis, your SSC 2027 study assistant. Ask me any question about your subjects or exam strategies!</div>
         </div>
         <div class="aegis-chips">
-            <span class="aegis-chip" onclick="quickAskAegis('Explain Physics velocity vs speed')">Physics: Velocity vs Speed</span>
-            <span class="aegis-chip" onclick="quickAskAegis('What is neutralization reaction in Chemistry?')">Chemistry: Neutralization</span>
-            <span class="aegis-chip" onclick="quickAskAegis('Tips for English Grammar SSC 2027')">English Strategy</span>
+            <span class="aegis-chip" onclick="quickAskAegis('💡 Hint')">💡 Hint</span>
+            <span class="aegis-chip" onclick="quickAskAegis('🧠 Explain')">🧠 Explain</span>
+            <span class="aegis-chip" onclick="quickAskAegis('✏️ Solve this step by step')">✏️ Solve</span>
         </div>
         <div class="aegis-input">
-            <textarea id="aegis-input-text" placeholder="Type your doubt..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAegisMessage();}"></textarea>
+            <textarea id="aegis-input-text" placeholder="Ask Aegis..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAegisMessage();}"></textarea>
             <button class="aegis-send" onclick="sendAegisMessage()">➤</button>
         </div>
     </div>
@@ -929,7 +928,6 @@
             document.getElementById("score-percentage").textContent = `${accuracy}% Accuracy`;
             document.getElementById("time-spent-summary").textContent = `Time Spent: ${Math.floor(timeTaken/60)}m ${timeTaken%60}s`;
 
-            // Submit score to Supabase global leaderboard if configured
             submitToGlobalLeaderboard(sessionData);
 
             // Render Review
@@ -1054,7 +1052,6 @@
                     return;
                 }
 
-                // Render Top 3 Podium
                 const top3 = data.slice(0, 3);
                 if (top3.length > 0) {
                     const first = top3[0];
@@ -1089,7 +1086,6 @@
                     `;
                 }
 
-                // Render full list
                 listBody.innerHTML = data.map((item, idx) => `
                     <div class="lb-row">
                         <div class="lb-rank-num">#${idx + 1}</div>
@@ -1117,7 +1113,7 @@
         }
 
         /* =========================================================================
-           AEGIS AI ASSISTANT DRAWER
+           AEGIS AI ASSISTANT DRAWER (OFFLINE CLIENT LOGIC)
         ========================================================================= */
         function toggleAegisPanel() {
             const panel = document.getElementById("aegis-panel");
@@ -1139,19 +1135,28 @@
             input.value = "";
             msgContainer.scrollTop = msgContainer.scrollHeight;
 
-            // Generate AI dynamic reply based on context
+            // Embedded offline logic for client-side evaluation without /api/aegis backend calls
             setTimeout(() => {
-                let aiReply = "That's a great question! For SSC 2027 preparation, consistency in solving board questions from 2018–2023 is key. Focus on understanding concepts step-by-step rather than memorizing!";
-                if (text.toLowerCase().includes("physics")) {
+                let queryLower = text.toLowerCase();
+                let aiReply = "I am ready to help you with SSC 2027 preparation! Ask me any specific subject question, or click 'Hint', 'Explain', or 'Solve' for help with board MCQs.";
+
+                if (queryLower.includes("hint")) {
+                    aiReply = "💡 Hint: Identify the given physical or chemical variables first, note down units, and use elimination to rule out options with incorrect units.";
+                } else if (queryLower.includes("explain")) {
+                    aiReply = "🧠 Concept Explanation: Break down the question into key concepts. For Physics, rely on fundamental SI units. For Chemistry, balance reactions using valency principles.";
+                } else if (queryLower.includes("solve")) {
+                    aiReply = "✏️ Step-by-Step Solution:\n1. Identify the given values.\n2. Apply the primary board formula.\n3. Substitute values and calculate step by step to verify your choice.";
+                } else if (queryLower.includes("physics")) {
                     aiReply = "In Physics mechanics, pay extra attention to units (SI) and formulas like V = S/t, F = ma, and W = FS. Practice vector diagrams for high scores!";
-                } else if (text.toLowerCase().includes("chemistry")) {
+                } else if (queryLower.includes("chemistry")) {
                     aiReply = "For Chemistry, remember to memorize the first 30 elements of the periodic table, their atomic numbers, and common valencies. Balancing chemical equations earns full board marks!";
-                } else if (text.toLowerCase().includes("math")) {
+                } else if (queryLower.includes("math")) {
                     aiReply = "In Mathematics, master formulas for Algebra (a+b)^2 and Trigonometry ratios (sin, cos, tan). Always double check calculation steps with your scientific calculator!";
                 }
-                msgContainer.innerHTML += `<div class="aegis-msg ai">${escapeHtml(aiReply)}</div>`;
+
+                msgContainer.innerHTML += `<div class="aegis-msg ai">${escapeHtml(aiReply).replace(/\n/g, '<br>')}</div>`;
                 msgContainer.scrollTop = msgContainer.scrollHeight;
-            }, 600);
+            }, 400);
         }
 
         /* =========================================================================
@@ -1198,7 +1203,6 @@
             showView('dashboard');
         }
 
-        // Secret Admin URL activation trigger (?key=ILMW)
         function checkUrlSecretAdmin() {
             const params = new URLSearchParams(window.location.search);
             if (params.get("key") === ADMIN_URL_SECRET) {
@@ -1216,7 +1220,6 @@
            INITIALIZATION
         ========================================================================= */
         window.addEventListener("DOMContentLoaded", () => {
-            // Hide splash screen smoothly
             setTimeout(() => {
                 const splash = document.getElementById("splash-screen");
                 if (splash) {
