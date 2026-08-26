@@ -1392,11 +1392,27 @@ const ini=n=>String(n||'AI').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join(''
 window.__lbSort='score';
 window.setLeaderboardSort=(s,b)=>{window.__lbSort=s;document.querySelectorAll('.lb-tab').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active');window.loadLeaderboardData&&window.loadLeaderboardData()};
 window.renderLeaderboardPodium=rows=>{const p=document.getElementById('lb-podium');if(!p)return;const a=[rows[1],rows[0],rows[2]],c=['second','first','third'],m=['🥈','🥇','🥉'];p.innerHTML=a.map((r,i)=>r?`<div class="lb-podium-card ${c[i]}"><div class="lb-medal">${m[i]}</div><div class="lb-avatar">${ini(r.name)}</div><div class="lb-name">${esc(r.name||'Anonymous')}</div><div class="lb-podium-subject">${esc(r.subject||'All Subjects')}</div><div class="lb-podium-score">${esc(r.score)} / ${esc(r.total)}</div><div class="lb-podium-accuracy">${esc(r.accuracy)}% accuracy</div></div>`:'<div></div>').join('')};
-window.loadLeaderboardData=async()=>{const l=document.getElementById('leaderboard-table-body'),c=document.getElementById('lb-result-count');if(!window.supabaseClient){if(l)l.innerHTML='<div class="lb-empty">Leaderboard isn’t connected yet.</div>';return}let q=supabaseClient.from('leaderboard').select('*').limit(50),f=document.getElementById('lb-subject-filter')?.value||'all';if(f!=='all')q=q.eq('subject',f);const {data,error}=await q;if(error){l.innerHTML='<div class="lb-empty">Couldn’t load rankings right now.</div>';return}const rows=(data||[]).sort((a,b)=>window.__lbSort==='accuracy'?(+b.accuracy||0)-(+a.accuracy||0):(+b.score||0)-(+a.score||0));renderLeaderboardPodium(rows.slice(0,3));if(c)c.textContent=`${rows.length} candidates`;l.innerHTML=rows.length?rows.map((r,i)=>`<div class="lb-row"><div class="lb-rank-num">#${i+1}</div><div class="lb-user"><div class="lb-row-avatar">${ini(r.name)}</div><div><div class="lb-user-name">${esc(r.name||'Anonymous')}</div><div class="lb-user-sub">${r.created_at?new Date(r.created_at).toLocaleDateString([], {month:'short',day:'numeric'}):''}</div></div></div><div class="lb-subject-name">${esc(r.subject||'—')}</div><div class="lb-score-val">${esc(r.score)} / ${esc(r.total)}</div><div class="lb-accuracy-val">${esc(r.accuracy)}%</div></div>`).join(''):'<div class="lb-empty">No scores yet — be the first! 🚀</div>'};
+window.loadLeaderboardData=async()=>{const l=document.getElementById('leaderboard-table-body'),c=document.getElementById('lb-result-count');if(typeof supabaseClient === 'undefined' || !supabaseClient){if(l)l.innerHTML='<div class="lb-empty">Leaderboard isn’t connected yet.</div>';return}let q=supabaseClient.from('leaderboard').select('*').limit(50),f=document.getElementById('lb-subject-filter')?.value||'all';if(f!=='all')q=q.eq('subject',f);const {data,error}=await q;if(error){l.innerHTML='<div class="lb-empty">Couldn’t load rankings right now.</div>';return}const rows=(data||[]).sort((a,b)=>window.__lbSort==='accuracy'?(+b.accuracy||0)-(+a.accuracy||0):(+b.score||0)-(+a.score||0));renderLeaderboardPodium(rows.slice(0,3));if(c)c.textContent=`${rows.length} candidates`;l.innerHTML=rows.length?rows.map((r,i)=>`<div class="lb-row"><div class="lb-rank-num">#${i+1}</div><div class="lb-user"><div class="lb-row-avatar">${ini(r.name)}</div><div><div class="lb-user-name">${esc(r.name||'Anonymous')}</div><div class="lb-user-sub">${r.created_at?new Date(r.created_at).toLocaleDateString([], {month:'short',day:'numeric'}):''}</div></div></div><div class="lb-subject-name">${esc(r.subject||'—')}</div><div class="lb-score-val">${esc(r.score)} / ${esc(r.total)}</div><div class="lb-accuracy-val">${esc(r.accuracy)}%</div></div>`).join(''):'<div class="lb-empty">No scores yet — be the first! 🚀</div>'};
 
 window.toggleAegis=()=>document.getElementById('aegis-panel')?.classList.toggle('open');
 window.aegisQuick=t=>{const i=document.getElementById('aegis-input');i.value=t;sendAegis()};
 window.sendAegis=async()=>{const i=document.getElementById('aegis-input'),b=document.getElementById('aegis-messages'),t=i.value.trim();if(!t)return;b.insertAdjacentHTML('beforeend',`<div class="aegis-msg user">${esc(t)}</div>`);i.value='';const p=document.createElement('div');p.className='aegis-msg ai';p.textContent='Aegis is thinking…';b.appendChild(p);try{const r=await fetch('/api/aegis',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:t,subject:window.currentSubjectId||null})});if(!r.ok)throw 0;const d=await r.json();p.textContent=d.reply||'No response.'}catch(e){p.textContent='Aegis UI is ready. Connect the secure /api/aegis backend to activate live AI answers.'}b.scrollTop=b.scrollHeight};
+})();
+</script>
+
+<script id="studify-leaderboard-patch">
+(function(){
+  window.__studifyLeaderboardPatch = true;
+
+  // If the original app calls renderLeaderboardView(), refresh the upgraded
+  // leaderboard immediately as well.
+  const oldRender = window.renderLeaderboardView;
+  window.renderLeaderboardView = function(){
+    if (typeof oldRender === 'function') oldRender();
+    setTimeout(function(){
+      if (typeof window.loadLeaderboardData === 'function') window.loadLeaderboardData();
+    }, 50);
+  };
 })();
 </script>
 </body>
