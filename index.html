@@ -647,7 +647,10 @@ body.exam-mode .exam-topbar{padding-right:145px}
                         persistSession: true,
                         autoRefreshToken: true,
                         detectSessionInUrl: true,
-                        flowType: 'implicit'
+                        flowType: 'pkce',
+                        // We initialize explicitly below, after registering the
+                        // auth listener, so the OAuth callback cannot race the UI.
+                        skipAutoInitialize: true
                     }
                 });
             } catch (e) {
@@ -15127,6 +15130,7 @@ body.exam-mode .exam-topbar{padding-right:145px}
 
         let authSubscription = null;
         let authBusy = false;
+        let authInitialized = false;
 
         function getAuthRedirectUrl() {
             // Always return the clean GitHub Pages route — never send OAuth back
@@ -15150,12 +15154,20 @@ body.exam-mode .exam-topbar{padding-right:145px}
 
         function showAuthCallbackError() {
             try {
-                const hash = window.location.hash.startsWith('#') ? window.location.hash.slice(1) : '';
-                const params = new URLSearchParams(hash);
-                const errorCode = params.get('error_code');
-                const description = params.get('error_description');
+                const url = new URL(window.location.href);
+                const params = new URLSearchParams(url.search);
+                const hash = url.hash.startsWith('#') ? url.hash.slice(1) : '';
+                const hashParams = new URLSearchParams(hash);
+
+                const errorCode = params.get('error_code') || params.get('error') || hashParams.get('error_code') || hashParams.get('error');
+                const description =
+                    params.get('error_description') ||
+                    hashParams.get('error_description');
+
                 if (errorCode || description) {
-                    const message = decodeURIComponent((description || 'Google sign-in was not completed.').replace(/\+/g, ' '));
+                    const message = decodeURIComponent(
+                        (description || 'Google sign-in was not completed.').replace(/\+/g, ' ')
+                    );
                     console.warn('[ASTRIX Auth] OAuth callback error:', errorCode, message);
                     clearAuthCallbackUrl();
                     setTimeout(() => alert('Google sign-in was not completed.\n\n' + message), 0);
@@ -15165,36 +15177,61 @@ body.exam-mode .exam-topbar{padding-right:145px}
             }
         }
 
+        function ensureAuthListener() {
+            if (!supabaseClient || authSubscription) return;
+            const result = supabaseClient.auth.onAuthStateChange((event, session) => {
+                console.info('[ASTRIX Auth] Auth event:', event, !!session);
+                currentSession = session || null;
+                authBusy = false;
+                sessionStorage.removeItem('astrix_oauth_pending');
+                updateAuthButton();
+
+                if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+                    clearAuthCallbackUrl();
+                }
+            });
+            authSubscription = result?.data?.subscription || null;
+        }
+
         async function initAuth() {
-            if (!supabaseClient) { updateAuthButton(); return; }
+            if (!supabaseClient) {
+                updateAuthButton();
+                return;
+            }
+
             try {
-                // IMPORTANT: subscribe BEFORE getSession(). OAuth returns to this
-                // page and Supabase may emit the session event immediately.
-                // Registering first prevents a callback race on fast redirects.
-                if (!authSubscription) {
-                    const result = supabaseClient.auth.onAuthStateChange((event, session) => {
-                        currentSession = session || null;
-                        authBusy = false;
-                        sessionStorage.removeItem('astrix_oauth_pending');
-                        updateAuthButton();
-                        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
-                            clearAuthCallbackUrl();
-                        }
-                    });
-                    authSubscription = result?.data?.subscription || null;
+                // The client uses skipAutoInitialize so we control the order:
+                // listener first, then initialize() processes the OAuth callback.
+                ensureAuthListener();
+
+                if (!authInitialized) {
+                    authInitialized = true;
+                    const { error } = await supabaseClient.auth.initialize();
+                    if (error) {
+                        authInitialized = false;
+                        throw error;
+                    }
                 }
 
                 const { data, error } = await supabaseClient.auth.getSession();
-                if (error) console.warn('Supabase session check:', error);
+                if (error) throw error;
+
                 currentSession = data?.session || null;
                 authBusy = false;
                 sessionStorage.removeItem('astrix_oauth_pending');
                 updateAuthButton();
                 showAuthCallbackError();
+
+                if (currentSession?.user) {
+                    console.info('[ASTRIX Auth] Session restored:', currentSession.user.email || currentSession.user.id);
+                } else {
+                    console.info('[ASTRIX Auth] No active session after initialization.');
+                }
             } catch (err) {
-                console.error('Auth initialization failed:', err);
+                console.error('[ASTRIX Auth] Initialization failed:', err);
                 currentSession = null;
                 authBusy = false;
+                sessionStorage.removeItem('astrix_oauth_pending');
                 updateAuthButton();
             }
         }
@@ -15790,7 +15827,9 @@ body.exam-mode .exam-topbar{padding-right:145px}
                 if(welcome) welcome.innerText=`Welcome, ${currentUserName}`;
                 updateAuthButton();
 
-                // Load cloud features in the background.
+                // Load cloud features in the background. Auth itself controls
+                // its callback initialization so Google sessions survive the
+                // GitHub Pages reload.
                 Promise.resolve(initAuth()).catch(err=>console.warn('Auth background load:',err));
                 Promise.resolve(loadQuestions()).then(()=>{
                     renderDashboard();
@@ -15885,4 +15924,4 @@ window.sendAegis = async () => {
 })();
 </script>
 </body>
-    </html>
+                </html>
